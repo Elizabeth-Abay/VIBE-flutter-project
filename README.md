@@ -1,16 +1,10 @@
-Elizabeth Abay   ---   UGR/3071/16 
-
-
-Kidist Meseret   ---   UGR/9079/16 
-
-
-Tsion Kinde      --- UGR/2656/16 
-
-
-Sosina Zemichael --- UGR/4010/16 
-
-
-Yadeni Getu      --- UGR/7202/16 
+| Full Name       | ID         |
+|-----------------|------------|
+| Elizabeth Abay  | UGR/3071/16|
+| Kidist Meseret  | UGR/9079/16|
+| Tsion Kinde     | UGR/2656/16|
+| Sosina Zemichael| UGR/4010/16|
+| Yadeni Getu     | UGR/7202/16|
 
 
 
