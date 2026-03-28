@@ -12,7 +12,7 @@
 
 This is our proposed project for the Mobile App Development course.
 
-Vibe is a social media app designed for university students to connect with others based on shared interests.
+Vibe is a social media app designed for university students to connect with others based on shared interests.Users create profiles, select interests, and get matched with other students who have similar preferences. The system enables users to send and manage connection requests.
 
 ## Project Idea
 
@@ -40,6 +40,8 @@ Users can:
 * Send connection requests
 * View requests
 * Accept or reject requests
+* Remove existing connections
+* Cancel sent requests
 
 This feature also supports CRUD operations.
 
