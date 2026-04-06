@@ -89,8 +89,8 @@ Development has not started yet.
 
 The goal is to build a simple offline platform where students can:
 *  Find and connect with others who share similar interests 
-•  Interact in a controlled and safe environment 
-•  Store personal ideas using a built-in saved messages feature
+*  Interact in a controlled and safe environment 
+*  Store personal ideas using a built-in saved messages feature
 
 ##  Team
 
@@ -101,16 +101,16 @@ This is a group project for our course.
 Made by our team 
 
 ## Added features
-1.  Block Users
-   can:
-•  Block other users 
-•  Unblock users 
+
+## 1.  Block Users can:
+*  Block other users 
+*  Unblock users 
 This feature improves user safety and control, even in an offline environment.
-3.  Saved Messages (Personal Chat)
+## 2.  Saved Messages (Personal Chat)
 Inspired by Saved Messages in Telegram, users can:
-•  Send messages to themselves 
-•  Save ideas, thoughts, and plans 
-•  View messages in a chat-like interface 
-•  Delete messages 
+*  Send messages to themselves 
+*  Save ideas, thoughts, and plans 
+*  View messages in a chat-like interface 
+*  Delete messages 
 This feature works fully offline and provides a personal space for users inside the app.
 
