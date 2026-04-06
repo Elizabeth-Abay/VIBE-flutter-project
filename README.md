@@ -33,7 +33,7 @@ Users can:
 
 This feature supports full CRUD operations.
 
-##2. Matching & Connection Requests
+## 2. Matching & Connection Requests
 
 Users can:
 
@@ -88,7 +88,7 @@ Development has not started yet.
 ##  Goal
 
 The goal is to build a simple offline platform where students can:
-•  Find and connect with others who share similar interests 
+*  Find and connect with others who share similar interests 
 •  Interact in a controlled and safe environment 
 •  Store personal ideas using a built-in saved messages feature
 
