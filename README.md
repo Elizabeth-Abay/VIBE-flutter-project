@@ -104,7 +104,8 @@ Made by our team
 
 ## 1.  Block Users can:
 *  Block other users 
-*  Unblock users 
+*  Unblock users
+
 This feature improves user safety and control, even in an offline environment.
 ## 2.  Saved Messages (Personal Chat)
 Inspired by Saved Messages in Telegram, users can:
