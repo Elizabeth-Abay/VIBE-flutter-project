@@ -102,11 +102,11 @@ Made by our team
 
 ## Added features
 1.  Block Users
-Users can:
+   can:
 •  Block other users 
 •  Unblock users 
 This feature improves user safety and control, even in an offline environment.
-2.  Saved Messages (Personal Chat)
+3.  Saved Messages (Personal Chat)
 Inspired by Saved Messages in Telegram, users can:
 •  Send messages to themselves 
 •  Save ideas, thoughts, and plans 
