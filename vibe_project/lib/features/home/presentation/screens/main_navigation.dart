@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'home_page.dart';
 import '../../../../core/widgets/bottom_nav_bar.dart'; // Using your custom widget path
 
+
+
+
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
   @override
