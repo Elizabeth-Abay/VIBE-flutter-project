@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CategoryPill extends StatelessWidget {
   final String label;
-  final String icon; // This can be an emoji string or a path to an image
+  final IconData icon; // This can be an emoji string or a path to an image
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -43,20 +43,22 @@ class CategoryPill extends StatelessWidget {
                 ]
               : [],
         ),
-        child: Row(
+        child: // Inside your Row in CategoryPill
+        Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Icon/Emoji section
-            Text(icon, style: const TextStyle(fontSize: 20)),
+            Icon(
+              icon, // Now an IconData object
+              color: isSelected ? Colors.white : Colors.white70,
+              size: 20,
+            ),
             const SizedBox(width: 8),
-            // Label section
             Text(
               label.toUpperCase(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                letterSpacing: 1.1,
               ),
             ),
           ],
