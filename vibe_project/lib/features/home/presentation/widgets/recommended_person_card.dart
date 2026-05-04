@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'connect_button.dart';
-import '../../domain/entity/ConnectResult.dart';
+import '../../domain/entity/connection_request_sending_result.dart';
 
 class UserConnectionCard extends StatelessWidget {
   final String userId;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../domain/entity/ConnectResult.dart';
+import '../../domain/entity/connection_request_sending_result.dart';
 
 enum ConnectButtonState { idle, sending, success, error }
 

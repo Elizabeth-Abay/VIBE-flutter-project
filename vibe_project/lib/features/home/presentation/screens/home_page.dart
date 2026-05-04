@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../providers/post_provider.dart';
 import '../providers/person_provider.dart';
 import '../widgets/post_card.dart';
-import '../widgets/person_card.dart';
-import '../../core/constants/app_constants.dart';
+import '../widgets/recommended_person_card.dart';
+// import '../../../feed/core/constants/app_constants.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,14 +15,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PostProvider>().fetchPosts();
-      context.read<PersonProvider>().fetchRecommendedPeople();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     context.read<PostProvider>().fetchPosts();
+  //     context.read<PersonProvider>().fetchRecommendedPeople();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
