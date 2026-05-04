@@ -6,7 +6,7 @@ class SocialPostWidget extends StatelessWidget {
   final String description;
   final List<String> tags;
   final String userName;
-  final String? userProfileImage;
+  final String? userProfileImageUrl;
 
   const SocialPostWidget({
     super.key,
@@ -15,7 +15,7 @@ class SocialPostWidget extends StatelessWidget {
     required this.description,
     required this.tags,
     required this.userName,
-    this.userProfileImage,
+    this.userProfileImageUrl,
   });
 
   @override
@@ -96,8 +96,8 @@ class SocialPostWidget extends StatelessWidget {
               CircleAvatar(
                 radius: 14,
                 backgroundColor: Colors.white12,
-                backgroundImage: userProfileImage != null
-                    ? NetworkImage(userProfileImage!)
+                backgroundImage: userProfileImageUrl != null
+                    ? NetworkImage(userProfileImageUrl!)
                     : null,
               ),
               const SizedBox(width: 12),
