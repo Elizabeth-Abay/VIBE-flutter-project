@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/category_bar.dart';
 
 
 class HomePage extends StatefulWidget{
@@ -14,6 +15,12 @@ class _HomePageState extends State<HomePage>{
   Widget build(BuildContext context) {
     return Scaffold(
       // the middle part
+      body: Column(
+        children: [
+          CategoryBar(),
+
+        ],
+      )
 
 
     );

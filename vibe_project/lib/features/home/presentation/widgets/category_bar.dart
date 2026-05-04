@@ -1,36 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/home_provider.dart';
-import 'category_pill.dart';
+import '../../../../core/constants/post_categories.dart'; // Your constants file             // Your provider
+import 'category_pill.dart';                          // Your pill widget
 
 class CategoryBar extends StatelessWidget {
   const CategoryBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // We watch the provider to know which category is currently selected
-    final homeProvider = context.watch<HomeProvider>();
+    // We watch the provider to see which category the user clicks
+    // final homeProvider = context.watch<HomeProvider>();
 
-    // This is your constant list of categories
-    final categories = homeProvider.categories;
-
-    return SizedBox(
-      height: 50, // Set a fixed height for the horizontal bar
+    return Container(
+      height: 60, // Fixed height for the bar
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
         padding: const EdgeInsets.symmetric(horizontal: 16),
+        // Use the constant list length
+        itemCount: postAppCategories.length,
         itemBuilder: (context, index) {
-          final category = categories[index];
-
+          final category = postAppCategories[index];
+          
           return CategoryPill(
             label: category.name,
             icon: category.icon,
-            // The Provider tells us if this specific pill is the active one
-            isSelected: homeProvider.selectedCategory == category.name,
+            // Check if this pill matches the selected state in the provider
+            // isSelected: homeProvider.selectedCategory == category.name,
             onTap: () {
-              // Trigger the backend request via the Provider
-              homeProvider.selectCategory(category.name);
+              // 1. Update the UI selection
+              // 2. Trigger the Node.js backend request
+              // homeProvider.selectCategory(category.name);
             },
           );
         },

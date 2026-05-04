@@ -8,7 +8,7 @@ class CategoryModel {
 }
 
 
-const List<CategoryModel> kAppCategories = [
+const List<CategoryModel> postAppCategories = [
   CategoryModel(name: 'Food', icon: Icons.fastfood_outlined),
   CategoryModel(name: 'Travel', icon: Icons.explore_outlined),
   CategoryModel(name: 'Music', icon: Icons.music_note_outlined),
