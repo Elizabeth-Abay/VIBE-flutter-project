@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/category_bar.dart';
+import '../widgets/posts_bar.dart';
 
 
 class HomePage extends StatefulWidget{
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage>{
       body: Column(
         children: [
           CategoryBar(),
+          HorizontalPostFeed()
 
         ],
       )
