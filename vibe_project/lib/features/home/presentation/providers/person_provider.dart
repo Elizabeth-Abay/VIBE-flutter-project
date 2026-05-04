@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/person.dart';
-import '../../domain/usecases/get_recommended_people.dart';
-import '../../domain/usecases/follow_person.dart';
-import '../../core/errors/failures.dart';
+import '../../../feed/domain/entities/person.dart';
+import '../../../feed/domain/usecases/get_recommended_people.dart';
+import '../../../feed/domain/usecases/follow_person.dart';
+import '../../../feed/core/errors/failures.dart';
 
 class PersonProvider extends ChangeNotifier {
   final GetRecommendedPeople getRecommendedPeople;

@@ -1,99 +1,98 @@
 import 'package:flutter/material.dart';
+import 'connect_button.dart';
+import '../../domain/entity/ConnectResult.dart';
 
-class PersonRecommendationCard extends StatelessWidget {
+class UserConnectionCard extends StatelessWidget {
   final String userId;
-  final String name;
+  final String displayName;
+  final String username;
   final String? userProfileImageUrl;
+  final Future<ConnectResult> Function(String userId) onConnect;
+  // ConnectResult is a data transfer object defined in the entity part
 
-  const PersonRecommendationCard({
-    required this.userId,
-    required this.name,
-    this.userProfileImageUrl,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // We "watch" the state of this specific user from the controller
-    final userStatus = context.watch<UserProvider>().getStatus(userId);
-
-    return Row(
-      children: [
-        Text(name),
-        const Spacer(),
-        ElevatedButton(
-          onPressed: (userStatus == Status.loading || userStatus == Status.sent)
-              ? null
-              : () => context.read<UserProvider>().connect(userId),
-          child: _buildButtonContent(userStatus),
-        ),
-      ],
-    );
-  }
-
-  // Helper to keep the build method clean
-  Widget _buildButtonContent(Status status) {
-    if (status == Status.loading) {
-      return const SizedBox(
-        width: 16,
-        height: 16,
-        child: CircularProgressIndicator(strokeWidth: 2),
-      );
-    } else if (status == Status.sent) {
-      return const Text("Requested");
-    }
-    return const Text("Connect");
-  }
-}
-
-class ConnectButton extends StatefulWidget {
-  final String userId;
-  final Future<void> Function(String) onConnect; // Function from Provider
-
-  const ConnectButton({
+  const UserConnectionCard({
     super.key,
     required this.userId,
+    required this.displayName,
+    required this.username,
+    this.userProfileImageUrl,
     required this.onConnect,
   });
 
   @override
-  State<ConnectButton> createState() => _ConnectButtonState();
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A2E),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFF7C3AED).withOpacity(0.4),
+          width: 1.5,
+        ),
+      ),
+      child: Row(
+        children: [
+          // Avatar
+          _UserAvatar(userProfileImageUrl: userProfileImageUrl, displayName: displayName),
+          const SizedBox(width: 12),
+
+          // Name + Username
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  displayName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '@$username',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.5),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Connect button — receives userId and the injected backend function
+          ConnectButton(userId: userId, onConnect: onConnect),
+        ],
+      ),
+    );
+  }
 }
 
-class _ConnectButtonState extends State<ConnectButton> {
-  bool _localLoading = false;
-  bool _isSent = false;
+class _UserAvatar extends StatelessWidget {
+  final String? userProfileImageUrl;
+  final String displayName;
 
-  void _handleTap() async {
-    setState(() => _localLoading = true);
-
-    try {
-      // The widget triggers the logic, but the Provider OWNS the logic
-      await widget.onConnect(widget.userId);
-
-      setState(() {
-        _localLoading = false;
-        _isSent = true;
-      });
-    } catch (e) {
-      setState(() => _localLoading = false);
-      // Handle error...
-    }
-  }
+  const _UserAvatar({this.userProfileImageUrl, required this.displayName});
 
   @override
   Widget build(BuildContext context) {
-    if (_isSent)
-      return const Text("Requested", style: TextStyle(color: Colors.grey));
-
-    return ElevatedButton(
-      onPressed: _localLoading ? null : _handleTap,
-      child: _localLoading
-          ? const SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(),
+    return CircleAvatar(
+      radius: 22,
+      backgroundColor: const Color(0xFF7C3AED).withOpacity(0.3),
+      backgroundImage: userProfileImageUrl != null ? NetworkImage(userProfileImageUrl!) : null,
+      child: userProfileImageUrl == null
+          ? Text(
+              displayName.isNotEmpty ? displayName[0].toUpperCase() : '?',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             )
-          : const Text("Connect"),
+          : null,
     );
   }
 }

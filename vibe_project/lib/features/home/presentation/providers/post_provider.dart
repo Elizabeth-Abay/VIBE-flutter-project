@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/post.dart';
-import '../../domain/usecases/get_posts.dart';
-import '../../core/errors/failures.dart';
+import '../../../feed/domain/entities/post.dart';
+import '../../../feed/domain/usecases/get_posts.dart';
+import '../../../feed/core/errors/failures.dart';
 
 class PostProvider extends ChangeNotifier {
   final GetPosts getPosts;
