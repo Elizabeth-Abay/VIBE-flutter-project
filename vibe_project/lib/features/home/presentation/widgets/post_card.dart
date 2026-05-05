@@ -21,7 +21,7 @@ class SocialPostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(16.0 , 16.0 , 16.0 , 4.0),
       decoration: BoxDecoration(
         color: const Color(0xFF0D1B2A), // Dark navy background
         borderRadius: BorderRadius.circular(12),
@@ -35,7 +35,7 @@ class SocialPostWidget extends StatelessWidget {
               title,
               style: const TextStyle(
                 color: Colors.white70,
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -59,7 +59,7 @@ class SocialPostWidget extends StatelessWidget {
             description,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 20,
+              fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -82,7 +82,7 @@ class SocialPostWidget extends StatelessWidget {
                   ),
                   child: Text(
                     tag,
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 );
               }).toList(),
@@ -105,7 +105,7 @@ class SocialPostWidget extends StatelessWidget {
                 userName,
                 style: const TextStyle(
                   color: Colors.white70,
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ),

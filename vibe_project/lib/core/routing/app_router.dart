@@ -8,8 +8,14 @@ class GenerateRoute {
     final args = settings.arguments;
 
     switch (settings.name) {
+      // top parts
+      case '/notification':
+
+      case '/connections':
+
       case '/':
         return MaterialPageRoute(builder: (_) => MainNavigation());
+      
       case '/chat':
       case '/profile':
       case '/saved':

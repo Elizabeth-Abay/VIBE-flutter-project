@@ -13,29 +13,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 1. Horizontal Categories
-            const CategoryBar(),
+    return Column(
+      // No Scaffold here! MainNavigation provides it.
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16), // Padding below the AppBar
 
-            // Padding between Categories and Posts
-            const SizedBox(height: 20),
+        const CategoryBar(),
 
-            // 2. Horizontal Post Feed
-            const HorizontalPostFeed(),
+        const SizedBox(height: 24),
 
-            // Padding between Posts and People
-            const SizedBox(height: 24),
+        const HorizontalPostFeed(),
 
-            // 3. Vertical People List (The "Expanded" is the fix!)
-            const Expanded(child: RecommendedConnectionsList()),
-          ],
-        ),
-      ),
+        const SizedBox(height: 24),
+
+        // This Expanded will now work perfectly because
+        // MainNavigation provides the bounded height.
+        const Expanded(child: RecommendedConnectionsList()),
+      ],
     );
   }
 }

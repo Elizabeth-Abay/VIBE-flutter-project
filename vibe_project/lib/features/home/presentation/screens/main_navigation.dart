@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import '../../../../core/widgets/bottom_nav_bar.dart'; // Using your custom widget path
+import '../../../../core/widgets/top_nav_bar.dart';
 
 
 
@@ -33,6 +34,7 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: VibeAppBar(),
       // IndexedStack is preferred over the simple list index to
       // preserve the state (like scroll position) of your pages.
       body: IndexedStack(index: _currentIndex, children: _pages),
