@@ -1,10 +1,20 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/screens/profile_view_screen.dart';
 import '../../features/auth/presentation/screens/edit_profile_screen.dart';
 import '../../features/auth/presentation/screens/delete_account_screen.dart';
 import '../../features/auth/presentation/screens/interest_selection_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../features/chat/presentation/screens/chat_list_screen.dart';
+import '../../features/chat/presentation/screens/chat_detail_screen.dart';
+import '../../features/chat/presentation/screens/saved_messages_screen.dart';
+import '../../features/settings/presentation/screens/blocked_users_screen.dart';
+import '../../features/settings/presentation/screens/delete_account_screen.dart';
+import '../../features/chat/presentation/widgets/main_layout.dart';
+import 'package:mobapp/features/auth/presentation/screens/email_entry_screen.dart';
+import 'package:mobapp/features/auth/presentation/screens/sign_in_screen.dart';
+import 'package:mobapp/features/auth/presentation/screens/sign_up_screen.dart';
+import 'package:mobapp/features/auth/presentation/screens/verification_screen.dart';
 
 class AppRouter {
   static final router = GoRouter(
@@ -17,15 +27,8 @@ class AppRouter {
     ],
   );
 }
-=======
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../features/chat/presentation/screens/chat_list_screen.dart';
-import '../../features/chat/presentation/screens/chat_detail_screen.dart';
-import '../../features/chat/presentation/screens/saved_messages_screen.dart';
-import '../../features/settings/presentation/screens/blocked_users_screen.dart';
-import '../../features/settings/presentation/screens/delete_account_screen.dart';
-import '../../features/chat/presentation/widgets/main_layout.dart';
+
+
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -67,15 +70,11 @@ final appRouter = GoRouter(
     ),
   ],
 );
->>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
-=======
-import 'package:go_router/go_router.dart';
+
+
 
 // Use the package name found in your pubspec.yaml
-import 'package:mobapp/features/auth/presentation/screens/email_entry_screen.dart';
-import 'package:mobapp/features/auth/presentation/screens/sign_in_screen.dart';
-import 'package:mobapp/features/auth/presentation/screens/sign_up_screen.dart';
-import 'package:mobapp/features/auth/presentation/screens/verification_screen.dart';
+
 
 final GoRouter router = GoRouter(
   initialLocation: '/login-email',
@@ -92,4 +91,4 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/signin', builder: (context, state) => const SignInScreen()),
   ],
 );
->>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
+
