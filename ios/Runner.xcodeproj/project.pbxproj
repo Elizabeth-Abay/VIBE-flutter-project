@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
@@ -620,6 +621,8 @@
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }
 =======
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
@@ -994,7 +997,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.vibeApp;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.mobapp;
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1010,7 +1017,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.vibeApp.RunnerTests;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.mobapp.RunnerTests;
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1027,7 +1038,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.vibeApp.RunnerTests;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.mobapp.RunnerTests;
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1042,7 +1057,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.vibeApp.RunnerTests;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.mobapp.RunnerTests;
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Runner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Runner";
@@ -1173,7 +1192,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.vibeApp;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.mobapp;
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1195,7 +1218,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.vibeApp;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.mobapp;
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1240,4 +1267,7 @@
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }
+<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

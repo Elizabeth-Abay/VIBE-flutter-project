@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "my_application.h"
 
 #include <flutter_linux/flutter_linux.h>
@@ -148,6 +149,8 @@ MyApplication* my_application_new() {
                                      G_APPLICATION_NON_UNIQUE, nullptr));
 }
 =======
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 #include "my_application.h"
 
 #include <flutter_linux/flutter_linux.h>
@@ -195,11 +198,19 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
+<<<<<<< HEAD
     gtk_header_bar_set_title(header_bar, "vibe_app");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
     gtk_window_set_title(window, "vibe_app");
+=======
+    gtk_header_bar_set_title(header_bar, "mobapp");
+    gtk_header_bar_set_show_close_button(header_bar, TRUE);
+    gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
+  } else {
+    gtk_window_set_title(window, "mobapp");
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
   }
 
   gtk_window_set_default_size(window, 1280, 720);
@@ -296,4 +307,7 @@ MyApplication* my_application_new() {
                                      "application-id", APPLICATION_ID, "flags",
                                      G_APPLICATION_NON_UNIQUE, nullptr));
 }
+<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

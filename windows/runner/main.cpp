@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
@@ -43,6 +44,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   return EXIT_SUCCESS;
 }
 =======
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
@@ -72,7 +75,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
+<<<<<<< HEAD
   if (!window.Create(L"vibe_app", origin, size)) {
+=======
+  if (!window.Create(L"mobapp", origin, size)) {
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);
@@ -86,4 +93,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   ::CoUninitialize();
   return EXIT_SUCCESS;
 }
+<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

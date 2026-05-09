@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 cmake_minimum_required(VERSION 3.14)
 project(runner LANGUAGES CXX)
 
@@ -40,6 +41,8 @@ target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 # Run the Flutter tool portions of the build. This must not be removed.
 add_dependencies(${BINARY_NAME} flutter_assemble)
 =======
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 cmake_minimum_required(VERSION 3.14)
 project(runner LANGUAGES CXX)
 
@@ -80,4 +83,7 @@ target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
 # Run the Flutter tool portions of the build. This must not be removed.
 add_dependencies(${BINARY_NAME} flutter_assemble)
+<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

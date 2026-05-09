@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 // This is a basic Flutter widget test.
 //
 // To perform an interaction with a widget in your test, use the WidgetTester
@@ -30,6 +31,8 @@ void main() {
   });
 }
 =======
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 // This is a basic Flutter widget test.
 //
 // To perform an interaction with a widget in your test, use the WidgetTester
@@ -40,7 +43,11 @@ void main() {
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+<<<<<<< HEAD
 import 'package:vibe_app/main.dart';
+=======
+import 'package:mobapp/main.dart';
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
@@ -60,4 +67,7 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 }
+<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef RUNNER_UTILS_H_
 #define RUNNER_UTILS_H_
 
@@ -19,6 +20,8 @@ std::vector<std::string> GetCommandLineArguments();
 
 #endif  // RUNNER_UTILS_H_
 =======
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 #ifndef RUNNER_UTILS_H_
 #define RUNNER_UTILS_H_
 
@@ -38,4 +41,7 @@ std::string Utf8FromUtf16(const wchar_t* utf16_string);
 std::vector<std::string> GetCommandLineArguments();
 
 #endif  // RUNNER_UTILS_H_
+<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

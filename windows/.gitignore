@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 flutter/ephemeral/
 
 # Visual Studio user-specific files.
@@ -17,6 +18,8 @@ x86/
 # but keep track of directories ending in .cache
 !*.[Cc]ache/
 =======
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 flutter/ephemeral/
 
 # Visual Studio user-specific files.
@@ -34,4 +37,7 @@ x86/
 *.[Cc]ache
 # but keep track of directories ending in .cache
 !*.[Cc]ache/
+<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

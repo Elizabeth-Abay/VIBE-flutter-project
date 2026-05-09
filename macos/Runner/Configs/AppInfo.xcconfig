@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Application-level settings for the Runner target.
 //
 // This may be replaced with something auto-generated from metadata (e.g., pubspec.yaml) in the
@@ -14,6 +15,8 @@ PRODUCT_BUNDLE_IDENTIFIER = com.example.editProfile
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 com.example. All rights reserved.
 =======
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 // Application-level settings for the Runner target.
 //
 // This may be replaced with something auto-generated from metadata (e.g., pubspec.yaml) in the
@@ -21,6 +24,7 @@ PRODUCT_COPYRIGHT = Copyright © 2026 com.example. All rights reserved.
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
+<<<<<<< HEAD
 PRODUCT_NAME = vibe_app
 
 // The application's bundle identifier
@@ -29,3 +33,12 @@ PRODUCT_BUNDLE_IDENTIFIER = com.example.vibeApp
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 com.example. All rights reserved.
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+PRODUCT_NAME = mobapp
+
+// The application's bundle identifier
+PRODUCT_BUNDLE_IDENTIFIER = com.example.mobapp
+
+// The copyright displayed in application information
+PRODUCT_COPYRIGHT = Copyright © 2026 com.example. All rights reserved.
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

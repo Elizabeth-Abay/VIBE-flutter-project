@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:edit_profile/core/routing/app_router.dart';
 import 'package:edit_profile/core/theme/app_theme.dart';
@@ -31,6 +32,11 @@ class MyApp extends StatelessWidget {
 import 'package:flutter/material.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/vibe_theme.dart';
+=======
+import 'package:flutter/material.dart';
+
+import 'core/routing/app_router.dart';
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 
 void main() {
   runApp(const VibeApp());
@@ -42,6 +48,7 @@ class VibeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+<<<<<<< HEAD
       title: 'Vibe Chat',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -54,3 +61,13 @@ class VibeApp extends StatelessWidget {
   }
 }
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+      routerConfig: router,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF0D0D1F),
+      ),
+    );
+  }
+}
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

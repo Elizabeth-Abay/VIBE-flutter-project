@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1510"
@@ -99,6 +100,8 @@
    </ArchiveAction>
 </Scheme>
 =======
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1510"
@@ -116,7 +119,11 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "33CC10EC2044A3C60003C045"
+<<<<<<< HEAD
                BuildableName = "vibe_app.app"
+=======
+               BuildableName = "mobapp.app"
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
                BlueprintName = "Runner"
                ReferencedContainer = "container:Runner.xcodeproj">
             </BuildableReference>
@@ -132,7 +139,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
+<<<<<<< HEAD
             BuildableName = "vibe_app.app"
+=======
+            BuildableName = "mobapp.app"
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
             BlueprintName = "Runner"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
@@ -167,7 +178,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
+<<<<<<< HEAD
             BuildableName = "vibe_app.app"
+=======
+            BuildableName = "mobapp.app"
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
             BlueprintName = "Runner"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
@@ -184,7 +199,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
+<<<<<<< HEAD
             BuildableName = "vibe_app.app"
+=======
+            BuildableName = "mobapp.app"
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
             BlueprintName = "Runner"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
@@ -198,4 +217,7 @@
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
+<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
+=======
+>>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
