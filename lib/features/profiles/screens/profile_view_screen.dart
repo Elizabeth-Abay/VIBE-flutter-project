@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/widgets/custom_bottom_nav.dart';
+import '../../../core/utils/bottom_nav_handler.dart';
 
 class ProfileViewScreen extends StatelessWidget {
   const ProfileViewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const int activeIndex = 4;
+
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E21),
       extendBody: true, // Allows the body to flow behind the floating nav bar
@@ -14,7 +17,7 @@ class ProfileViewScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         // Expanded width to allow the Vibe logo to be significantly larger
-        leadingWidth: 500, 
+        leadingWidth: 500,
         leading: Padding(
           padding: const EdgeInsets.only(left: 20, top: 12),
           child: Image.asset(
@@ -69,7 +72,7 @@ class ProfileViewScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.purple.shade200.withValues(alpha: 0.5), 
+                    color: Colors.purple.shade200.withValues(alpha: 0.5),
                     width: 1.2,
                   ),
                   borderRadius: BorderRadius.circular(18),
@@ -114,15 +117,20 @@ class ProfileViewScreen extends StatelessWidget {
                 isGradient: false,
                 onTap: () => context.push('/delete-account'),
               ),
-              const SizedBox(height: 120), // Extra space so content doesn't hide behind nav
+              const SizedBox(
+                height: 120,
+              ), // Extra space so content doesn't hide behind nav
             ],
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNav(
-        currentIndex: 4,
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: activeIndex, // Highlight the profile icon
         onTap: (index) {
-          // Navigation logic handled by GoRouter
+          // Simply delegate the navigation to your global handler.
+          // The handler will use context.go() or context.push(),
+          // which will load the new screen with its own highlighted index.
+          BottomNavHandler.onTabTapped(context, index);
         },
       ),
     );
@@ -167,7 +175,9 @@ class ProfileViewScreen extends StatelessWidget {
                   end: Alignment.centerRight,
                 )
               : null,
-          border: !isGradient ? Border.all(color: Colors.white38, width: 1.5) : null,
+          border: !isGradient
+              ? Border.all(color: Colors.white38, width: 1.5)
+              : null,
         ),
         child: Text(
           text,

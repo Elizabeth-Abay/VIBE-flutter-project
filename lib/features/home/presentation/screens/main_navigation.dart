@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
-import '../../../../core/widgets/bottom_nav_bar.dart'; // Using your custom widget path
-import '../../../../core/widgets/top_nav_bar.dart';
-
-
-
+import 'package:go_router/go_router.dart';
+import '../../../../core/widgets/custom_bottom_nav.dart'; // Using your custom widget path
+import '../../../../core/widgets/top_navigation_bar.dart';
+import '../../../../core/utils/bottom_nav_handler.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -24,22 +23,33 @@ class _MainNavigationState extends State<MainNavigation> {
 
   // This handles the tab switching and is where you'll eventually
   // trigger backend requests via your Providers.
-  void _onTabChanged(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: VibeAppBar(),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(70), 
+        child: VibeTopNavBar(
+          onNotificationTap: () {
+            context.push('/notifications');
+          },
+          onConnectionsTap: () {
+            context.push('/connections');
+          },
+        ),
+      ),
       // IndexedStack is preferred over the simple list index to
       // preserve the state (like scroll position) of your pages.
       body: IndexedStack(index: _currentIndex, children: _pages),
       // Integrating your CustomNavBar widget from the core layer.
-      bottomNavigationBar: CustomNavBar(onTabChange: _onTabChanged),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+          BottomNavHandler.onTabTapped(context, index);
+        },
+      ),
     );
   }
 }

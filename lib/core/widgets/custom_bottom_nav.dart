@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class CustomBottomNav extends StatelessWidget {
+class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  const CustomBottomNav({
+  const CustomBottomNavBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
@@ -12,76 +12,83 @@ class CustomBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // margin and decoration create the rounded "floating" footer look
-      margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-      height: 85,
-      decoration: BoxDecoration(
-        color: const Color(0xFF8D8D8D), // The specific grey base color
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.black26),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 24.0),
+      child: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E2130),
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildItem(0, Icons.home_rounded, 'Home'),
+            _buildItem(1, Icons.chat_bubble_outline_rounded, 'Chat'),
+            _buildCenterButton(2),
+            _buildItem(3, Icons.cloud_done_outlined, 'Saved'),
+            _buildItem(4, Icons.person_outline_rounded, 'Profile'),
+          ],
+        ),
       ),
-      child: Row(
+    );
+  }
+
+  Widget _buildItem(int index, IconData icon, String label) {
+    final bool isSelected = currentIndex == index;
+    return GestureDetector(
+      onTap: () => onTap(index),
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          _buildGridItem(Icons.home_outlined, "Home", 0),
-          _buildGridItem(Icons.chat_bubble_outline, "Chat", 1),
-          
-          // The prominent black center button
-          Expanded(
-            child: Center(
-              child: Container(
-                height: 55,
-                width: 55,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: const Icon(Icons.add, color: Colors.white, size: 30),
-              ),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? Colors.white.withOpacity(0.1)
+                  : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              size: 26,
+              color: isSelected ? Colors.white : Colors.white.withOpacity(0.5),
             ),
           ),
-          
-          _buildGridItem(Icons.cloud_download_outlined, "Saved", 3),
-          _buildGridItem(Icons.person_outline, "Profile", 4),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              color: isSelected ? Colors.white : Colors.white.withOpacity(0.5),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildGridItem(IconData icon, String label, int index) {
-    bool isActive = currentIndex == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => onTap(index),
-        child: Container(
-          // Vertical lines to create the grid effect from the image
-          decoration: const BoxDecoration(
-            border: Border(
-              right: BorderSide(color: Colors.black12, width: 0.5),
-              left: BorderSide(color: Colors.black12, width: 0.5),
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: isActive ? Colors.black : Colors.black87,
-                size: 28,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  color: isActive ? Colors.black : Colors.black87,
-                  fontSize: 11,
-                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                  fontFamily: 'Times New Roman', // Consistent academic style
-                ),
-              ),
-            ],
-          ),
+  Widget _buildCenterButton(int index) {
+    return GestureDetector(
+      onTap: () => onTap(index),
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(15),
         ),
+        child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }

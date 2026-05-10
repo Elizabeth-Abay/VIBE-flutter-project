@@ -17,6 +17,7 @@ import '../../features/auth/presentation/screens/verification_screen.dart';
 import '../../features/connections/presentation/screens/connected_screen.dart';
 import '../../features/connections/presentation/screens/main_navigation.dart';
 import '../../features/connections/presentation/screens/sent_request.dart';
+import '../../features/posts/presentation/screens/create_post.dart';
 import '../../features/notification/presentation/screens/notification_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -109,6 +110,10 @@ class AppRouter {
                         const NotificationScreen(activeTab: 'requests'),
                   ),
                 ],
+              ),
+              GoRoute(
+                path: '/post',
+                builder: (context, state) => const CreatePostPage(),
               ),
 
               // 2. Connections Feature
