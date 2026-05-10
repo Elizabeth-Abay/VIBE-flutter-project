@@ -112,9 +112,6 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF050517),
-      // --- Shared Top Nav ---
-      appBar: _buildAppBar(),
-
       body: Column(
         children: [
           const SizedBox(height: 10),
@@ -156,18 +153,4 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
           );
   }
 
-  // Extracted UI methods for clean code
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: const Icon(Icons.vibration, color: Colors.purple),
-      actions: const [
-        Icon(Icons.notifications_none),
-        SizedBox(width: 10),
-        CircleAvatar(radius: 14, backgroundColor: Colors.blueGrey),
-        SizedBox(width: 16),
-      ],
-    );
   }
-}

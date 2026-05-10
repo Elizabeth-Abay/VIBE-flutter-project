@@ -28,17 +28,6 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70), 
-        child: VibeTopNavBar(
-          onNotificationTap: () {
-            context.push('/notifications');
-          },
-          onConnectionsTap: () {
-            context.push('/connections');
-          },
-        ),
-      ),
       // IndexedStack is preferred over the simple list index to
       // preserve the state (like scroll position) of your pages.
       body: IndexedStack(index: _currentIndex, children: _pages),
