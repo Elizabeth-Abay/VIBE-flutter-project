@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 
-
+class ChatListScreen extends StatelessWidget {
+  const ChatListScreen({super.key});
 
   final List<Map<String, String>> users = const [
     {'name': 'Leul Kebede', 'avatar': 'https://i.pravatar.cc/150?u=leul'},
