@@ -85,6 +85,31 @@ class AppRouter {
             ],
           ),
           GoRoute(
+            path: '/connected',
+            builder: (context, state) =>
+                const ConnectionsMainLayout(),
+            routes: [
+              GoRoute(
+                path: 'sent', // This makes the URL /connections/sent
+                builder: (context, state) =>
+                    const ConnectionsMainLayout(),
+              ),
+            ],
+          ),
+
+          GoRoute(
+            path: '/notifications',
+            builder: (context, state) =>
+                const NotificationScreen(activeTab: 'updates'),
+            routes: [
+              GoRoute(
+                path: 'requests', // Full path: /notifications/requests
+                builder: (context, state) =>
+                    const NotificationScreen(activeTab: 'requests'),
+              ),
+            ],
+          ),
+          GoRoute(
             path: '/welcome1',
             builder: (context, state) => const Welcome1Screen(),
           ),
@@ -136,32 +161,7 @@ class AppRouter {
                 builder: (context, state) => const DeleteAccountScreen(),
               ),
 
-              GoRoute(
-                path: '/notifications',
-                builder: (context, state) =>
-                    const NotificationScreen(activeTab: 'updates'),
-                routes: [
-                  GoRoute(
-                    path: 'requests', // Full path: /notifications/requests
-                    builder: (context, state) =>
-                        const NotificationScreen(activeTab: 'requests'),
-                  ),
-                ],
-              ),
-
               // 2. Connections Feature
-              // GoRoute(
-              //   path: '/connections',
-              //   builder: (context, state) =>
-              //       const ConnectionsScreen(initialTab: 'connected'),
-              //   routes: [
-              //     GoRoute(
-              //       path: 'sent', // This makes the URL /connections/sent
-              //       builder: (context, state) =>
-              //           const ConnectionsScreen(initialTab: 'sent'),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         ],

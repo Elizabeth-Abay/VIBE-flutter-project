@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/top_navigation_bar.dart';
 
 class MainLayout extends StatelessWidget {
   final Widget child;
@@ -26,21 +27,12 @@ class MainLayout extends StatelessWidget {
   }
 
   PreferredSizeWidget _buildHeader(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      titleSpacing: 16,
-      title: Image.asset(
-        'assets/images/logo.png',
-        height: 38,
-        fit: BoxFit.contain,
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(70),
+      child: VibeTopNavBar(
+        onNotificationTap: () => context.go('/notifications'),
+        onConnectionsTap: () => context.go('/connected'),
       ),
-      actions: const [
-        Icon(Icons.notifications, color: Color(0xFFFFD700), size: 24),
-        SizedBox(width: 14),
-        Icon(Icons.person, color: Color(0xFF63ABFF), size: 24),
-        SizedBox(width: 16),
-      ],
     );
   }
 

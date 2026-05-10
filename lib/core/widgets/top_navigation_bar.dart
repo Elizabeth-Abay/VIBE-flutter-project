@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class VibeTopNavBar extends StatelessWidget {
   /// The local path to your 'Vibe' logo in assets.
-  final String logoAssetPath = 'assets/images/vybe_logo.png';
+  final String logoAssetPath = 'assets/images/vibe_logo.png';
   
   /// Callback triggered when the notification bell is tapped.
   final VoidCallback onNotificationTap;
