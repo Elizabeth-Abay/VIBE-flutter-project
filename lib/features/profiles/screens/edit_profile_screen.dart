@@ -104,28 +104,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               // --- THE INTERACTIVE VIBE SELECTOR ---
 
               Container(
+                height: 300, // Fixed height for scrollable area
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.white24),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "What's your vibe?",
-                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    const Text(
-                      "Tell us how you feel about each interest.",
-                      style: TextStyle(color: Colors.white54, fontSize: 12),
-                    ),
-                    const SizedBox(height: 20),
-                    // We pass the current selection for this interest
-                    _buildVibeCard(Icons.music_note, "Music"),
-                    const SizedBox(height: 15),
-                    _buildVibeCard(Icons.sports_soccer, "Football"),
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "What's your vibe?",
+                        style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const Text(
+                        "Tell us how you feel about each interest.",
+                        style: TextStyle(color: Colors.white54, fontSize: 12),
+                      ),
+                      const SizedBox(height: 20),
+                      // We pass current selection for this interest
+                      _buildVibeCard(Icons.music_note, "Music"),
+                      const SizedBox(height: 15),
+                      _buildVibeCard(Icons.sports_soccer, "Football"),
+                      const SizedBox(height: 15),
+                      _buildVibeCard(Icons.fastfood, "Food"),
+                      const SizedBox(height: 15),
+                      _buildVibeCard(Icons.explore, "Travel"),
+                      const SizedBox(height: 15),
+                      _buildVibeCard(Icons.menu_book, "Books"),
+                      const SizedBox(height: 15),
+                      _buildVibeCard(Icons.videogame_asset, "Games"),
+                    ],
+                  ),
                 ),
               ),
 

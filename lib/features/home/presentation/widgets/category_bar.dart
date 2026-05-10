@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/post_categories.dart'; // Your constants file             // Your provider
+import '../../../../core/constants/post_categories.dart'; // Your constants file
 import 'category_pill.dart';                          // Your pill widget
 
-class CategoryBar extends StatelessWidget {
+class CategoryBar extends StatefulWidget {
   const CategoryBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // We watch the provider to see which category the user clicks
-    // final homeProvider = context.watch<HomeProvider>();
+  State<CategoryBar> createState() => _CategoryBarState();
+}
 
+class _CategoryBarState extends State<CategoryBar> {
+  String? selectedCategory;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 60, // Fixed height for the bar
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -24,12 +28,16 @@ class CategoryBar extends StatelessWidget {
           return CategoryPill(
             label: category.name,
             icon: category.icon,
-            // Check if this pill matches the selected state in the provider
-            // isSelected: homeProvider.selectedCategory == category.name,
+            isSelected: selectedCategory == category.name,
             onTap: () {
-              // 1. Update the UI selection
-              // 2. Trigger the Node.js backend request
-              // homeProvider.selectCategory(category.name);
+              setState(() {
+                selectedCategory = category.name;
+              });
+              // Here you can add additional functionality like:
+              // - Filter posts by category
+              // - Navigate to category-specific page
+              // - Make API call to get posts for this category
+              print('Selected category: ${category.name}');
             },
           );
         },

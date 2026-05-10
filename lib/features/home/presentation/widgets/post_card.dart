@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/utils/image_optimizer.dart';
 
 class SocialPostWidget extends StatelessWidget {
   final String title;
@@ -18,6 +19,13 @@ class SocialPostWidget extends StatelessWidget {
     this.userProfileImageUrl,
   });
 
+  /// Gets optimized image URL for faster loading
+  String get optimizedImageUrl => ImageOptimizer.getOptimizedUrl(imageUrl);
+  
+  /// Gets optimized profile image URL
+  String? get optimizedProfileImageUrl => 
+      userProfileImageUrl != null ? ImageOptimizer.getOptimizedUrl(userProfileImageUrl!) : null;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,6 +36,7 @@ class SocialPostWidget extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           // 1. Header Title
           Center(
@@ -43,13 +52,51 @@ class SocialPostWidget extends StatelessWidget {
           const SizedBox(height: 16),
 
           // 2. Post Image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              imageUrl,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
+          Container(
+            height: 200,
+            width: double.infinity,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                optimizedImageUrl,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.image_not_supported,
+                      color: Colors.white54,
+                      size: 40,
+                    ),
+                  ),
+                );
+              },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[900],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white54,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                );
+              },
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -96,8 +143,8 @@ class SocialPostWidget extends StatelessWidget {
               CircleAvatar(
                 radius: 14,
                 backgroundColor: Colors.white12,
-                backgroundImage: userProfileImageUrl != null
-                    ? NetworkImage(userProfileImageUrl!)
+                backgroundImage: optimizedProfileImageUrl != null
+                    ? NetworkImage(optimizedProfileImageUrl!)
                     : null,
               ),
               const SizedBox(width: 12),

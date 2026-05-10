@@ -1,26 +1,27 @@
 import '../../domain/entity/post_fetch_obj.dart';
 import 'package:flutter/material.dart';
 import '../widgets/post_card.dart';
+import '../../../../core/utils/image_optimizer.dart';
 
 
 final List<PostFetchObj> mockPosts = [
   PostFetchObj(
     title: 'Enjoying an outdoor concert',
-    imageUrl: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4',
+    imageUrl: ImageOptimizer.getOptimizedUrl('https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'),
     description: 'The energy at this concert is amazing!',
     tags: ['Music', 'Concert'],
     userName: 'Emily Davis',
   ),
   PostFetchObj(
     title: 'At a tech meet-up',
-    imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87',
+    imageUrl: ImageOptimizer.getOptimizedUrl('https://images.unsplash.com/photo-1540575467063-178a50c2df87'),
     description: 'Great insights during the meeting!',
     tags: ['Tech', 'Networking'],
     userName: 'James Brown',
   ),
   PostFetchObj(
     title: 'Morning Hike',
-    imageUrl: 'https://images.unsplash.com/photo-1551632432-c7360b7f0187',
+    imageUrl: ImageOptimizer.getOptimizedUrl('https://images.unsplash.com/photo-1551632432-c7360b7f0187'),
     description: 'Breathtaking views from the top.',
     tags: ['Nature', 'Hike'],
     userName: 'Sarah Lee',
