@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/vibe_theme.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class SavedMessagesScreen extends StatelessWidget {
   const SavedMessagesScreen({super.key});

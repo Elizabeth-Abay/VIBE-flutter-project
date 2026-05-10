@@ -1,7 +1,7 @@
 // lib/features/chat/presentation/screens/chat_list_screen.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/vibe_theme.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
