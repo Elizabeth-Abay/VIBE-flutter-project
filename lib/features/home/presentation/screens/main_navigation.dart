@@ -42,14 +42,6 @@ class _MainNavigationState extends State<MainNavigation> {
       // IndexedStack is preferred over the simple list index to
       // preserve the state (like scroll position) of your pages.
       body: IndexedStack(index: _currentIndex, children: _pages),
-      // Integrating your CustomNavBar widget from the core layer.
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() => _currentIndex = index);
-          BottomNavHandler.onTabTapped(context, index);
-        },
-      ),
-    );
+          );
   }
 }

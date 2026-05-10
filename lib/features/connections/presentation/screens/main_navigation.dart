@@ -153,15 +153,7 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
 
 
 
-      // --- Shared Bottom Nav ---
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() => _currentIndex = index);
-          BottomNavHandler.onTabTapped(context, index);
-        },
-      ),
-    );
+          );
   }
 
   // Extracted UI methods for clean code
