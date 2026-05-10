@@ -43,8 +43,6 @@ class HorizontalPostFeed extends StatelessWidget {
           final post = mockPosts[index];
           
           return Container(
-            // Reduced width from 320 to 260 so the next card is partially visible
-            width: 260, 
             margin: const EdgeInsets.only(right: 12),
             child: SocialPostWidget(
               title: post.title,

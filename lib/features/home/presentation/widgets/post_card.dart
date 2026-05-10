@@ -19,141 +19,144 @@ class SocialPostWidget extends StatelessWidget {
     this.userProfileImageUrl,
   });
 
-  /// Gets optimized image URL for faster loading
-  String get optimizedImageUrl => ImageOptimizer.getOptimizedUrl(imageUrl);
-  
-  /// Gets optimized profile image URL
-  String? get optimizedProfileImageUrl => 
-      userProfileImageUrl != null ? ImageOptimizer.getOptimizedUrl(userProfileImageUrl!) : null;
+  /// Optimized Image URL for the main post
+  String get optimizedImageUrl =>
+      ImageOptimizer.getOptimizedUrl(imageUrl, width: 400, height: 225);
+
+  /// Optimized Profile URL
+  String? get optimizedProfileImageUrl => userProfileImageUrl != null
+      ? ImageOptimizer.getOptimizedUrl(
+          userProfileImageUrl!,
+          width: 100,
+          height: 100,
+        )
+      : null;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16.0 , 16.0 , 16.0 , 4.0),
+      constraints: const BoxConstraints(maxWidth: 260),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1B2A), // Dark navy background
-        borderRadius: BorderRadius.circular(12),
+        color: const Color(
+          0xFF161A33,
+        ), // Updated to match your Figma navy cards
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           // 1. Header Title
-          Center(
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          // 2. Post Image
-          Container(
-            height: 200,
-            width: double.infinity,
+          // 2. Post Image (Using AspectRatio to prevent overflows)
+          AspectRatio(
+            aspectRatio: 16 / 9,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
               child: Image.network(
                 optimizedImageUrl,
-                height: 200,
-                width: double.infinity,
                 fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[800],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.image_not_supported,
-                      color: Colors.white54,
-                      size: 40,
+                cacheWidth: 400, // Vital for memory performance
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: Colors.white10,
+                  child: const Icon(Icons.broken_image, color: Colors.white24),
+                ),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    color: Colors.white10,
+                    child: const Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
                     ),
-                  ),
-                );
-              },
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[900],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white54,
-                      strokeWidth: 2,
-                    ),
-                  ),
-                );
-              },
+                  );
+                },
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
           // 3. Description
           Text(
             description,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: 13,
+              height: 1.4,
             ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          // 4. Scrollable Tags List
+          // 4. Tags List
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: tags.map((tag) {
                 return Container(
-                  margin: const EdgeInsets.only(right: 8),
+                  margin: const EdgeInsets.only(right: 6),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                    horizontal: 8,
+                    vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white10,
-                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.blueAccent.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     tag,
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                    style: const TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 );
               }).toList(),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
 
           // 5. User Profile Row
           Row(
             children: [
               CircleAvatar(
-                radius: 14,
-                backgroundColor: Colors.white12,
+                radius: 12,
+                backgroundColor: Colors.white10,
                 backgroundImage: optimizedProfileImageUrl != null
                     ? NetworkImage(optimizedProfileImageUrl!)
                     : null,
+                child: optimizedProfileImageUrl == null
+                    ? const Icon(Icons.person, size: 14, color: Colors.white24)
+                    : null,
               ),
-              const SizedBox(width: 12),
-              Text(
-                userName,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  userName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
