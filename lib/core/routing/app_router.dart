@@ -1,6 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
+import '../../features/onboarding/screens/welcome1_screen.dart';
+import '../../features/onboarding/screens/welcome2_screen.dart';
+import '../../features/onboarding/screens/welcome3_screen.dart';
+import '../../features/onboarding/screens/welcome4_screen.dart';
 import '../../features/profiles/screens/profile_view_screen.dart';
 import '../../features/profiles/screens/delete_account_screen.dart';
 import '../../features/profiles/screens/edit_profile_screen.dart';
@@ -114,6 +118,26 @@ class AppRouter {
               GoRoute(
                 path: '/post',
                 builder: (context, state) => const CreatePostPage(),
+              ),
+
+              GoRoute(
+                path: '/welcome1',
+                builder: (context, state) => const Welcome1Screen(),
+              ),
+
+              GoRoute(
+                path: '/welcome2',
+                builder: (context, state) => const Welcome2Screen(),
+              ),
+
+              GoRoute(
+                path: '/welcome3',
+                builder: (context, state) => const Welcome3Screen(),
+              ),
+
+              GoRoute(
+                path: '/welcome4',
+                builder: (context, state) => const Welcome4Screen(),
               ),
 
               // 2. Connections Feature
