@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+
+void main() => runApp(StartScreen());
+
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
 

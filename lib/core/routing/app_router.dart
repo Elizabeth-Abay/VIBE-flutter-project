@@ -112,18 +112,18 @@ class AppRouter {
               ),
 
               // 2. Connections Feature
-              GoRoute(
-                path: '/connections',
-                builder: (context, state) =>
-                    const ConnectionsScreen(initialTab: 'connected'),
-                routes: [
-                  GoRoute(
-                    path: 'sent', // This makes the URL /connections/sent
-                    builder: (context, state) =>
-                        const ConnectionsScreen(initialTab: 'sent'),
-                  ),
-                ],
-              ),
+              // GoRoute(
+              //   path: '/connections',
+              //   builder: (context, state) =>
+              //       const ConnectionsScreen(initialTab: 'connected'),
+              //   routes: [
+              //     GoRoute(
+              //       path: 'sent', // This makes the URL /connections/sent
+              //       builder: (context, state) =>
+              //           const ConnectionsScreen(initialTab: 'sent'),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ],
