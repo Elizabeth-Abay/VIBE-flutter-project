@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class VibeTopNavBar extends StatelessWidget {
   /// The local path to your 'Vibe' logo in assets.
-  final String logoAssetPath = 'assets/images/vibe_logo.png';
+  final String logoAssetPath = 'assets/images/image.png';
   
   /// Callback triggered when the notification bell is tapped.
   final VoidCallback onNotificationTap;
@@ -20,9 +20,9 @@ class VibeTopNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     // Top bar height matches typical screen patterns (e.g., 60-70px).
     return Container(
-      height: 70,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      color: const Color(0xFF1E2130), // Match the dark Navy background from image_0.png
+      height: 500,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      color: const Color.fromARGB(255, 10, 11, 16), // Match the dark Navy background from image_0.png
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,

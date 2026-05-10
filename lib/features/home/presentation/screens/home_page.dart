@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
 
           // Wrap this in a SizedBox to control the height of the posts
           const SizedBox(
-            height: 250, // Adjust this number to make posts smaller/larger
+            height: 340, // Adjust this number to make posts smaller/larger
             child: HorizontalPostFeed(),
           ),
 
