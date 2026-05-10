@@ -13,26 +13,6 @@ class ProfileViewScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E21),
       extendBody: true, // Allows the body to flow behind the floating nav bar
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        // Expanded width to allow the Vibe logo to be significantly larger
-        leadingWidth: 500,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20, top: 12),
-          child: Image.asset(
-            'assets/images/image.png',
-            fit: BoxFit.contain,
-            alignment: Alignment.centerLeft,
-          ),
-        ),
-        actions: const [
-          Icon(Icons.notifications, color: Colors.orangeAccent, size: 28),
-          SizedBox(width: 15),
-          Icon(Icons.person, color: Colors.blue, size: 28),
-          SizedBox(width: 20),
-        ],
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -123,15 +103,6 @@ class ProfileViewScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: activeIndex, // Highlight the profile icon
-        onTap: (index) {
-          // Simply delegate the navigation to your global handler.
-          // The handler will use context.go() or context.push(),
-          // which will load the new screen with its own highlighted index.
-          BottomNavHandler.onTabTapped(context, index);
-        },
       ),
     );
   }

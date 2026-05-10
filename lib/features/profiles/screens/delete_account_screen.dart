@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/widgets/custom_bottom_nav.dart';
 import '../../../core/utils/bottom_nav_handler.dart'; 
 
 class DeleteAccountScreen extends StatelessWidget {
@@ -12,21 +11,21 @@ class DeleteAccountScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E21),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leadingWidth: 200,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20, top: 10),
-          child: Image.asset('assets/images/image.png', fit: BoxFit.contain),
-        ),
-        actions: const [
-          Icon(Icons.notifications, color: Colors.orangeAccent),
-          SizedBox(width: 15),
-          Icon(Icons.person, color: Colors.blue),
-          SizedBox(width: 20),
-        ],
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   leadingWidth: 200,
+      //   leading: Padding(
+      //     padding: const EdgeInsets.only(left: 20, top: 10),
+      //     child: Image.asset('assets/images/image.png', fit: BoxFit.contain),
+      //   ),
+      //   actions: const [
+      //     Icon(Icons.notifications, color: Colors.orangeAccent),
+      //     SizedBox(width: 15),
+      //     Icon(Icons.person, color: Colors.blue),
+      //     SizedBox(width: 20),
+      //   ],
+      // ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Column(
@@ -78,15 +77,15 @@ class DeleteAccountScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: activeIndex, // Highlight the profile icon
-        onTap: (index) {
-          // Simply delegate the navigation to your global handler.
-          // The handler will use context.go() or context.push(),
-          // which will load the new screen with its own highlighted index.
-          BottomNavHandler.onTabTapped(context, index);
-        },
-      ),
+      // bottomNavigationBar: CustomBottomNavBar(
+      //   currentIndex: activeIndex, // Highlight the profile icon
+      //   onTap: (index) {
+      //     // Simply delegate the navigation to your global handler.
+      //     // The handler will use context.go() or context.push(),
+      //     // which will load the new screen with its own highlighted index.
+      //     BottomNavHandler.onTabTapped(context, index);
+      //   },
+      // ),
     );
   }
 }
