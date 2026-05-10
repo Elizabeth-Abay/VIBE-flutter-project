@@ -83,7 +83,7 @@ class InterestSelectionScreen extends StatelessWidget {
               // Submit Button
               Center(
                 child: GestureDetector(
-                  onTap: () => context.go('/profile'), // Navigate to profile after selection
+                  onTap: () => context.go('/home'),
                   child: Container(
                     width: 220,
                     height: 65,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/action_button.dart';
+import 'package:go_router/go_router.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -34,7 +35,7 @@ class SignUpScreen extends StatelessWidget {
               errorText: "password must have at least 8 characters",
             ),
             const SizedBox(height: 40),
-            ActionButton(text: "Create Account", onPressed: () {}),
+            ActionButton(text: "Create Account", onPressed: () {context.go('/interest-selection');}),
           ],
         ),
       ),

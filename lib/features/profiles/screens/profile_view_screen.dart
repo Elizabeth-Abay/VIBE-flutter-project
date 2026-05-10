@@ -109,13 +109,13 @@ class ProfileViewScreen extends StatelessWidget {
               _actionButton(
                 text: "Edit Profile",
                 isGradient: true,
-                onTap: () => context.push('/edit-profile'),
+                onTap: () => context.go('/profile/edit'),
               ),
               const SizedBox(height: 16),
               _actionButton(
                 text: "Delete Account",
                 isGradient: false,
-                onTap: () => context.push('/delete-account'),
+                onTap: () => context.go('/profile/delete'),
               ),
               const SizedBox(
                 height: 120,

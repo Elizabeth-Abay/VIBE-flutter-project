@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Welcome4Screen extends StatelessWidget {
   const Welcome4Screen({super.key});
@@ -49,7 +50,7 @@ class Welcome4Screen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // TODO: navigate to home/login
+                  context.go('/login-email');
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 15),

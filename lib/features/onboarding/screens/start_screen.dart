@@ -3,27 +3,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/routing/app_router.dart';
 
 
-void main() => runApp(const VibeApp());
-
-
-class VibeApp extends StatelessWidget {
-  const VibeApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // We define the router here so context.push() works correctly
-
-    return MaterialApp.router(
-      title: 'Vibe',
-      debugShowCheckedModeBanner: false,
-      routerConfig: AppRouter.router,
-      theme: ThemeData(
-        brightness: Brightness.dark, // Matches your dark purple UI
-        useMaterial3: true,
-      ),
-    );
-  }
-}
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});

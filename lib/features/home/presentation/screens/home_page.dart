@@ -13,24 +13,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      // No Scaffold here! MainNavigation provides it.
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16), // Padding below the AppBar
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 16),
+          const CategoryBar(),
+          const SizedBox(height: 24),
 
-        const CategoryBar(),
+          // Wrap this in a SizedBox to control the height of the posts
+          const SizedBox(
+            height: 250, // Adjust this number to make posts smaller/larger
+            child: HorizontalPostFeed(),
+          ),
 
-        const SizedBox(height: 24),
+          const SizedBox(height: 24),
+          
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0)
+          ),
 
-        const HorizontalPostFeed(),
-
-        const SizedBox(height: 24),
-
-        // This Expanded will now work perfectly because
-        // MainNavigation provides the bounded height.
-        const Expanded(child: RecommendedConnectionsList()),
-      ],
+    
+          const SizedBox(
+            height: 300, // Give the recommended list a defined area
+            child: RecommendedConnectionsList(),
+          ),
+        ],
+      ),
     );
   }
 }
