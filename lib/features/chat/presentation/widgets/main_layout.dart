@@ -13,10 +13,10 @@ class MainLayout extends StatelessWidget {
     final location = GoRouterState.of(context).uri.toString();
     
     // Screens that handle their own custom headers
-    final bool hideGlobalHeader = location.startsWith('/saved') || location.startsWith('/blocked') || (location.startsWith('/chat') && location.split('/').length > 2);
+    final bool hideGlobalHeader = location.startsWith('/saved') || location.startsWith('/blocked') || (location.startsWith('/chat') && location.split('/').length > 2) || location.startsWith('/welcome');
     
-    // Hide bottom nav on Chat Detail
-    final bool hideBottomNav = (location.startsWith('/chat') && location.split('/').length > 2);
+    // Hide bottom nav on Chat Detail and Welcome screens
+    final bool hideBottomNav = (location.startsWith('/chat') && location.split('/').length > 2) || location.startsWith('/welcome');
 
     return Scaffold(
       backgroundColor: VibeColors.background,
