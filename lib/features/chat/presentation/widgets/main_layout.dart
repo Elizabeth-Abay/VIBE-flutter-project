@@ -56,7 +56,7 @@ class MainLayout extends StatelessWidget {
         children: [
           Expanded(child: _navItem(context, Icons.home_outlined, 'Home', location == '/home', '/home')),
           Expanded(child: _navItem(context, Icons.chat_bubble_outline, 'Chat', location == '/chat', '/chat')),
-          Expanded(child: Center(child: _plusButton())),
+          Expanded(child: Center(child: _plusButton(context))),
           Expanded(child: _navItem(context, location == '/saved' ? Icons.check : Icons.cloud_outlined, 'Saved', location == '/saved', '/saved')),
           Expanded(child: _navItem(context, Icons.person_outline, 'Profile', location == '/profile', '/profile')),
         ],
@@ -93,15 +93,18 @@ class MainLayout extends StatelessWidget {
     );
   }
 
-  Widget _plusButton() {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(12),
+  Widget _plusButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.go('/post'),
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
-      child: const Icon(Icons.add, color: Colors.white, size: 28),
     );
   }
 }
