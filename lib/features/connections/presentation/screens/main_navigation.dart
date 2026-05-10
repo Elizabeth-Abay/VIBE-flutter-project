@@ -4,6 +4,7 @@ import './connected_screen.dart';
 import './sent_request.dart';
 import '../../domain/entity/sent_request_user.dart';
 import '../../domain/entity/connected_user.dart';
+import '../../../../core/constants/bottom_nav_bar.dart';
 
 class ConnectionsMainLayout extends StatefulWidget {
   const ConnectionsMainLayout({super.key});

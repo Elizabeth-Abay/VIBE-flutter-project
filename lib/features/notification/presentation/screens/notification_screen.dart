@@ -1,42 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/notification_card.dart';
 import '../widgets/request_card.dart';
 
-class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({super.key});
+class NotificationScreen extends StatelessWidget {
+  final String activeTab; // 'updates' or 'requests'
 
-  @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
-}
-
-class _NotificationScreenState extends State<NotificationScreen> {
-  bool isUpdates = true;
+  const NotificationScreen({super.key, this.activeTab = 'updates'});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D1333),
-
       body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: 20),
-
             const Text(
               "Notifications",
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-
             const SizedBox(height: 20),
-
-            Expanded(child: isUpdates ? buildUpdates() : buildRequests()),
+            // The toggle widget would go here
+            _buildToggle(context),
+            const SizedBox(height: 20),
+            Expanded(
+              child: activeTab == 'updates'
+                  ? _buildUpdates()
+                  : _buildRequests(),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget buildUpdates() {
+  Widget _buildToggle(BuildContext context) {
+    // You can use GoRouter to switch tabs here
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          onPressed: () => context.go('/notifications'),
+          child: Text(
+            "Updates",
+            style: TextStyle(
+              color: activeTab == 'updates' ? Colors.purple : Colors.grey,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () => context.go('/notifications/requests'),
+          child: Text(
+            "Requests",
+            style: TextStyle(
+              color: activeTab == 'requests' ? Colors.purple : Colors.grey,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUpdates() {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: const [
@@ -46,7 +72,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     );
   }
 
-  Widget buildRequests() {
+  Widget _buildRequests() {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: const [
