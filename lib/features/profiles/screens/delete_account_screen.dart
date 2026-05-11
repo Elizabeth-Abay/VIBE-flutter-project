@@ -11,6 +11,21 @@ class DeleteAccountScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E21),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   leadingWidth: 200,
+      //   leading: Padding(
+      //     padding: const EdgeInsets.only(left: 20, top: 10),
+      //     child: Image.asset('assets/images/image.png', fit: BoxFit.contain),
+      //   ),
+      //   actions: const [
+      //     Icon(Icons.notifications, color: Colors.orangeAccent),
+      //     SizedBox(width: 15),
+      //     Icon(Icons.person, color: Colors.blue),
+      //     SizedBox(width: 20),
+      //   ],
+      // ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Column(
