@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class InterestSelectionScreen extends StatelessWidget {
+class InterestSelectionScreen extends StatefulWidget {
   const InterestSelectionScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // List of interests based on your provided image
-    final List<Map<String, dynamic>> interests = [
-      {'icon': Icons.music_note, 'title': 'Music'},
-      {'icon': Icons.sports_soccer, 'title': 'Football'},
-      {'icon': Icons.airplanemode_active, 'title': 'Travel'},
-      {'icon': Icons.extension, 'title': 'Chess'},
-      {'icon': Icons.emoji_events, 'title': 'Hackathons'},
-      {'icon': Icons.restaurant, 'title': 'Food-contents'},
-    ];
+  State<InterestSelectionScreen> createState() => _InterestSelectionScreenState();
+}
 
+class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
+  // Store the selected vibe for each interest
+  // Key: Interest Title, Value: Selected Label (Love, Like, etc.)
+  final Map<String, String> selectedVibes = {};
+
+  final List<Map<String, dynamic>> interests = [
+    {'icon': Icons.music_note, 'title': 'Music'},
+    {'icon': Icons.sports_soccer, 'title': 'Football'},
+    {'icon': Icons.airplanemode_active, 'title': 'Travel'},
+    {'icon': Icons.extension, 'title': 'Chess'},
+    {'icon': Icons.emoji_events, 'title': 'Hackathons'},
+    {'icon': Icons.restaurant, 'title': 'Food-contents'},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E21),
       body: SafeArea(
@@ -25,7 +33,6 @@ class InterestSelectionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              // Main Heading in Times New Roman
               const Text(
                 "Interest Selection",
                 style: TextStyle(
@@ -36,12 +43,11 @@ class InterestSelectionScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              // Vibe Selection Container
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                    border: Border.all(color: Colors.white.withOpacity(0.3)),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
@@ -58,7 +64,7 @@ class InterestSelectionScreen extends StatelessWidget {
                       Text(
                         "Tell us how you feel about each interest.",
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.5),
+                          color: Colors.white.withOpacity(0.5),
                           fontSize: 14,
                         ),
                       ),
@@ -68,9 +74,11 @@ class InterestSelectionScreen extends StatelessWidget {
                           itemCount: interests.length,
                           separatorBuilder: (context, index) => const SizedBox(height: 15),
                           itemBuilder: (context, index) {
+                            String title = interests[index]['title'];
                             return _buildVibeCard(
                               interests[index]['icon'],
-                              interests[index]['title'],
+                              title,
+                              selectedVibes[title] ?? "", // Pass the current selection
                             );
                           },
                         ),
@@ -98,11 +106,7 @@ class InterestSelectionScreen extends StatelessWidget {
                     child: const Center(
                       child: Text(
                         "Submit",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -116,11 +120,11 @@ class InterestSelectionScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildVibeCard(IconData icon, String title) {
+  Widget _buildVibeCard(IconData icon, String title, String currentSelection) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
+        color: Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -130,38 +134,51 @@ class InterestSelectionScreen extends StatelessWidget {
             children: [
               Icon(icon, color: Colors.white, size: 28),
               const SizedBox(width: 15),
-              Text(
-                title,
-                style: const TextStyle(color: Colors.white, fontSize: 16),
-              ),
+              Text(title, style: const TextStyle(color: Colors.white, fontSize: 16)),
             ],
           ),
           const SizedBox(height: 12),
-          // Sentiment Selector Buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: ["Love", "Like", "Neutral", "Bothered", "Hate"]
-                .map((vibe) => _vibeButton(vibe))
-                .toList(),
+            children: ["Love", "Like", "Neutral", "Bothered", "Hate"].map((label) {
+              return _vibeButton(
+                label,
+                isSelected: currentSelection == label,
+                onTap: () {
+                  setState(() {
+                    selectedVibes[title] = label; // Update the state
+                  });
+                },
+              );
+            }).toList(),
           )
         ],
       ),
     );
   }
 
-  Widget _vibeButton(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1F3D),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: Colors.white.withValues(alpha: 0.5),
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
+  Widget _vibeButton(String label, {required bool isSelected, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          // Change color based on selection
+          color: isSelected ? const Color(0xFF448AFF) : const Color(0xFF1A1F3D),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? Colors.white : Colors.transparent,
+            width: 1,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.white.withOpacity(0.5),
+            fontSize: 10,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+          ),
         ),
       ),
     );
