@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/app_theme.dart';
 
 class BlockedUsersScreen extends StatefulWidget {
   const BlockedUsersScreen({super.key});
@@ -11,9 +10,21 @@ class BlockedUsersScreen extends StatefulWidget {
 
 class _BlockedUsersScreenState extends State<BlockedUsersScreen> {
   final List<Map<String, dynamic>> blocked = [
-    {'name': 'Alex', 'avatar': 'https://i.pravatar.cc/150?u=alex', 'isBlocked': true},
-    {'name': 'John', 'avatar': 'https://i.pravatar.cc/150?u=john', 'isBlocked': true},
-    {'name': 'Anna', 'avatar': 'https://i.pravatar.cc/150?u=anna', 'isBlocked': true},
+    {
+      'name': 'Alex',
+      'avatar': 'https://i.pravatar.cc/150?u=alex',
+      'isBlocked': true
+    },
+    {
+      'name': 'John',
+      'avatar': 'https://i.pravatar.cc/150?u=john',
+      'isBlocked': true
+    },
+    {
+      'name': 'Anna',
+      'avatar': 'https://i.pravatar.cc/150?u=anna',
+      'isBlocked': true
+    },
   ];
 
   @override
@@ -26,13 +37,17 @@ class _BlockedUsersScreenState extends State<BlockedUsersScreen> {
             children: [
               GestureDetector(
                 onTap: () => context.pop(),
-                child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                child: const Icon(Icons.arrow_back_ios_new,
+                    color: Colors.white, size: 20),
               ),
               const Expanded(
                 child: Text(
                   'Blocked Users',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
                 ),
               ),
               const SizedBox(width: 20), // Balance the back button
@@ -60,8 +75,13 @@ class _BlockedUsersScreenState extends State<BlockedUsersScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(user['name']!,
-                              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                          const Text('Blocked User', style: TextStyle(color: Colors.grey, fontSize: 14)),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold)),
+                          const Text('Blocked User',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 14)),
                         ],
                       ),
                     ),
@@ -97,7 +117,8 @@ class _BlockedUsersScreenState extends State<BlockedUsersScreen> {
         ),
         child: Text(
           isBlocked ? 'Unblock' : 'Block',
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
         ),
       ),
     );
@@ -115,8 +136,8 @@ class _BlockedUsersScreenState extends State<BlockedUsersScreen> {
               color: const Color(0xFFC0C0C0).withOpacity(0.3),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Row(
-              children: const [
+            child: const Row(
+              children: [
                 Icon(Icons.search, color: Colors.black, size: 28),
                 SizedBox(width: 12),
                 Expanded(

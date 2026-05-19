@@ -1,29 +1,29 @@
-
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-// Ensure this path matches your project structure
-import 'core/routing/app_router.dart'; 
-import 'features/onboarding/screens/start_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/routing/app_router.dart';
 
 void main() {
-  runApp(const VibeApp());
+  runApp(
+    const ProviderScope(
+      child: VibeApp(),
+    ),
+  );
 }
 
-class VibeApp extends StatelessWidget {
+class VibeApp extends ConsumerWidget {
   const VibeApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Build a router that has access to the auth state via ref.
+    final router = AppRouter.createRouter(ref);
+
     return MaterialApp.router(
       title: 'Vibe',
       debugShowCheckedModeBanner: false,
-      
-      // Links to your central routing logic in the Core layer
-      routerConfig: AppRouter.router, 
-      
+      routerConfig: router,
       theme: ThemeData(
         useMaterial3: true,
-        // Matches the dark, moody aesthetic of your Vibe project
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF1A0B2E),
           brightness: Brightness.dark,

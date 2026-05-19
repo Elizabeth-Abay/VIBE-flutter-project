@@ -4,8 +4,6 @@ import './connected_screen.dart';
 import './sent_request.dart';
 import '../../domain/entity/sent_request_user.dart';
 import '../../domain/entity/connected_user.dart';
-import '../../../../core/widgets/custom_bottom_nav.dart';
-import '../../../../core/utils/bottom_nav_handler.dart';
 
 class ConnectionsMainLayout extends StatefulWidget {
   const ConnectionsMainLayout({super.key});
@@ -15,7 +13,7 @@ class ConnectionsMainLayout extends StatefulWidget {
 }
 
 class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   final List<SentRequestUser> fakeSentRequests = [
     SentRequestUser(
@@ -147,10 +145,6 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
           ),
         ],
       ),
-
-
-
-          );
+    );
   }
-
-  }
+}

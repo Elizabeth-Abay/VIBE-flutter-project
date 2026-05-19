@@ -1,7 +1,6 @@
 // lib/features/chat/presentation/screens/chat_list_screen.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/app_theme.dart';
 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
@@ -12,7 +11,10 @@ class ChatListScreen extends StatelessWidget {
     {'name': 'Selam getu', 'avatar': 'https://i.pravatar.cc/150?u=selam'},
     {'name': 'Marta tegegne', 'avatar': 'https://i.pravatar.cc/150?u=marta'},
     {'name': 'Samuel mola', 'avatar': 'https://i.pravatar.cc/150?u=samuel'},
-    {'name': 'Atenasya weldu', 'avatar': 'https://i.pravatar.cc/150?u=atenasya'},
+    {
+      'name': 'Atenasya weldu',
+      'avatar': 'https://i.pravatar.cc/150?u=atenasya'
+    },
   ];
 
   @override
@@ -42,10 +44,14 @@ class ChatListScreen extends StatelessWidget {
                 Expanded(
                   child: Text(
                     user['name']!,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
-                _iconButton(context, Icons.chat_bubble_outline, Colors.grey, null),
+                _iconButton(
+                    context, Icons.chat_bubble_outline, Colors.grey, null),
                 const SizedBox(width: 12),
                 _iconButton(context, Icons.block, Colors.redAccent, '/blocked'),
               ],
@@ -56,7 +62,8 @@ class ChatListScreen extends StatelessWidget {
     );
   }
 
-  Widget _iconButton(BuildContext context, IconData icon, Color color, String? route) {
+  Widget _iconButton(
+      BuildContext context, IconData icon, Color color, String? route) {
     return GestureDetector(
       onTap: route != null ? () => context.push(route) : null,
       child: Container(

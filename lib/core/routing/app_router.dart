@@ -1,5 +1,6 @@
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../features/onboarding/screens/start_screen.dart';
 import '../../features/onboarding/screens/welcome1_screen.dart';
@@ -25,147 +26,173 @@ import '../../features/connections/presentation/screens/sent_request.dart';
 import '../../features/posts/presentation/screens/create_post.dart';
 import '../../features/notification/presentation/screens/notification_screen.dart';
 import '../../features/home/presentation/screens/main_navigation.dart';
+import '../../features/auth/presentation/providers/auth_notifier.dart';
+import '../../features/auth/domain/entities/auth_state.dart';
+import '../widgets/splash_screen.dart';
+import 'auth_guard.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-final GlobalKey<NavigatorState> _shellNavigatorKey =
-    GlobalKey<NavigatorState>();
+final _rootNavKey = GlobalKey<NavigatorState>();
+final _shellNavKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
-  static final router = GoRouter(
-    initialLocation: '/start-screen',
-    navigatorKey: _rootNavigatorKey,
-    routes: [
-      // --- 1. AUTHENTICATION FLOW (Full Screen) ---
-      GoRoute(
-        path: '/login-email',
-        builder: (context, state) => const EmailEntryScreen(),
-      ),
-      GoRoute(
-        path: '/signin',
-        builder: (context, state) => const SignInScreen(),
-      ),
-      GoRoute(
-        path: '/signup',
-        builder: (context, state) => const SignUpScreen(),
-      ),
-      GoRoute(
-        path: '/verify',
-        builder: (context, state) => const VerificationScreen(),
-      ),
+  /// Creates a GoRouter wired to Riverpod auth state.
+  /// Call this once inside a ConsumerWidget build method.
+  static GoRouter createRouter(WidgetRef ref) {
+    return GoRouter(
+      initialLocation: '/splash',
+      navigatorKey: _rootNavKey,
 
-      // --- 2. MAIN APPLICATION FLOW (Inside ShellRoute with Bottom Nav) ---
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) {
-          return MainLayout(child: child);
-        },
-        routes: [
-          // HOME / FEED FLOW
-          GoRoute(
-            path: '/start-screen',
-            builder: (context, state) => const StartScreen(),
-          ),
-          GoRoute(
-            path: '/interest-selection',
-            builder: (context, state) => const InterestSelectionScreen(),
-          ),
+      // Re-evaluate redirect whenever auth state changes.
+      refreshListenable: _AuthChangeNotifier(ref),
 
-          // CHAT FEATURE FLOW
-          GoRoute(
-            path: '/chat',
-            builder: (context, state) => const ChatListScreen(),
-            routes: [
-              GoRoute(
-                path: ':name',
-                builder: (context, state) {
-                  final name = state.pathParameters['name'] ?? 'Chat';
-                  return ChatDetailScreen(userName: name);
-                },
-              ),
-            ],
-          ),
-          GoRoute(
-            path: '/connected',
-            builder: (context, state) =>
-                const ConnectionsMainLayout(),
-            routes: [
-              GoRoute(
-                path: 'sent', // This makes the URL /connections/sent
-                builder: (context, state) =>
-                    const ConnectionsMainLayout(),
-              ),
-            ],
-          ),
+      redirect: (context, state) {
+        final location = state.matchedLocation;
+        return authRedirect(ref, location);
+      },
 
-          GoRoute(
-            path: '/notifications',
-            builder: (context, state) =>
-                const NotificationScreen(activeTab: 'updates'),
-            routes: [
-              GoRoute(
-                path: 'requests', // Full path: /notifications/requests
-                builder: (context, state) =>
-                    const NotificationScreen(activeTab: 'requests'),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: '/welcome1',
-            builder: (context, state) => const Welcome1Screen(),
-          ),
+      routes: [
+        // ── Splash (shown while auth check runs) ─────────────────────────
+        GoRoute(
+          path: '/splash',
+          builder: (_, __) => const SplashScreen(),
+          redirect: (context, state) {
+            final ready = ref.read(authReadyProvider);
+            if (!ready) return null;
+            final authState = ref.read(authNotifierProvider);
+            return authState is AuthStateAuthenticated
+                ? '/home'
+                : '/start-screen';
+          },
+        ),
 
-          GoRoute(
-            path: '/welcome2',
-            builder: (context, state) => const Welcome2Screen(),
-          ),
+        // ── Auth flow ────────────────────────────────────────────────────
+        GoRoute(
+          path: '/signin',
+          builder: (_, __) => const SignInScreen(),
+        ),
+        GoRoute(
+          path: '/login-email',
+          builder: (_, __) => const EmailEntryScreen(),
+        ),
+        GoRoute(
+          path: '/verify',
+          builder: (_, state) {
+            final email = state.uri.queryParameters['email'] ?? '';
+            return VerificationScreen(email: email);
+          },
+        ),
+        GoRoute(
+          path: '/signup',
+          builder: (_, __) => const SignUpScreen(),
+        ),
 
-          GoRoute(
-            path: '/welcome3',
-            builder: (context, state) => const Welcome3Screen(),
-          ),
+        // ── Main app shell (bottom nav) ──────────────────────────────────
+        ShellRoute(
+          navigatorKey: _shellNavKey,
+          builder: (_, __, child) => MainLayout(child: child),
+          routes: [
+            GoRoute(
+              path: '/start-screen',
+              builder: (_, __) => const StartScreen(),
+            ),
+            GoRoute(
+              path: '/welcome1',
+              builder: (_, __) => const Welcome1Screen(),
+            ),
+            GoRoute(
+              path: '/welcome2',
+              builder: (_, __) => const Welcome2Screen(),
+            ),
+            GoRoute(
+              path: '/welcome3',
+              builder: (_, __) => const Welcome3Screen(),
+            ),
+            GoRoute(
+              path: '/welcome4',
+              builder: (_, __) => const Welcome4Screen(),
+            ),
+            GoRoute(
+              path: '/interest-selection',
+              builder: (_, __) => const InterestSelectionScreen(),
+            ),
+            GoRoute(
+              path: '/home',
+              builder: (_, __) => const MainNavigation(),
+            ),
+            GoRoute(
+              path: '/chat',
+              builder: (_, __) => const ChatListScreen(),
+              routes: [
+                GoRoute(
+                  path: ':name',
+                  builder: (_, state) {
+                    final name = state.pathParameters['name'] ?? 'Chat';
+                    return ChatDetailScreen(userName: name);
+                  },
+                ),
+              ],
+            ),
+            GoRoute(
+              path: '/connected',
+              builder: (_, __) => const ConnectionsMainLayout(),
+              routes: [
+                GoRoute(
+                  path: 'sent',
+                  builder: (_, __) => const ConnectionsMainLayout(),
+                ),
+              ],
+            ),
+            GoRoute(
+              path: '/notifications',
+              builder: (_, __) =>
+                  const NotificationScreen(activeTab: 'updates'),
+              routes: [
+                GoRoute(
+                  path: 'requests',
+                  builder: (_, __) =>
+                      const NotificationScreen(activeTab: 'requests'),
+                ),
+              ],
+            ),
+            GoRoute(
+              path: '/saved',
+              builder: (_, __) => const SavedMessagesScreen(),
+            ),
+            GoRoute(
+              path: '/blocked',
+              builder: (_, __) => const BlockedUsersScreen(),
+            ),
+            GoRoute(
+              path: '/post',
+              builder: (_, __) => const CreatePostPage(),
+            ),
+            GoRoute(
+              path: '/profile',
+              builder: (_, __) => const ProfileViewScreen(),
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (_, __) => const EditProfileScreen(),
+                ),
+                GoRoute(
+                  path: 'delete',
+                  builder: (_, __) => const DeleteAccountScreen(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
 
-          GoRoute(
-            path: '/welcome4',
-            builder: (context, state) => const Welcome4Screen(),
-          ),
+// ── Listenable that tells GoRouter to re-check redirects on auth change ───────
 
-          // SAVED CONTENT
-          GoRoute(
-            path: '/saved',
-            builder: (context, state) => const SavedMessagesScreen(),
-          ),
-          GoRoute(
-            path: '/home',
-            builder: (context, state) => const MainNavigation(),
-          ),
-          GoRoute(
-            path: '/blocked',
-            builder: (context, state) => const BlockedUsersScreen(),
-          ),
-          GoRoute(
-            path: '/post',
-            builder: (context, state) => const CreatePostPage(),
-          ),
-
-          // PROFILE & SETTINGS FLOW
-          GoRoute(
-            path: '/profile',
-            builder: (context, state) => const ProfileViewScreen(),
-            routes: [
-              GoRoute(
-                path: 'edit',
-                builder: (context, state) => const EditProfileScreen(),
-              ),
-              GoRoute(
-                path: 'delete',
-                builder: (context, state) => const DeleteAccountScreen(),
-              ),
-
-              // 2. Connections Feature
-            ],
-          ),
-        ],
-      ),
-    ],
-  );
+class _AuthChangeNotifier extends ChangeNotifier {
+  _AuthChangeNotifier(WidgetRef ref) {
+    ref.listen<AuthState>(authNotifierProvider, (_, __) {
+      notifyListeners();
+    });
+  }
 }

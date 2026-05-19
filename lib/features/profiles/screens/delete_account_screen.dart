@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/utils/bottom_nav_handler.dart'; 
 
 class DeleteAccountScreen extends StatelessWidget {
   const DeleteAccountScreen({super.key});

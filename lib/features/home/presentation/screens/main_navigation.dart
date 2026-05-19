@@ -12,12 +12,12 @@ class MainNavigation extends StatefulWidget {
 }
 
 class _MainNavigationState extends State<MainNavigation> {
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   // The pages for each tab. In Clean Architecture, these usually represent
   // different feature modules.
   final List<Widget> _pages = [
-    HomePage(),
+    const HomePage(),
     // and other pages
   ];
 
@@ -31,6 +31,6 @@ class _MainNavigationState extends State<MainNavigation> {
       // IndexedStack is preferred over the simple list index to
       // preserve the state (like scroll position) of your pages.
       body: IndexedStack(index: _currentIndex, children: _pages),
-          );
+    );
   }
 }

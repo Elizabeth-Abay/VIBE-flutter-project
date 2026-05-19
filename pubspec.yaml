@@ -5,28 +5,55 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.11.1
+  sdk: ^3.3.0
 
 dependencies:
   flutter:
     sdk: flutter
+
+  # --- Routing ---
   go_router: ^17.1.0
+
+  # --- UI ---
   flutter_svg: ^2.0.7
   cupertino_icons: ^1.0.8
-  glassmorphism: ^3.0.0 
+  glassmorphism: ^3.0.0
   simple_animations: ^5.0.2
+
+  # --- State Management (Riverpod 3) ---
+  flutter_riverpod: ^3.0.0
+  riverpod_annotation: ^3.0.0
+
+  # --- Local Cache (SQLite) ---
+  sqflite: ^2.4.2
+  path: ^1.9.1
+
+  # --- Secure Token Storage ---
+  flutter_secure_storage: ^9.2.4
+
+  # --- Network ---
+  http: ^1.4.0
+
+  # --- Utilities ---
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0 # Standard for modern Flutter projects
-  build_runner: ^2.6.0
+
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.0
   go_router_builder: ^4.0.1
+
+  # --- Riverpod Code Generation ---
+  riverpod_generator: ^3.0.0
+  custom_lint: ^0.8.1
+  riverpod_lint: ^3.0.0
 
 flutter:
   uses-material-design: true
 
-  # Assets must be indented correctly under the flutter section
   assets:
     - assets/images/
-    # If you have specific profile or placeholder images, ensure they are in this folder
+
+    

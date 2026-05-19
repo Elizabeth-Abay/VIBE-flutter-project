@@ -17,7 +17,8 @@ class ConnectButton extends StatefulWidget {
   State<ConnectButton> createState() => _ConnectButtonState();
 }
 
-class _ConnectButtonState extends State<ConnectButton> with SingleTickerProviderStateMixin {
+class _ConnectButtonState extends State<ConnectButton>
+    with SingleTickerProviderStateMixin {
   ConnectButtonState _state = ConnectButtonState.idle;
   String _label = 'Connect';
   late AnimationController _animController;
@@ -110,15 +111,14 @@ class _ConnectButtonState extends State<ConnectButton> with SingleTickerProvider
             borderRadius: BorderRadius.circular(24),
             onTap: _state == ConnectButtonState.idle ? _handleTap : null,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
                 child: _state == ConnectButtonState.sending
-                    ? Row(
-                        key: const ValueKey('sending'),
+                    ? const Row(
+                        key: ValueKey('sending'),
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
+                        children: [
                           SizedBox(
                             width: 14,
                             height: 14,

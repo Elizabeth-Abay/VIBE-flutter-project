@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/app_theme.dart';
 
 class SavedMessagesScreen extends StatelessWidget {
   const SavedMessagesScreen({super.key});
@@ -16,7 +15,8 @@ class SavedMessagesScreen extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () => context.pop(),
-                child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                child: const Icon(Icons.arrow_back_ios_new,
+                    color: Colors.white, size: 20),
               ),
               const Expanded(
                 child: Text(
@@ -39,12 +39,15 @@ class SavedMessagesScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             children: [
-              _bubble("I have to submit the figma design", "2:45 AM", true, null),
+              _bubble(
+                  "I have to submit the figma design", "2:45 AM", true, null),
               _bubble("I have to Study OS", "4:45 PM", true, null),
-              _bubble("Fully Funded Robotics Training", "1:56 AM", false, 'https://i.pravatar.cc/150?u=robotics'),
+              _bubble("Fully Funded Robotics Training", "1:56 AM", false,
+                  'https://i.pravatar.cc/150?u=robotics'),
               _bubble("Attending robotics Training", "3:55 PM", true, null),
               _bubble("Os lab assignment", "3:55 PM", true, null),
-              _bubble("ALX Hackaton Register Now", "5:26 AM", false, 'https://i.pravatar.cc/150?u=alx'),
+              _bubble("ALX Hackaton Register Now", "5:26 AM", false,
+                  'https://i.pravatar.cc/150?u=alx'),
             ],
           ),
         ),
@@ -57,28 +60,34 @@ class SavedMessagesScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24),
       child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMe) ...[
             CircleAvatar(
               radius: 18,
-              backgroundImage: NetworkImage(avatar ?? 'https://i.pravatar.cc/150?u=default'),
+              backgroundImage:
+                  NetworkImage(avatar ?? 'https://i.pravatar.cc/150?u=default'),
             ),
             const SizedBox(width: 10),
           ],
           Column(
-            crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment:
+                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               Container(
                 constraints: const BoxConstraints(maxWidth: 240),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  gradient: isMe ? const LinearGradient(
-                    colors: [Color(0xFFAC5AF7), Color(0xFF3B82F6)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ) : null,
+                  gradient: isMe
+                      ? const LinearGradient(
+                          colors: [Color(0xFFAC5AF7), Color(0xFF3B82F6)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
                   color: isMe ? null : const Color(0xFF33384D),
                   borderRadius: BorderRadius.circular(18),
                 ),
@@ -147,7 +156,8 @@ class SavedMessagesScreen extends StatelessWidget {
               const SizedBox(width: 12),
               Transform.rotate(
                 angle: -0.4,
-                child: const Icon(Icons.send_outlined, color: Colors.white, size: 32),
+                child: const Icon(Icons.send_outlined,
+                    color: Colors.white, size: 32),
               ),
             ],
           ),

@@ -23,8 +23,8 @@ class Welcome1Screen extends StatelessWidget {
               ),
 
               /// 🔹 TEXT SECTION
-              Column(
-                children: const [
+              const Column(
+                children: [
                   Text(
                     "Smart Matching",
                     style: TextStyle(

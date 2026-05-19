@@ -3,25 +3,27 @@ import 'package:flutter/material.dart';
 import '../widgets/post_card.dart';
 import '../../../../core/utils/image_optimizer.dart';
 
-
 final List<PostFetchObj> mockPosts = [
   PostFetchObj(
     title: 'Enjoying an outdoor concert',
-    imageUrl: ImageOptimizer.getOptimizedUrl('https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'),
+    imageUrl: ImageOptimizer.getOptimizedUrl(
+        'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'),
     description: 'The energy at this concert is amazing!',
     tags: ['Music', 'Concert'],
     userName: 'Emily Davis',
   ),
   PostFetchObj(
     title: 'At a tech meet-up',
-    imageUrl: ImageOptimizer.getOptimizedUrl('https://images.unsplash.com/photo-1540575467063-178a50c2df87'),
+    imageUrl: ImageOptimizer.getOptimizedUrl(
+        'https://images.unsplash.com/photo-1540575467063-178a50c2df87'),
     description: 'Great insights during the meeting!',
     tags: ['Tech', 'Networking'],
     userName: 'James Brown',
   ),
   PostFetchObj(
     title: 'Morning Hike',
-    imageUrl: ImageOptimizer.getOptimizedUrl('https://images.unsplash.com/photo-1551632432-c7360b7f0187'),
+    imageUrl: ImageOptimizer.getOptimizedUrl(
+        'https://images.unsplash.com/photo-1551632432-c7360b7f0187'),
     description: 'Breathtaking views from the top.',
     tags: ['Nature', 'Hike'],
     userName: 'Sarah Lee',
@@ -31,17 +33,18 @@ final List<PostFetchObj> mockPosts = [
 class HorizontalPostFeed extends StatelessWidget {
   const HorizontalPostFeed({super.key});
 
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       // Reduced height from 480 to 380 for a more compact look
-      height: 300, 
+      height: 300,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         itemCount: mockPosts.length,
         itemBuilder: (context, index) {
           final post = mockPosts[index];
-          
+
           return Container(
             margin: const EdgeInsets.only(right: 12),
             child: SocialPostWidget(
