@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import './category_pills.dart';
 import '../../../../core/constants/post_categories.dart';
 
+/// Horizontally scrollable category pill bar.
+///
+/// The existing [CategoryBar] used multi-select with a Set<int>.
+/// This version keeps all the original UI but also fires
+/// [onSelectionChanged] with the newly selected list on every tap
+/// so the parent (CreatePostPage) can read it via Riverpod.
 class CategoryBar extends StatefulWidget {
   final List<CategoryModel> categories;
   final ValueChanged<List<CategoryModel>> onSelectionChanged;
@@ -27,7 +33,6 @@ class _CategoryBarState extends State<CategoryBar> {
         _selectedIndices.add(index);
       }
     });
-    // Notify parent of the updated list of selected category objects
     widget.onSelectionChanged(
       _selectedIndices.map((i) => widget.categories[i]).toList(),
     );
@@ -36,18 +41,18 @@ class _CategoryBarState extends State<CategoryBar> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 45, // Defined height prevents layout "smudging"
+      height: 45,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         physics: const BouncingScrollPhysics(),
         itemCount: widget.categories.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           return CategoryPill(
-            category: widget.categories[index],
+            category:   widget.categories[index],
             isSelected: _selectedIndices.contains(index),
-            onTap: () => _handlePillTap(index),
+            onTap:      () => _handlePillTap(index),
           );
         },
       ),
