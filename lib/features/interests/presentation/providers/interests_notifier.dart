@@ -1,14 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../profiles/presentation/providers/profile_notifier.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Tracks vibe selections during the interest selection flow.
 /// On submit, persists to the profile repository via ProfileNotifier.
-final selectedVibesProvider =
-    StateProvider<Map<String, String>>((ref) => {});
+final selectedVibesProvider = StateProvider<Map<String, String>>((ref) => {});
 
-final interestsSavingProvider =
-    NotifierProvider<InterestsSavingNotifier, bool>(
-        InterestsSavingNotifier.new);
+final interestsSavingProvider = NotifierProvider<InterestsSavingNotifier, bool>(
+  InterestsSavingNotifier.new,
+);
 
 class InterestsSavingNotifier extends Notifier<bool> {
   @override

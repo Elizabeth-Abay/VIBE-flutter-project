@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import '../../domain/entity/sent_request_user.dart';
 
+import 'package:flutter/material.dart';
+
+class SentRequestScreen extends StatelessWidget {
+  const SentRequestScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Sent Requests Screen',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+}
+
 /// A single sent-request card with live Cancel / Request-Again button.
 class SentRequestHolderCell extends StatelessWidget {
   final SentRequestUser request;

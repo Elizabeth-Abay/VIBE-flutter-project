@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../core/widgets/custom_bottom_nav.dart'; // Using your custom widget path
-import '../../../../core/widgets/top_navigation_bar.dart';
-import '../../../../core/utils/bottom_nav_handler.dart';
+// Using your custom widget path
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});

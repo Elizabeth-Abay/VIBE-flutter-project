@@ -25,7 +25,9 @@ final createPostTagsProvider = StateProvider<List<String>>((ref) => []);
 
 // ─── Post submission state ────────────────────────────────────────────────────
 
-sealed class CreatePostState { const CreatePostState(); }
+sealed class CreatePostState {
+  const CreatePostState();
+}
 
 class CreatePostInitial extends CreatePostState {
   const CreatePostInitial();
@@ -48,14 +50,14 @@ class CreatePostError extends CreatePostState {
 
 final createPostProvider =
     NotifierProvider<CreatePostNotifier, CreatePostState>(
-  CreatePostNotifier.new,
-);
+      CreatePostNotifier.new,
+    );
 
 // ─── Notifier ─────────────────────────────────────────────────────────────────
 
 class CreatePostNotifier extends Notifier<CreatePostState> {
-  final _repo          = PostRepository.instance;
-  final _imageService  = ImageUploadService.instance;
+  final _repo = PostRepository.instance;
+  final _imageService = ImageUploadService.instance;
 
   @override
   CreatePostState build() => const CreatePostInitial();
@@ -91,7 +93,7 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
     } catch (e) {
       // Upload failed — clear the picked file so the user sees no preview
       ref.read(pickedImageProvider.notifier).state = null;
-      state = CreatePostError('Image upload failed. Try again.');
+      state = const CreatePostError('Image upload failed. Try again.');
     } finally {
       ref.read(imageUploadingProvider.notifier).state = false;
     }
@@ -100,7 +102,7 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
   // ── Remove selected image ─────────────────────────────────────────────────
 
   void clearImage() {
-    ref.read(pickedImageProvider.notifier).state      = null;
+    ref.read(pickedImageProvider.notifier).state = null;
     ref.read(uploadedImageUrlProvider.notifier).state = null;
   }
 
@@ -125,13 +127,12 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
       return;
     }
 
-    final tags      = ref.read(createPostTagsProvider);
-    final imageUrl  = ref.read(uploadedImageUrlProvider);
+    final tags = ref.read(createPostTagsProvider);
+    final imageUrl = ref.read(uploadedImageUrlProvider);
 
     // Block submission while image is still uploading
     if (ref.read(imageUploadingProvider)) {
-      state = const CreatePostError(
-          'Image is still uploading. Please wait.');
+      state = const CreatePostError('Image is still uploading. Please wait.');
       return;
     }
 
@@ -139,11 +140,11 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
 
     try {
       await _repo.createPost(
-        title:       title.trim(),
+        title: title.trim(),
         description: description.trim(),
-        category:    category,
-        tags:        tags,
-        imageUrl:    imageUrl,
+        category: category,
+        tags: tags,
+        imageUrl: imageUrl,
       );
 
       // Invalidate home feed so it refreshes with the new post
@@ -154,19 +155,17 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
 
       state = const CreatePostSuccess();
     } on Exception catch (e) {
-      state = CreatePostError(
-        e.toString().replaceAll('Exception: ', ''),
-      );
+      state = CreatePostError(e.toString().replaceAll('Exception: ', ''));
     }
   }
 
   // ── Reset ─────────────────────────────────────────────────────────────────
 
   void _resetForm() {
-    ref.read(pickedImageProvider.notifier).state      = null;
+    ref.read(pickedImageProvider.notifier).state = null;
     ref.read(uploadedImageUrlProvider.notifier).state = null;
     ref.read(createPostCategoryProvider.notifier).state = '';
-    ref.read(createPostTagsProvider.notifier).state  = [];
+    ref.read(createPostTagsProvider.notifier).state = [];
   }
 
   void resetState() {

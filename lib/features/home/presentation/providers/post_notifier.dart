@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/post_repository.dart';
 import '../../domain/entity/post_entity.dart';
 import '../../domain/entity/recommended_people_fetch_obj.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // ─── Posts state ─────────────────────────────────────────────────────────────
 
@@ -29,8 +30,9 @@ class PostsError extends PostsState {
 
 // ─── Posts provider ───────────────────────────────────────────────────────────
 
-final postsNotifierProvider =
-    NotifierProvider<PostsNotifier, PostsState>(PostsNotifier.new);
+final postsNotifierProvider = NotifierProvider<PostsNotifier, PostsState>(
+  PostsNotifier.new,
+);
 
 class PostsNotifier extends Notifier<PostsState> {
   final _repo = PostRepository.instance;
@@ -81,8 +83,9 @@ class PeopleError extends PeopleState {
 
 // ─── Recommended people provider ──────────────────────────────────────────────
 
-final peopleNotifierProvider =
-    NotifierProvider<PeopleNotifier, PeopleState>(PeopleNotifier.new);
+final peopleNotifierProvider = NotifierProvider<PeopleNotifier, PeopleState>(
+  PeopleNotifier.new,
+);
 
 class PeopleNotifier extends Notifier<PeopleState> {
   final _repo = PostRepository.instance;

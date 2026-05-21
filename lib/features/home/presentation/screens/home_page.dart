@@ -15,31 +15,25 @@ class HomePage extends ConsumerWidget {
       onRefresh: () async {
         // Re-fetch will be triggered by providers on next watch
       },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+      child: const SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             // Category filter pills — wired to selectedCategoryProvider
-            const CategoryBar(),
-            const SizedBox(height: 24),
+            CategoryBar(),
+            SizedBox(height: 24),
 
             // Horizontal post feed — live from PostsNotifier
-            const SizedBox(
-              height: 340,
-              child: HorizontalPostFeed(),
-            ),
-            const SizedBox(height: 24),
+            SizedBox(height: 340, child: HorizontalPostFeed()),
+            SizedBox(height: 24),
 
             // Recommended people — live from PeopleNotifier
-            const SizedBox(
-              height: 300,
-              child: RecommendedConnectionsList(),
-            ),
+            SizedBox(height: 300, child: RecommendedConnectionsList()),
 
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
           ],
         ),
       ),

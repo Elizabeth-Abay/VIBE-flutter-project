@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../presentation/providers/profile_notifier.dart';
+import '../domain/entities/profile_entity.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -27,16 +28,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void _initFromProfile(ProfileEntity profile) {
     if (_initialized) return;
     _nameController = TextEditingController(text: profile.username);
-    _bioController  = TextEditingController(text: profile.bio ?? '');
+    _bioController = TextEditingController(text: profile.bio ?? '');
     _vibes = Map.from(profile.vibes);
     _initialized = true;
   }
 
   Future<void> _onSave() async {
-    await ref.read(profileNotifierProvider.notifier).updateProfile(
+    await ref
+        .read(profileNotifierProvider.notifier)
+        .updateProfile(
           username: _nameController.text.trim(),
-          bio:      _bioController.text.trim(),
-          vibes:    _vibes,
+          bio: _bioController.text.trim(),
+          vibes: _vibes,
         );
   }
 
@@ -47,14 +50,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       if (next is ProfileUpdated) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Profile updated!'),
-              backgroundColor: Colors.green),
+            content: Text('Profile updated!'),
+            backgroundColor: Colors.green,
+          ),
         );
         context.pop();
       } else if (next is ProfileError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(next.message), backgroundColor: Colors.red),
+          SnackBar(content: Text(next.message), backgroundColor: Colors.red),
         );
       }
     });
@@ -97,15 +100,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     child: CircleAvatar(
                       radius: 80,
                       backgroundColor: Colors.white12,
-                      backgroundImage: ref
+                      backgroundImage:
+                          ref
                                   .read(profileNotifierProvider.notifier)
                                   .currentProfile
                                   ?.avatarUrl !=
                               null
-                          ? NetworkImage(ref
-                              .read(profileNotifierProvider.notifier)
-                              .currentProfile!
-                              .avatarUrl!)
+                          ? NetworkImage(
+                              ref
+                                  .read(profileNotifierProvider.notifier)
+                                  .currentProfile!
+                                  .avatarUrl!,
+                            )
                           : null,
                     ),
                   ),
@@ -118,8 +124,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         color: Colors.pinkAccent,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.camera_alt_outlined,
-                          color: Colors.white, size: 20),
+                      child: const Icon(
+                        Icons.camera_alt_outlined,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ],
@@ -127,10 +136,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ),
             const SizedBox(height: 10),
             const Center(
-              child: Text('Tap to edit profile photo',
-                  style: TextStyle(
-                      color: Colors.white60,
-                      fontFamily: 'Times New Roman')),
+              child: Text(
+                'Tap to edit profile photo',
+                style: TextStyle(
+                  color: Colors.white60,
+                  fontFamily: 'Times New Roman',
+                ),
+              ),
             ),
             const SizedBox(height: 30),
 
@@ -158,14 +170,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("What's your vibe?",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold)),
-                    const Text('Tell us how you feel about each interest.',
-                        style:
-                            TextStyle(color: Colors.white54, fontSize: 12)),
+                    const Text(
+                      "What's your vibe?",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Text(
+                      'Tell us how you feel about each interest.',
+                      style: TextStyle(color: Colors.white54, fontSize: 12),
+                    ),
                     const SizedBox(height: 20),
                     for (final entry in [
                       [Icons.music_note, 'Music'],
@@ -175,8 +191,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       [Icons.menu_book, 'Books'],
                       [Icons.videogame_asset, 'Games'],
                     ]) ...[
-                      _vibeCard(
-                          entry[0] as IconData, entry[1] as String),
+                      _vibeCard(entry[0] as IconData, entry[1] as String),
                       const SizedBox(height: 15),
                     ],
                   ],
@@ -202,11 +217,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 child: Center(
                   child: isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Update Profile',
+                      : const Text(
+                          'Update Profile',
                           style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold)),
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -218,29 +236,31 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _fieldLabel(String label) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(label,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Times New Roman')),
-      );
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Text(
+      label,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Times New Roman',
+      ),
+    ),
+  );
 
-  Widget _textField(TextEditingController c, {int maxLines = 1}) =>
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: TextFormField(
-          controller: c,
-          maxLines: maxLines,
-          style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(border: InputBorder.none),
-        ),
-      );
+  Widget _textField(TextEditingController c, {int maxLines = 1}) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(15),
+    ),
+    child: TextFormField(
+      controller: c,
+      maxLines: maxLines,
+      style: const TextStyle(color: Colors.white),
+      decoration: const InputDecoration(border: InputBorder.none),
+    ),
+  );
 
   Widget _vibeCard(IconData icon, String title) {
     final current = _vibes[title];
@@ -256,20 +276,23 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             children: [
               Icon(icon, color: Colors.white70),
               const SizedBox(width: 15),
-              Text(title,
-                  style: const TextStyle(color: Colors.white, fontSize: 16)),
+              Text(
+                title,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
             ],
           ),
           const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: ['Love', 'Like', 'Neutral', 'Bothered', 'Hate']
-                .map((label) => _vibeButton(
-                      label,
-                      isSelected: current == label,
-                      onTap: () =>
-                          setState(() => _vibes[title] = label),
-                    ))
+                .map(
+                  (label) => _vibeButton(
+                    label,
+                    isSelected: current == label,
+                    onTap: () => setState(() => _vibes[title] = label),
+                  ),
+                )
                 .toList(),
           ),
         ],
@@ -277,32 +300,30 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-  Widget _vibeButton(String label,
-          {required bool isSelected, required VoidCallback onTap}) =>
-      GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFF448AFF)
-                : const Color(0xFF1A1F3D),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: isSelected ? Colors.white : Colors.transparent,
-            ),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color:
-                  isSelected ? Colors.white : Colors.white.withOpacity(0.5),
-              fontSize: 10,
-              fontWeight:
-                  isSelected ? FontWeight.bold : FontWeight.w500,
-            ),
-          ),
+  Widget _vibeButton(
+    String label, {
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) => GestureDetector(
+    onTap: onTap,
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: isSelected ? const Color(0xFF448AFF) : const Color(0xFF1A1F3D),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isSelected ? Colors.white : Colors.transparent,
         ),
-      );
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: isSelected ? Colors.white : Colors.white.withOpacity(0.5),
+          fontSize: 10,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+        ),
+      ),
+    ),
+  );
 }

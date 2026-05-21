@@ -22,8 +22,12 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     ref.read(verificationProvider.notifier).reset();
     super.dispose();
   }
@@ -31,10 +35,9 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   String get _otp => _controllers.map((c) => c.text).join();
 
   Future<void> _onVerify() async {
-    await ref.read(verificationProvider.notifier).verifyOtp(
-          email: widget.email,
-          otp: _otp,
-        );
+    await ref
+        .read(verificationProvider.notifier)
+        .verifyOtp(email: widget.email, otp: _otp);
   }
 
   Future<void> _onResend() async {
@@ -120,9 +123,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.number,
                       maxLength: 1,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onChanged: (v) => _onDigitChanged(v, index),
                       decoration: InputDecoration(
                         counterText: '',
@@ -168,10 +169,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
             // ── Verify button ─────────────────────────────────────────────
             isLoading
                 ? const CircularProgressIndicator()
-                : ActionButton(
-                    text: "Verify Email",
-                    onPressed: _onVerify,
-                  ),
+                : ActionButton(text: "Verify Email", onPressed: _onVerify),
 
             // ── Resend link ───────────────────────────────────────────────
             TextButton(
