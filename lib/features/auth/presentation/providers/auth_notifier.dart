@@ -78,6 +78,33 @@ class AuthNotifier extends Notifier<AuthState> {
     state = const AuthStateUnauthenticated();
   }
 
+  // ─── Update Profile ────────────────────────────────────────────────────────
+
+  Future<void> updateProfile({
+    required String username,
+    required String bio,
+  }) async {
+    state = const AuthStateLoading();
+    try {
+      final user = await _repo.updateProfile(username: username, bio: bio);
+      state = AuthStateAuthenticated(user);
+    } on Exception catch (e) {
+      state = AuthStateError(e.toString().replaceAll('Exception: ', ''));
+    }
+  }
+
+  // ─── Delete Account ────────────────────────────────────────────────────────
+
+  Future<void> deleteAccount() async {
+    state = const AuthStateLoading();
+    try {
+      await _repo.deleteAccount();
+      state = const AuthStateUnauthenticated();
+    } on Exception catch (e) {
+      state = AuthStateError(e.toString().replaceAll('Exception: ', ''));
+    }
+  }
+
   // ─── Helpers ─────────────────────────────────────────────────────────────
 
   UserEntity? get currentUser {

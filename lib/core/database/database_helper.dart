@@ -22,7 +22,7 @@ class DatabaseHelper {
 
     return openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -34,10 +34,17 @@ class DatabaseHelper {
     await db.execute(_createConnectionsTable);
     await db.execute(_createNotificationsTable);
     await db.execute(_createCacheMetaTable);
+    await db.execute(_createSavedMessagesTable);
+    await db.execute(_createBlockedUsersTable);
+    await db.execute(_createChatMessagesTable);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Future migration logic goes here.
+    if (oldVersion < 2) {
+      await db.execute(_createSavedMessagesTable);
+      await db.execute(_createBlockedUsersTable);
+      await db.execute(_createChatMessagesTable);
+    }
   }
 
   // ─── Table DDL ───────────────────────────────────────────────────────────
@@ -94,6 +101,33 @@ class DatabaseHelper {
     CREATE TABLE IF NOT EXISTS cache_meta (
       key         TEXT PRIMARY KEY,
       fetched_at  TEXT NOT NULL
+    )
+  ''';
+
+  static const _createSavedMessagesTable = '''
+    CREATE TABLE IF NOT EXISTS saved_messages (
+      id          TEXT PRIMARY KEY,
+      text        TEXT NOT NULL,
+      created_at  TEXT NOT NULL
+    )
+  ''';
+
+  static const _createBlockedUsersTable = '''
+    CREATE TABLE IF NOT EXISTS blocked_users (
+      id          TEXT PRIMARY KEY,
+      username    TEXT NOT NULL,
+      avatar_url  TEXT,
+      blocked_at  TEXT NOT NULL
+    )
+  ''';
+
+  static const _createChatMessagesTable = '''
+    CREATE TABLE IF NOT EXISTS chat_messages (
+      id             TEXT PRIMARY KEY,
+      chat_user_name TEXT NOT NULL,
+      message        TEXT NOT NULL,
+      is_me          INTEGER NOT NULL DEFAULT 1,
+      created_at     TEXT NOT NULL
     )
   ''';
 

@@ -96,6 +96,41 @@ class AuthRepository {
     return token != null && token.isNotEmpty;
   }
 
+  // ─── Update Profile ────────────────────────────────────────────────────────
+
+  Future<UserEntity> updateProfile({
+    required String username,
+    required String bio,
+  }) async {
+    final response = await _api.put(
+      '/auth/profile',
+      body: {'username': username, 'bio': bio},
+    );
+    final user = UserModel.fromJson(response['user'] as Map<String, dynamic>);
+    await _cacheUser(user);
+    return user;
+  }
+
+  // ─── Delete Account ────────────────────────────────────────────────────────
+
+  Future<void> deleteAccount() async {
+    try {
+      await _api.delete('/auth/profile');
+    } catch (_) {
+      // Ignore API errors on fallback deletion
+    }
+    await signOut();
+    
+    // Clear other user tables locally
+    final db = await _db.database;
+    await db.delete('saved_messages');
+    await db.delete('blocked_users');
+    await db.delete('chat_messages');
+    await db.delete('posts');
+    await db.delete('connections');
+    await db.delete('notifications');
+  }
+
   // ─── Private helpers ─────────────────────────────────────────────────────
 
   Future<void> _cacheUser(UserModel user) async {
