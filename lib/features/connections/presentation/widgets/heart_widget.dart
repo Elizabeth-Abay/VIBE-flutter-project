@@ -1,43 +1,25 @@
 import 'package:flutter/material.dart';
 
-class HeartButton extends StatefulWidget {
-  final String userId;
-  final bool initialIsLiked;
+/// Stateless heart button — state lives in the Riverpod notifier, not here.
+class HeartButton extends StatelessWidget {
+  final bool isLiked;
+  final VoidCallback onTap;
 
   const HeartButton({
     super.key,
-    required this.userId,
-    required this.initialIsLiked,
+    required this.isLiked,
+    required this.onTap,
   });
-
-  @override
-  State<HeartButton> createState() => _HeartButtonState();
-}
-
-class _HeartButtonState extends State<HeartButton> {
-  late bool isLiked;
-
-  @override
-  void initState() {
-    super.initState();
-    isLiked = widget.initialIsLiked;
-  }
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(
         isLiked ? Icons.favorite : Icons.favorite_border,
-        color: isLiked ? Colors.blue : Colors.white, // Matches image_9fb9f6.png
+        color: isLiked ? Colors.blueAccent : Colors.white,
         size: 32,
       ),
-      onPressed: () {
-        setState(() {
-          isLiked = !isLiked;
-        });
-        // You can use widget.userId here to trigger a backend update
-        print("Toggled like for User ID: ${widget.userId}");
-      },
+      onPressed: onTap,
     );
   }
 }

@@ -1,83 +1,72 @@
 import 'package:flutter/material.dart';
-import '../../domain/entity/recommended_people_fetch_obj.dart';
-import '../widgets/recommended_person_card.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/post_notifier.dart';
+import '../../../connections/presentation/providers/connection_notifier.dart';
 import '../../domain/entity/connection_request_sending_result.dart';
+import 'recommended_person_card.dart';
 
-// Dummy data list based on your PeopleRecommended entity
-final List<PeopleRecommended> mockRecommendedPeople = [
-  PeopleRecommended(
-    userId: '1',
-    displayName: 'Lisa Carter',
-    username: 'Lisa123',
-    userProfileImageUrl: 'https://i.pravatar.cc/150?u=lisa',
-  ),
-  PeopleRecommended(userId: '2', displayName: 'Helen', username: 'Helen_Tech'),
-  PeopleRecommended(
-    userId: '3',
-    displayName: 'Abebe Kebede',
-    username: 'abe123',
-  ),
-  PeopleRecommended(userId: '4', displayName: 'Tom Adams', username: 'Tomm'),
-  PeopleRecommended(
-    userId: '5',
-    displayName: 'Netsanet Belay',
-    username: 'Netsi',
-    userProfileImageUrl: 'https://i.pravatar.cc/150?u=netsi',
-  ),
-];
-
-class RecommendedConnectionsList extends StatelessWidget {
+/// Live recommended connections list — replaces mock data.
+class RecommendedConnectionsList extends ConsumerWidget {
   const RecommendedConnectionsList({super.key});
 
-  /// This function now correctly returns a ConnectResult object
-  /// using the constructor we just defined.
-  Future<ConnectResult> _dummyOnConnect(String userId) async {
-    // Simulating the delay of your Node.js/Express backend
-    await Future.delayed(const Duration(seconds: 1));
-
-    // Returning a successful status code (200) and a message
-    return ConnectResult(statusCode: 200, message: "Request Sent");
-  }
-
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-          child: Text(
-            'Recommended Connections',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            // BouncingScrollPhysics gives a better feel on mobile
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: mockRecommendedPeople.length,
-            itemBuilder: (context, index) {
-              final person = mockRecommendedPeople[index];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(peopleNotifierProvider);
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12.0),
-                child: UserConnectionCard(
-                  userId: person.userId,
-                  displayName: person.displayName,
-                  username: person.username,
-                  userProfileImageUrl: person.userProfileImageUrl,
-                  onConnect: _dummyOnConnect,
-                ),
-              );
-            },
-          ),
+    return switch (state) {
+      PeopleLoading() => const Center(child: CircularProgressIndicator()),
+      PeopleError(:final message) => Center(
+          child: Text(message,
+              style: const TextStyle(color: Colors.white38, fontSize: 12)),
         ),
-      ],
-    );
+      PeopleLoaded(:final people) when people.isEmpty => const Center(
+          child: Text('No recommendations',
+              style: TextStyle(color: Colors.white38)),
+        ),
+      PeopleLoaded(:final people) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Text(
+                'Recommended Connections',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: people.length,
+                itemBuilder: (context, index) {
+                  final person = people[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: UserConnectionCard(
+                      userId: person.userId,
+                      displayName: person.displayName,
+                      username: person.username,
+                      userProfileImageUrl: person.userProfileImageUrl,
+                      onConnect: (userId) async {
+                        final result = await ref
+                            .read(sendConnectionProvider.notifier)
+                            .sendRequest(userId);
+                        return ConnectResult(
+                          statusCode: result.statusCode,
+                          message: result.message,
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      _ => const SizedBox.shrink(),
+    };
   }
 }
