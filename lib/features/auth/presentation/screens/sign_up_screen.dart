@@ -63,12 +63,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Widget build(BuildContext context) {
     // Navigate on success, show error on failure.
     ref.listen<AuthState>(authNotifierProvider, (_, next) {
-      if (next is AuthStateAuthenticated) {
-        context.go('/interest-selection');
-      } else if (next is AuthStateError) {
-        setState(() => _errorMessage = next.message);
-      }
-    });
+    if (next is AuthStateAuthenticated) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) context.go('/interest-selection');
+      });
+    } else if (next is AuthStateError) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _errorMessage = next.message);
+      });
+    }
+  });
 
     final authState = ref.watch(authNotifierProvider);
     final isLoading = authState is AuthStateLoading;
