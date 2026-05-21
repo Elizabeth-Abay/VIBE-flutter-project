@@ -1,0 +1,61 @@
+name: vibe_app
+description: "A new Flutter project for Vibe."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI
+  cupertino_icons: ^1.0.8
+  flutter_svg: ^2.0.7
+  glassmorphism: ^3.0.0
+  simple_animations: ^5.0.2
+
+  # Routing
+  go_router: ^14.8.1
+
+  # Riverpod (COMPATIBLE SETUP)
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Database
+  sqflite: ^2.4.2
+  path: ^1.9.1
+
+  # Storage
+  flutter_secure_storage: ^9.2.4
+  shared_preferences: ^2.5.3
+
+  # Network
+  http: ^1.4.0
+
+  # Media
+  image_picker: ^1.1.2
+  mime: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+  # Code generation
+  build_runner: ^2.4.13
+  go_router_builder: ^2.7.1
+
+  # Riverpod generator/lint
+  riverpod_generator: ^2.6.5
+  riverpod_lint: ^2.6.5
+  custom_lint: ^0.7.5
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/

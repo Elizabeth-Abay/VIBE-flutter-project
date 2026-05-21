@@ -1,0 +1,13 @@
+{
+    "cmake.sourceDirectory": "C:/Users/HP/OneDrive/Desktop/Vybe-front-end/vibe_flutter/linux",
+    "java.project.sourcePaths": [
+        "vibe_project/lib/features"
+    ],
+    "python-envs.pythonProjects": [
+        {
+            "path": "Onboarding_part",
+            "envManager": "ms-python.python:venv",
+            "packageManager": "ms-python.python:pip"
+        }
+    ]
+}
