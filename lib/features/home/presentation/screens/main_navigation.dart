@@ -1,33 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/widgets/custom_bottom_nav.dart';
+import '../../../../core/widgets/top_navigation_bar.dart';
+import '../../../../core/utils/bottom_nav_handler.dart';
 import 'home_page.dart';
-// Using your custom widget path
 
-class MainNavigation extends StatefulWidget {
+/// Main shell that wraps HomePage with the top and bottom nav bars.
+/// All mock data removed — navigation is wired to BottomNavHandler
+/// which uses GoRouter to push routes.
+class MainNavigation extends ConsumerStatefulWidget {
   const MainNavigation({super.key});
+
   @override
-  State<MainNavigation> createState() => _MainNavigationState();
+  ConsumerState<MainNavigation> createState() => _MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
-  final int _currentIndex = 0;
-
-  // The pages for each tab. In Clean Architecture, these usually represent
-  // different feature modules.
-  final List<Widget> _pages = [
-    const HomePage(),
-    // and other pages
-  ];
-
-  // This handles the tab switching and is where you'll eventually
-  // trigger backend requests via your Providers.
+class _MainNavigationState extends ConsumerState<MainNavigation> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      // IndexedStack is preferred over the simple list index to
-      // preserve the state (like scroll position) of your pages.
-      body: IndexedStack(index: _currentIndex, children: _pages),
+      body: Column(
+        children: [
+          // ── Top nav bar ────────────────────────────────────────────────
+          VibeTopNavBar(
+            onNotificationTap: () => context.push('/notifications'),
+            onConnectionsTap: () => context.push('/connected'),
+          ),
+
+          // ── Page content ───────────────────────────────────────────────
+          const Expanded(child: HomePage()),
+        ],
+      ),
+
+      // ── Bottom nav bar ─────────────────────────────────────────────────
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+          BottomNavHandler.onTabTapped(context, index);
+        },
+      ),
     );
   }
 }

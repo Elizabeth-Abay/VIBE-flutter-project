@@ -1,39 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/post_notifier.dart';
 import '../widgets/category_bar.dart';
 import '../widgets/posts_bar.dart';
 import '../widgets/recommended_ppl_list.dart';
 
-/// Home screen — now a ConsumerWidget so it can trigger refreshes.
+/// Home screen — ConsumerWidget so it can drive pull-to-refresh.
+/// All data is live from Riverpod providers (SQLite cache-first).
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return RefreshIndicator(
-      // Pull-to-refresh invalidates cache and re-fetches everything.
+      color: const Color(0xFFBB86FC),
       onRefresh: () async {
-        // Re-fetch will be triggered by providers on next watch
+        // Invalidate cache and re-fetch everything
+        ref.invalidate(postsNotifierProvider);
+        ref.invalidate(peopleNotifierProvider);
       },
-      child: const SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-            // Category filter pills — wired to selectedCategoryProvider
-            CategoryBar(),
-            SizedBox(height: 24),
+            // Category filter pills
+            const CategoryBar(),
+            const SizedBox(height: 24),
 
-            // Horizontal post feed — live from PostsNotifier
-            SizedBox(height: 340, child: HorizontalPostFeed()),
-            SizedBox(height: 24),
+            // Horizontal live post feed
+            const SizedBox(
+              height: 340,
+              child: HorizontalPostFeed(),
+            ),
+            const SizedBox(height: 24),
 
-            // Recommended people — live from PeopleNotifier
-            SizedBox(height: 300, child: RecommendedConnectionsList()),
-
-            SizedBox(height: 24),
+            // Recommended connections
+            const SizedBox(
+              height: 300,
+              child: RecommendedConnectionsList(),
+            ),
+            const SizedBox(height: 24),
           ],
         ),
       ),

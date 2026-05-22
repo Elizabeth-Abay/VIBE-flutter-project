@@ -5,7 +5,8 @@ import '../../../connections/presentation/providers/connection_notifier.dart';
 import '../../domain/entity/connection_request_sending_result.dart';
 import 'recommended_person_card.dart';
 
-/// Live recommended connections list — replaces mock data.
+/// Live recommended people list — all mock data removed.
+/// Reads from PeopleNotifier which uses SQLite cache-first.
 class RecommendedConnectionsList extends ConsumerWidget {
   const RecommendedConnectionsList({super.key});
 
@@ -20,7 +21,7 @@ class RecommendedConnectionsList extends ConsumerWidget {
               style: const TextStyle(color: Colors.white38, fontSize: 12)),
         ),
       PeopleLoaded(:final people) when people.isEmpty => const Center(
-          child: Text('No recommendations',
+          child: Text('No recommendations yet.',
               style: TextStyle(color: Colors.white38)),
         ),
       PeopleLoaded(:final people) => Column(
