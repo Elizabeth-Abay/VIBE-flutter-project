@@ -39,7 +39,7 @@ class AppRouter {
   /// Call this once inside a ConsumerWidget build method.
   static GoRouter createRouter(WidgetRef ref) {
     return GoRouter(
-      initialLocation: '/splash',
+      initialLocation: '/home',
       navigatorKey: _rootNavKey,
 
       // Re-evaluate redirect whenever auth state changes.
