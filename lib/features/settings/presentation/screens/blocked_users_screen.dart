@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../profiles/presentation/providers/profile_notifier.dart';
-import '../../../profiles/data/repositories/profile_repository.dart';
+import '../../../profiles/data/repository/profile_repository.dart';
 
 class BlockedUsersScreen extends ConsumerWidget {
   const BlockedUsersScreen({super.key});

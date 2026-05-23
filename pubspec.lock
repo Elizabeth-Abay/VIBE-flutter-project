@@ -234,7 +234,7 @@ packages:
     source: hosted
     version: "0.8.1"
   custom_lint_core:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: custom_lint_core
       sha256: "85b339346154d5646952d44d682965dfe9e12cae5febd706f0db3aa5010d6423"

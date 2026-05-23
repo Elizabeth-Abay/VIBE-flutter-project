@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart' show ConflictAlgorithm;
 import '../../../../core/database/database_helper.dart';
 import '../../../../core/network/api_client.dart';
-import '../models/notification_model.dart';
+import '../../data/models/notfication_model.dart';
 import '../../domain/entity/notification_entity.dart';
 
 /// Cache-first repository for notifications and incoming connection requests.
