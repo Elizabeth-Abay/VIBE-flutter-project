@@ -4,7 +4,7 @@ import '../../../../core/network/api_client.dart';
 import '../../domain/entity/connected_user.dart';
 import '../../domain/entity/sent_request_user.dart';
 
-// ─── Connection Model ────────────────────────────────────────────────────────
+// ─── Connection Model ────────────────────────────
 
 class ConnectionModel {
   final String id;
@@ -90,7 +90,7 @@ class ConnectionRepository {
     }
   }
 
-  // ── Fetch Sent Requests (cache-first) ─────────────────────────────────────
+  // ── Fetch Sent Requests (cache-first) ────────────
 
   Future<List<SentRequestUser>> fetchSentRequests() async {
     final isStale = await _db.isCacheStale(_sentKey);
@@ -131,9 +131,7 @@ class ConnectionRepository {
       return false;
     }
   }
-
   // ── Cancel Sent Request ───────────────────────────────────────────────────
-
   Future<bool> cancelRequest(String targetId) async {
     try {
       await _api.delete('/connections/request/$targetId');
@@ -165,7 +163,6 @@ class ConnectionRepository {
       return false;
     }
   }
-
   // ─── SQLite helpers ──────────────────────────────────────────────────────
 
   Future<List<ConnectedUser>> _getCachedConnectedUsers() async {
@@ -221,7 +218,6 @@ class ConnectionRepository {
         )
         .toList();
   }
-
   Future<void> _cacheSentRequests(List<SentRequestUser> requests) async {
     final db = await _db.database;
     final batch = db.batch();
