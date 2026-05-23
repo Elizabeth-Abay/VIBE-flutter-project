@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 # This file controls Flutter-level build steps. It should not be edited.
 cmake_minimum_required(VERSION 3.10)
 
@@ -88,9 +86,6 @@ add_custom_target(flutter_assemble DEPENDS
   "${FLUTTER_LIBRARY}"
   ${FLUTTER_LIBRARY_HEADERS}
 )
-=======
-=======
->>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 # This file controls Flutter-level build steps. It should not be edited.
 cmake_minimum_required(VERSION 3.10)
 
@@ -179,7 +174,4 @@ add_custom_target(flutter_assemble DEPENDS
   "${FLUTTER_LIBRARY}"
   ${FLUTTER_LIBRARY_HEADERS}
 )
-<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
-=======
->>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

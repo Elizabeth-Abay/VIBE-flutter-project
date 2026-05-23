@@ -30,9 +30,7 @@ import '../../features/interests/presentation/screens/interest_selection_screen.
 import '../../features/home/presentation/screens/main_navigation.dart';
 
 // ── Chat ──────────────────────────────────────────────────────────────────────
-import '../../features/chat/presentation/screens/chat_list_screen.dart';
 import '../../features/chat/presentation/screens/chat_detail_screen.dart';
-import '../../features/chat/presentation/screens/saved_messages_screen.dart';
 
 // ── Connections ───────────────────────────────────────────────────────────────
 import '../../features/connections/presentation/screens/main_navigation.dart';
@@ -44,12 +42,12 @@ import '../../features/notification/presentation/screens/notification_screen.dar
 import '../../features/posts/presentation/screens/create_post.dart';
 
 // ── Profile ───────────────────────────────────────────────────────────────────
-import '../../features/profiles/screens/profile_view_screen.dart';
 import '../../features/profiles/screens/edit_profile_screen.dart';
 import '../../features/profiles/screens/delete_account_screen.dart';
 
 // ── Settings ──────────────────────────────────────────────────────────────────
 import '../../features/settings/presentation/screens/blocked_users_screen.dart';
+import '../../features/settings/presentation/screens/settings_screen.dart';
 
 final _rootNavKey = GlobalKey<NavigatorState>();
 
@@ -106,28 +104,40 @@ class AppRouter {
           builder: (_, __) => const InterestSelectionScreen(),
         ),
 
-        // ── Main app ──────────────────────────────────────────────────────
-        // MainNavigation wraps HomePage with VibeTopNavBar + CustomBottomNavBar.
-        GoRoute(path: '/home', builder: (_, __) => const MainNavigation()),
-
-        // ── Chat ──────────────────────────────────────────────────────────
+        // ── Main app shell (bottom nav tabs) ──────────────────────────────
+        GoRoute(
+          path: '/home',
+          builder: (_, __) => const MainNavigation(initialTab: 0),
+        ),
         GoRoute(
           path: '/chat',
-          builder: (_, __) => const ChatListScreen(),
+          builder: (_, __) => const MainNavigation(initialTab: 1),
+        ),
+        GoRoute(
+          path: '/saved',
+          builder: (_, __) => const MainNavigation(initialTab: 3),
+        ),
+        GoRoute(
+          path: '/profile',
+          builder: (_, __) => const MainNavigation(initialTab: 4),
           routes: [
             GoRoute(
-              path: ':name',
-              builder: (_, state) => ChatDetailScreen(
-                userName: state.pathParameters['name'] ?? 'Chat',
-              ),
+              path: 'edit',
+              builder: (_, __) => const EditProfileScreen(),
+            ),
+            GoRoute(
+              path: 'delete',
+              builder: (_, __) => const DeleteAccountScreen(),
             ),
           ],
         ),
 
-        // ── Saved messages ────────────────────────────────────────────────
+        // ── Chat detail (full screen over shell) ──────────────────────────
         GoRoute(
-          path: '/saved',
-          builder: (_, __) => const SavedMessagesScreen(),
+          path: '/chat-detail/:id',
+          builder: (_, state) => ChatDetailScreen(
+            conversationId: state.pathParameters['id'] ?? '',
+          ),
         ),
 
         // ── Connections ───────────────────────────────────────────────────
@@ -152,20 +162,10 @@ class AppRouter {
         // ── Create post ───────────────────────────────────────────────────
         GoRoute(path: '/post', builder: (_, __) => const CreatePostPage()),
 
-        // ── Profile ───────────────────────────────────────────────────────
+        // ── Settings ──────────────────────────────────────────────────────
         GoRoute(
-          path: '/profile',
-          builder: (_, __) => const ProfileViewScreen(),
-          routes: [
-            GoRoute(
-              path: 'edit',
-              builder: (_, __) => const EditProfileScreen(),
-            ),
-            GoRoute(
-              path: 'delete',
-              builder: (_, __) => const DeleteAccountScreen(),
-            ),
-          ],
+          path: '/settings',
+          builder: (_, __) => const SettingsScreen(),
         ),
 
         // ── Blocked users ─────────────────────────────────────────────────

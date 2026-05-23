@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/widgets/user_avatar.dart';
 import 'connect_button.dart';
 import '../../domain/entity/connection_request_sending_result.dart';
 
@@ -34,7 +35,11 @@ class UserConnectionCard extends StatelessWidget {
       child: Row(
         children: [
           // Avatar
-          _UserAvatar(userProfileImageUrl: userProfileImageUrl, displayName: displayName),
+          UserAvatar(
+            imageUrl: userProfileImageUrl,
+            name: displayName,
+            radius: 22,
+          ),
           const SizedBox(width: 12),
 
           // Name + Username
@@ -67,32 +72,6 @@ class UserConnectionCard extends StatelessWidget {
           ConnectButton(userId: userId, onConnect: onConnect),
         ],
       ),
-    );
-  }
-}
-
-class _UserAvatar extends StatelessWidget {
-  final String? userProfileImageUrl;
-  final String displayName;
-
-  const _UserAvatar({this.userProfileImageUrl, required this.displayName});
-
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 22,
-      backgroundColor: const Color(0xFF7C3AED).withOpacity(0.3),
-      backgroundImage: userProfileImageUrl != null ? NetworkImage(userProfileImageUrl!) : null,
-      child: userProfileImageUrl == null
-          ? Text(
-              displayName.isNotEmpty ? displayName[0].toUpperCase() : '?',
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            )
-          : null,
     );
   }
 }

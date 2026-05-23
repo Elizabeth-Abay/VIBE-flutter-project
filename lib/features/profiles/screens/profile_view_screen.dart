@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/widgets/user_avatar.dart';
 import '../presentation/providers/profile_notifier.dart';
 
 class ProfileViewScreen extends ConsumerWidget {
-  const ProfileViewScreen({super.key});
+  /// When true, shown inside [MainNavigation] without a nested [Scaffold].
+  final bool embedded;
+
+  const ProfileViewScreen({super.key, this.embedded = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(profileNotifierProvider);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF0A0E21),
-      body: switch (state) {
-        ProfileLoading() => const Center(child: CircularProgressIndicator()),
-        ProfileError(:final message) => Center(
+    final body = switch (state) {
+      ProfileLoading() => const Center(child: CircularProgressIndicator()),
+      ProfileError(:final message) => Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -29,16 +31,28 @@ class ProfileViewScreen extends ConsumerWidget {
             ],
           ),
         ),
-        ProfileLoaded(:final profile) ||
-        ProfileUpdated(:final profile) => _ProfileBody(profile: profile),
-        _ => const SizedBox.shrink(),
-      },
+      ProfileLoaded(:final profile) ||
+      ProfileUpdated(:final profile) =>
+        _ProfileBody(profile: profile),
+      _ => const SizedBox.shrink(),
+    };
+
+    if (embedded) {
+      return ColoredBox(
+        color: const Color(0xFF0A0E21),
+        child: body,
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF0A0E21),
+      body: body,
     );
   }
 }
 
 class _ProfileBody extends StatelessWidget {
-  final profile;
+  final dynamic profile;
   const _ProfileBody({required this.profile});
 
   @override
@@ -49,175 +63,115 @@ class _ProfileBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
-
-            // ── Avatar ────────────────────────────────────────────────────
+            const SizedBox(height: 16),
             Center(
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: Colors.purpleAccent,
-                  shape: BoxShape.circle,
-                ),
-                child: CircleAvatar(
-                  radius: 80,
-                  backgroundColor: Colors.white12,
-                  backgroundImage: profile.avatarUrl != null
-                      ? NetworkImage(profile.avatarUrl!)
-                      : null,
-                  child: profile.avatarUrl == null
-                      ? Text(
-                          profile.username.isNotEmpty
-                              ? profile.username[0].toUpperCase()
-                              : '?',
-                          style: const TextStyle(
-                            fontSize: 48,
-                            color: Colors.white,
-                          ),
-                        )
-                      : null,
-                ),
+              child: UserAvatar(
+                imageUrl: profile.avatarUrl,
+                name: profile.username as String,
+                radius: 64,
               ),
             ),
             const SizedBox(height: 16),
-
-            // ── Username ──────────────────────────────────────────────────
             Center(
               child: Text(
                 '@${profile.username}',
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 18,
-                  fontFamily: 'Times New Roman',
-                ),
+                style: const TextStyle(color: Colors.white70, fontSize: 18),
               ),
             ),
-            const SizedBox(height: 24),
-
-            // ── Bio ───────────────────────────────────────────────────────
+            const SizedBox(height: 20),
             const Text(
               'Bio',
               style: TextStyle(
-                fontFamily: 'Times New Roman',
-                fontSize: 32,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.purple.shade200.withOpacity(0.5),
-                  width: 1.2,
-                ),
-                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: Colors.white24),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
                 profile.bio ?? 'No bio yet. Tap Edit Profile to add one.',
-                style: const TextStyle(
-                  fontFamily: 'Times New Roman',
-                  fontSize: 18,
-                  color: Colors.white,
-                  height: 1.4,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 16),
               ),
             ),
-
-            // ── Interests / vibes ─────────────────────────────────────────
             if (profile.vibes.isNotEmpty) ...[
-              const Divider(color: Colors.white24, height: 40, thickness: 1),
+              const SizedBox(height: 24),
               const Text(
                 'Interests',
                 style: TextStyle(
-                  fontFamily: 'Times New Roman',
-                  fontSize: 32,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: profile.vibes.entries
-                    .map((e) => _interestChip('${e.key} (${e.value})'))
+                spacing: 8,
+                runSpacing: 8,
+                children: (profile.vibes as Map<String, String>)
+                    .entries
+                    .map((e) => Chip(
+                          label: Text('${e.key} (${e.value})'),
+                          backgroundColor: Colors.white10,
+                        ))
                     .toList(),
               ),
             ],
-
-            const Divider(color: Colors.white24, height: 60, thickness: 1),
-
-            // ── Actions ───────────────────────────────────────────────────
+            const SizedBox(height: 32),
             _actionButton(
+              context,
               text: 'Edit Profile',
-              isGradient: true,
+              filled: true,
               onTap: () => context.push('/profile/edit'),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             _actionButton(
+              context,
+              text: 'Settings',
+              filled: false,
+              onTap: () => context.push('/settings'),
+            ),
+            const SizedBox(height: 12),
+            _actionButton(
+              context,
               text: 'Delete Account',
-              isGradient: false,
+              filled: false,
               onTap: () => context.push('/profile/delete'),
             ),
-            const SizedBox(height: 120),
+            const SizedBox(height: 80),
           ],
         ),
       ),
     );
   }
 
-  Widget _interestChip(String label) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-    decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(14),
-      border: Border.all(color: Colors.white10),
-    ),
-    child: Text(
-      label,
-      style: const TextStyle(
-        color: Colors.white70,
-        fontFamily: 'Times New Roman',
-        fontSize: 14,
-      ),
-    ),
-  );
-
-  Widget _actionButton({
+  Widget _actionButton(
+    BuildContext context, {
     required String text,
-    required bool isGradient,
+    required bool filled,
     required VoidCallback onTap,
-  }) => GestureDetector(
-    onTap: onTap,
-    child: Container(
+  }) {
+    return SizedBox(
       width: double.infinity,
-      height: 60,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        gradient: isGradient
-            ? const LinearGradient(
-                colors: [Color(0xFFE040FB), Color(0xFF448AFF)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              )
-            : null,
-        border: !isGradient
-            ? Border.all(color: Colors.white38, width: 1.5)
-            : null,
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Times New Roman',
+      height: 52,
+      child: FilledButton(
+        onPressed: onTap,
+        style: FilledButton.styleFrom(
+          backgroundColor: filled ? const Color(0xFF7C3AED) : Colors.transparent,
+          foregroundColor: Colors.white,
+          side: filled ? null : const BorderSide(color: Colors.white38),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(26),
+          ),
         ),
+        child: Text(text),
       ),
-    ),
-  );
+    );
+  }
 }

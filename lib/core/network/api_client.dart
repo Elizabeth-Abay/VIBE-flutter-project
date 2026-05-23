@@ -1,17 +1,20 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'api_config.dart';
+import 'mock_api_backend.dart';
 
 /// Centralised HTTP client.
 /// All repositories use [ApiClient.instance] to make authenticated requests.
 ///
-/// Replace [baseUrl] with your actual backend URL.
+/// In debug mode [ApiConfig.useMockBackend] routes auth and other calls through
+/// [MockApiBackend] so the app works without api.vibe.app deployed.
 class ApiClient {
   ApiClient._internal();
   static final ApiClient instance = ApiClient._internal();
 
-  // TODO: replace with your real API base URL
-  static const String baseUrl = 'https://api.vibe.app/v1';
+  static const String baseUrl = ApiConfig.productionBaseUrl;
 
   final _storage = const FlutterSecureStorage();
 
@@ -38,6 +41,25 @@ class ApiClient {
   // ─── HTTP verbs ──────────────────────────────────────────────────────────
 
   Future<Map<String, dynamic>> get(String path) async {
+    if (ApiConfig.useMockBackend) {
+      final normalized = path.split('?').first;
+      if (normalized == '/auth/me') {
+        final token = await getToken();
+        return MockApiBackend.userForToken(token);
+      }
+      if (normalized == '/profile/me') {
+        final token = await getToken();
+        final user =
+            MockApiBackend.userForToken(token)['user'] as Map<String, dynamic>;
+        return {
+          'profile': {
+            ...user,
+            'vibes': user['vibes'] ?? <String, String>{},
+          },
+        };
+      }
+      return MockApiBackend.get(path);
+    }
     final response = await http.get(
       Uri.parse('$baseUrl$path'),
       headers: await _headers(),
@@ -50,6 +72,9 @@ class ApiClient {
     Map<String, dynamic>? body,
     bool auth = true,
   }) async {
+    if (ApiConfig.useMockBackend) {
+      return MockApiBackend.post(path, body: body);
+    }
     final response = await http.post(
       Uri.parse('$baseUrl$path'),
       headers: await _headers(auth: auth),
@@ -62,6 +87,9 @@ class ApiClient {
     String path, {
     Map<String, dynamic>? body,
   }) async {
+    if (ApiConfig.useMockBackend) {
+      return MockApiBackend.put(path, body: body);
+    }
     final response = await http.put(
       Uri.parse('$baseUrl$path'),
       headers: await _headers(),
@@ -71,6 +99,9 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> delete(String path) async {
+    if (ApiConfig.useMockBackend) {
+      return MockApiBackend.delete(path);
+    }
     final response = await http.delete(
       Uri.parse('$baseUrl$path'),
       headers: await _headers(),
@@ -81,7 +112,15 @@ class ApiClient {
   // ─── Response handler ────────────────────────────────────────────────────
 
   Map<String, dynamic> _handleResponse(http.Response response) {
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    Map<String, dynamic> body;
+    try {
+      body = jsonDecode(response.body) as Map<String, dynamic>;
+    } catch (_) {
+      throw ApiException(
+        statusCode: response.statusCode,
+        message: 'Invalid server response',
+      );
+    }
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return body;
     }
@@ -89,6 +128,22 @@ class ApiClient {
       statusCode: response.statusCode,
       message: body['message'] as String? ?? 'Unknown error',
     );
+  }
+
+  /// Whether the app is using the in-memory / ReqRes dev backend.
+  static bool get isMockMode => ApiConfig.useMockBackend;
+
+  /// Log mock mode once at startup (debug only).
+  static void logBackendMode() {
+    if (kDebugMode) {
+      debugPrint(
+        ApiConfig.useMockBackend
+            ? '🧪 Vibe API: MOCK mode (OTP ${ApiConfig.mockOtpCode}, '
+                'password ${ApiConfig.mockPassword}, '
+                'ReqRes ${ApiConfig.reqresDemoEmail})'
+            : '🌐 Vibe API: $baseUrl',
+      );
+    }
   }
 }
 

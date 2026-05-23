@@ -27,11 +27,15 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
   final _descriptionController = TextEditingController();
 
   @override
+  void deactivate() {
+    ref.read(createPostProvider.notifier).resetState();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-    // Clean up all form providers when the screen closes
-    ref.read(createPostProvider.notifier).resetState();
     super.dispose();
   }
 

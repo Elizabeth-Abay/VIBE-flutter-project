@@ -22,24 +22,24 @@ class ProfileRepository {
   // ─── Get profile (cache-first) ───────────────────────────────────────────
 
   Future<ProfileEntity?> getProfile() async {
-    // 1. Try SQLite cache first
-    final isStale = await _db.isCacheStale(
-      _cacheKey,
-      maxAge: const Duration(minutes: 10),
-    );
-    if (!isStale) {
-      final cached = await _getCachedProfile();
-      if (cached != null) return cached;
-    }
+    try {
+      final isStale = await _db.isCacheStale(
+        _cacheKey,
+        maxAge: const Duration(minutes: 10),
+      );
+      if (!isStale) {
+        final cached = await _getCachedProfile();
+        if (cached != null) return cached;
+      }
+    } catch (_) {}
 
-    // 2. Network fallback
     try {
       final response = await _api.get('/profile/me');
       final profile = _fromJson(response['profile'] as Map<String, dynamic>);
       await _cacheProfile(profile);
       return profile;
     } catch (_) {
-      return _getCachedProfile(); // Return stale cache if network fails
+      return _getCachedProfile();
     }
   }
 
@@ -81,12 +81,7 @@ class ProfileRepository {
 
   Future<void> deleteAccount() async {
     await _api.delete('/auth/account');
-    // Wipe everything locally
-    await _db.clearTable('users');
-    await _db.clearTable('posts');
-    await _db.clearTable('connections');
-    await _db.clearTable('notifications');
-    await _db.clearTable('cache_meta');
+    await _db.clearAllUserData();
     await ApiClient.instance.clearToken();
   }
 
@@ -116,30 +111,48 @@ class ProfileRepository {
   // ─── SQLite helpers ──────────────────────────────────────────────────────
 
   Future<ProfileEntity?> _getCachedProfile() async {
-    final db = await _db.database;
-    final rows = await db.query('users', limit: 1);
-    if (rows.isEmpty) return null;
-    final r = rows.first;
-    return ProfileEntity(
-      id: r['id'] as String,
-      username: r['username'] as String,
-      email: r['email'] as String,
-      bio: r['bio'] as String?,
-      avatarUrl: r['avatar_url'] as String?,
-    );
+    try {
+      final db = await _db.database;
+      final rows = await db.query('users', limit: 1);
+      if (rows.isEmpty) return null;
+      final r = rows.first;
+      Map<String, String> parseVibes(dynamic raw) {
+        if (raw == null) return {};
+        try {
+          final m = jsonDecode(raw as String) as Map;
+          return m.map((k, v) => MapEntry(k as String, v as String));
+        } catch (_) {
+          return {};
+        }
+      }
+
+      return ProfileEntity(
+        id: r['id'] as String,
+        username: r['username'] as String,
+        email: r['email'] as String,
+        bio: r['bio'] as String?,
+        avatarUrl: r['avatar_url'] as String?,
+        vibes: parseVibes(r['vibes']),
+      );
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> _cacheProfile(ProfileEntity profile) async {
-    final db = await _db.database;
-    await db.insert('users', {
-      'id': profile.id,
-      'username': profile.username,
-      'email': profile.email,
-      'bio': profile.bio,
-      'avatar_url': profile.avatarUrl,
-      'created_at': DateTime.now().toIso8601String(),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
-    await _db.markCacheFresh(_cacheKey);
+    try {
+      final db = await _db.database;
+      await db.insert('users', {
+        'id': profile.id,
+        'username': profile.username,
+        'email': profile.email,
+        'bio': profile.bio,
+        'avatar_url': profile.avatarUrl,
+        'vibes': profile.vibes.isEmpty ? null : jsonEncode(profile.vibes),
+        'created_at': DateTime.now().toIso8601String(),
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      await _db.markCacheFresh(_cacheKey);
+    } catch (_) {}
   }
 
   ProfileEntity _fromJson(Map<String, dynamic> json) {

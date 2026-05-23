@@ -10,6 +10,7 @@ class AuthTextField extends StatefulWidget {
   final String? hintText;
   final TextEditingController? controller;
   final TextInputType keyboardType;
+  final bool readOnly;
 
   const AuthTextField({
     super.key,
@@ -20,6 +21,7 @@ class AuthTextField extends StatefulWidget {
     this.hintText,
     this.controller,
     this.keyboardType = TextInputType.text,
+    this.readOnly = false,
   });
 
   @override
@@ -41,6 +43,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
         const SizedBox(height: 8),
         TextField(
           controller: widget.controller,
+          readOnly: widget.readOnly,
           obscureText: widget.isPassword && _obscure,
           keyboardType: widget.keyboardType,
           decoration: InputDecoration(

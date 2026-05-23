@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 #include "win32_window.h"
 
 #include <dwmapi.h>
@@ -288,9 +286,6 @@ void Win32Window::UpdateTheme(HWND const window) {
                           &enable_dark_mode, sizeof(enable_dark_mode));
   }
 }
-=======
-=======
->>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 #include "win32_window.h"
 
 #include <dwmapi.h>
@@ -579,7 +574,4 @@ void Win32Window::UpdateTheme(HWND const window) {
                           &enable_dark_mode, sizeof(enable_dark_mode));
   }
 }
-<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
-=======
->>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

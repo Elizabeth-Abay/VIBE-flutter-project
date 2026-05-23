@@ -177,9 +177,9 @@ class ConnectionRepository {
         .map(
           (r) => ConnectedUser(
             userId: r['target_id'] as String,
-            name: r['target_id'] as String,
-            username: '',
-            profileImage: '',
+            name: r['target_name'] as String? ?? r['target_id'] as String,
+            username: r['target_username'] as String? ?? '',
+            profileImage: r['target_avatar'] as String? ?? '',
           ),
         )
         .toList();
@@ -187,6 +187,11 @@ class ConnectionRepository {
 
   Future<void> _cacheConnectedUsers(List<ConnectedUser> users) async {
     final db = await _db.database;
+    await db.delete(
+      'connections',
+      where: 'status = ?',
+      whereArgs: ['connected'],
+    );
     final batch = db.batch();
     for (final u in users) {
       batch.insert('connections', {
@@ -194,6 +199,9 @@ class ConnectionRepository {
         'user_id': 'me',
         'target_id': u.userId,
         'status': 'connected',
+        'target_name': u.name,
+        'target_username': u.username,
+        'target_avatar': u.profileImage,
         'created_at': DateTime.now().toIso8601String(),
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     }
@@ -211,8 +219,8 @@ class ConnectionRepository {
         .map(
           (r) => SentRequestUser(
             userId: r['target_id'] as String,
-            name: r['target_id'] as String,
-            profileImage: '',
+            name: r['target_name'] as String? ?? r['target_id'] as String,
+            profileImage: r['target_avatar'] as String? ?? '',
             timestamp: r['created_at'] as String,
           ),
         )
@@ -220,6 +228,11 @@ class ConnectionRepository {
   }
   Future<void> _cacheSentRequests(List<SentRequestUser> requests) async {
     final db = await _db.database;
+    await db.delete(
+      'connections',
+      where: 'status = ?',
+      whereArgs: ['pending'],
+    );
     final batch = db.batch();
     for (final r in requests) {
       batch.insert('connections', {
@@ -227,6 +240,8 @@ class ConnectionRepository {
         'user_id': 'me',
         'target_id': r.userId,
         'status': 'pending',
+        'target_name': r.name,
+        'target_avatar': r.profileImage,
         'created_at': r.timestamp,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     }

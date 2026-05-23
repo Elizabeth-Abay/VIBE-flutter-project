@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <dependencies>
@@ -37,9 +35,6 @@
         <image name="LaunchImage" width="168" height="185"/>
     </resources>
 </document>
-=======
-=======
->>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <dependencies>
@@ -77,7 +72,4 @@
         <image name="LaunchImage" width="168" height="185"/>
     </resources>
 </document>
-<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
-=======
->>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

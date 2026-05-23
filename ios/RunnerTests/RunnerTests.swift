@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 import Flutter
 import UIKit
 import XCTest
@@ -12,9 +10,6 @@ class RunnerTests: XCTestCase {
   }
 
 }
-=======
-=======
->>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420
 import Flutter
 import UIKit
 import XCTest
@@ -27,7 +22,4 @@ class RunnerTests: XCTestCase {
   }
 
 }
-<<<<<<< HEAD
 >>>>>>> 1e1053074115c640e52ef23161077718c0e197cf
-=======
->>>>>>> ae2bc717ffebef3b73439a13f6d3cc89ea3a7420

@@ -38,27 +38,24 @@ class HorizontalPostFeed extends ConsumerWidget {
         child: Text('No posts yet.', style: TextStyle(color: Colors.white38)),
       ),
 
-      PostsLoaded(:final posts) => SizedBox(
-        height: 300,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            final post = posts[index];
-            return Container(
-              margin: const EdgeInsets.only(right: 12),
-              child: SocialPostWidget(
-                title: post.title,
-                imageUrl: post.imageUrl ?? '',
-                description: post.description,
-                tags: post.tags,
-                userName: post.userName,
-                userProfileImageUrl: post.userProfileImageUrl,
-              ),
-            );
-          },
-        ),
+      PostsLoaded(:final posts) => ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        itemCount: posts.length,
+        itemBuilder: (context, index) {
+          final post = posts[index];
+          return Container(
+            margin: const EdgeInsets.only(right: 12),
+            child: SocialPostWidget(
+              title: post.title,
+              imageUrl: post.imageUrl ?? '',
+              description: post.description,
+              tags: post.tags,
+              userName: post.userName,
+              userProfileImageUrl: post.userProfileImageUrl,
+            ),
+          );
+        },
       ),
 
       _ => const SizedBox.shrink(),

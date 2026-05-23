@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/utils/image_optimizer.dart';
+import '../../../../core/widgets/user_avatar.dart';
 
 class SocialPostWidget extends StatelessWidget {
   final String title;
@@ -37,6 +38,7 @@ class SocialPostWidget extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(maxWidth: 260),
       padding: const EdgeInsets.all(16.0),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: const Color(
           0xFF161A33,
@@ -66,28 +68,39 @@ class SocialPostWidget extends StatelessWidget {
             aspectRatio: 16 / 9,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                optimizedImageUrl,
-                fit: BoxFit.cover,
-                cacheWidth: 400, // Vital for memory performance
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.white10,
-                  child: const Icon(Icons.broken_image, color: Colors.white24),
-                ),
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    color: Colors.white10,
-                    child: const Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+              child: imageUrl.isEmpty
+                  ? Container(
+                      color: Colors.white10,
+                      child: const Icon(
+                        Icons.image_outlined,
+                        color: Colors.white24,
                       ),
+                    )
+                  : Image.network(
+                      optimizedImageUrl,
+                      fit: BoxFit.cover,
+                      cacheWidth: 400,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.white10,
+                        child: const Icon(
+                          Icons.broken_image,
+                          color: Colors.white24,
+                        ),
+                      ),
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: Colors.white10,
+                          child: const Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ),
           const SizedBox(height: 12),
@@ -137,15 +150,10 @@ class SocialPostWidget extends StatelessWidget {
           // 5. User Profile Row
           Row(
             children: [
-              CircleAvatar(
+              UserAvatar(
+                imageUrl: userProfileImageUrl,
+                name: userName,
                 radius: 12,
-                backgroundColor: Colors.white10,
-                backgroundImage: optimizedProfileImageUrl != null
-                    ? NetworkImage(optimizedProfileImageUrl!)
-                    : null,
-                child: optimizedProfileImageUrl == null
-                    ? const Icon(Icons.person, size: 14, color: Colors.white24)
-                    : null,
               ),
               const SizedBox(width: 8),
               Expanded(

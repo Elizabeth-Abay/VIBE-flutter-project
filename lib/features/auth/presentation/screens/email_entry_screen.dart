@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_config.dart';
+import '../../../../core/utils/safe_navigation.dart';
 import '../providers/email_entry_notifier.dart';
+import '../providers/registration_session_notifier.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/action_button.dart';
 
@@ -18,7 +22,6 @@ class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
   @override
   void dispose() {
     _emailController.dispose();
-    ref.read(emailEntryProvider.notifier).reset();
     super.dispose();
   }
 
@@ -33,8 +36,10 @@ class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
     // Navigate to verify screen when OTP is sent successfully.
     ref.listen<EmailEntryState>(emailEntryProvider, (_, next) {
       if (next is EmailEntrySuccess) {
-        // Pass the email as a query param so VerificationScreen can use it.
-        context.push('/verify?email=${Uri.encodeComponent(next.email)}');
+        ref.read(registrationSessionProvider.notifier).setEmail(next.email);
+        unfocusAndNavigate(context, (router) {
+          router.push('/verify?email=${Uri.encodeComponent(next.email)}');
+        });
       }
     });
 
@@ -61,6 +66,16 @@ class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
               "Enter your email to get started",
               style: TextStyle(color: Colors.white54, fontSize: 14),
             ),
+            if (ApiClient.isMockMode) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Dev mode: OTP is ${ApiConfig.mockOtpCode}',
+                style: TextStyle(
+                  color: Colors.purple.shade200,
+                  fontSize: 12,
+                ),
+              ),
+            ],
             const SizedBox(height: 40),
 
             AuthTextField(

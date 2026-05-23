@@ -60,7 +60,8 @@ class PostsNotifier extends Notifier<PostsState> {
     }
   }
 
-  Future<void> refresh() => fetchPosts();
+  Future<void> refresh() =>
+      fetchPosts(category: ref.read(selectedCategoryProvider));
 }
 
 // ─────────────────────────────────────────────

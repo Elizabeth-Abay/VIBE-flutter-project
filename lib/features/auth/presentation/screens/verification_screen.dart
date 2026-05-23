@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/network/api_config.dart';
+import '../../../../core/utils/safe_navigation.dart';
+import '../providers/registration_session_notifier.dart';
 import '../providers/verification_notifier.dart';
 import '../widgets/action_button.dart';
 
@@ -21,10 +24,18 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   final _focusNodes = List.generate(6, (_) => FocusNode());
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(registrationSessionProvider.notifier).setEmail(widget.email);
+    });
+  }
+
+  @override
   void dispose() {
+    FocusManager.instance.primaryFocus?.unfocus();
     for (final c in _controllers) c.dispose();
     for (final f in _focusNodes) f.dispose();
-    ref.read(verificationProvider.notifier).reset();
     super.dispose();
   }
 
@@ -65,7 +76,10 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   Widget build(BuildContext context) {
     ref.listen<VerificationState>(verificationProvider, (_, next) {
       if (next is VerificationSuccess) {
-        context.go('/signup');
+        ref.read(registrationSessionProvider.notifier).markOtpVerified();
+        unfocusAndNavigate(context, (router) {
+          router.go('/signup?email=${Uri.encodeComponent(widget.email)}');
+        });
       } else if (next is VerificationResent) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Code resent! Check your inbox.')),
@@ -101,6 +115,13 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.white54, fontSize: 14),
             ),
+            if (ApiConfig.useMockBackend) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Dev mode: enter ${ApiConfig.mockOtpCode}',
+                style: TextStyle(color: Colors.purple.shade200, fontSize: 12),
+              ),
+            ],
             const SizedBox(height: 40),
 
             // ── OTP boxes ────────────────────────────────────────────────

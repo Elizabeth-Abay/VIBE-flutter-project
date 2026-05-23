@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/network/api_config.dart';
 import '../providers/auth_notifier.dart';
 import '../../domain/entities/auth_state.dart';
 import '../widgets/auth_text_field.dart';
@@ -43,11 +44,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Listen for auth state changes and navigate when authenticated.
     ref.listen<AuthState>(authNotifierProvider, (_, next) {
       if (next is AuthStateAuthenticated) {
-        context.go('/home');
+        FocusManager.instance.primaryFocus?.unfocus();
+        // GoRouter redirect in auth_guard sends authenticated users to /home.
       } else if (next is AuthStateError) {
+        if (!context.mounted) return;
         setState(() => _errorMessage = next.message);
       }
     });
@@ -70,6 +72,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               ),
             ),
             const Text("Sign in", style: TextStyle(fontSize: 20)),
+            if (ApiConfig.useMockBackend) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Dev: password "${ApiConfig.mockPassword}"\n'
+                'Or ReqRes: ${ApiConfig.reqresDemoEmail}',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.purple.shade200, fontSize: 11),
+              ),
+            ],
             const SizedBox(height: 40),
 
             AuthTextField(

@@ -15,7 +15,6 @@ class HomePage extends ConsumerWidget {
     return RefreshIndicator(
       color: const Color(0xFFBB86FC),
       onRefresh: () async {
-        // Invalidate cache and re-fetch everything
         ref.invalidate(postsNotifierProvider);
         ref.invalidate(peopleNotifierProvider);
       },
@@ -25,16 +24,10 @@ class HomePage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-
-            // Category filter pills
             const CategoryBar(),
             const SizedBox(height: 24),
-
-            // Horizontal live post feed
             const SizedBox(height: 340, child: HorizontalPostFeed()),
             const SizedBox(height: 24),
-
-            // Recommended connections
             const SizedBox(height: 300, child: RecommendedConnectionsList()),
             const SizedBox(height: 24),
           ],

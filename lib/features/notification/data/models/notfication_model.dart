@@ -64,4 +64,23 @@ class ConnectionRequestModel extends ConnectionRequestEntity {
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
+
+  factory ConnectionRequestModel.fromDb(Map<String, dynamic> row) {
+    return ConnectionRequestModel(
+      requesterId: row['requester_id'] as String,
+      name: row['name'] as String,
+      username: row['username'] as String,
+      profileImageUrl: row['profile_image_url'] as String?,
+      createdAt: DateTime.parse(row['created_at'] as String),
+    );
+  }
+
+  Map<String, dynamic> toDb() => {
+    'requester_id': requesterId,
+    'name': name,
+    'username': username,
+    'profile_image_url': profileImageUrl,
+    'created_at': createdAt.toIso8601String(),
+    'cached_at': DateTime.now().toIso8601String(),
+  };
 }

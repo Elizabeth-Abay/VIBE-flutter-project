@@ -5,12 +5,6 @@ import '../../data/models/notfication_model.dart';
 import '../../domain/entity/notification_entity.dart';
 
 /// Cache-first repository for notifications and incoming connection requests.
-///
-/// Cache flow:
-///   1. Check SQLite freshness (< 2 min).
-///   2. HIT  → return SQLite rows immediately.
-///   3. MISS → API call → store → mark fresh → return.
-///   4. Network failure → return stale cache.
 class NotificationRepository {
   NotificationRepository._internal();
   static final NotificationRepository instance =
@@ -21,8 +15,6 @@ class NotificationRepository {
 
   static const _notifCacheKey = 'notifications';
   static const _requestCacheKey = 'connection_requests_incoming';
-
-  // ── Fetch notifications (Updates tab) ─────────────────────────────────────
 
   Future<List<NotificationEntity>> fetchNotifications() async {
     final isStale = await _db.isCacheStale(
@@ -49,8 +41,6 @@ class NotificationRepository {
       return _getCachedNotifications();
     }
   }
-
-  // ── Fetch incoming requests (Requests tab) ────────────────────────────────
 
   Future<List<ConnectionRequestEntity>> fetchIncomingRequests() async {
     final isStale = await _db.isCacheStale(
@@ -80,8 +70,6 @@ class NotificationRepository {
     }
   }
 
-  // ── Mark single notification read ─────────────────────────────────────────
-
   Future<void> markRead(String notificationId) async {
     final db = await _db.database;
     await db.update(
@@ -95,8 +83,6 @@ class NotificationRepository {
     } catch (_) {}
   }
 
-  // ── Mark all read ─────────────────────────────────────────────────────────
-
   Future<void> markAllRead() async {
     final db = await _db.database;
     await db.update('notifications', {'is_read': 1});
@@ -104,8 +90,6 @@ class NotificationRepository {
       await _api.put('/notifications/read-all');
     } catch (_) {}
   }
-
-  // ── Accept request ────────────────────────────────────────────────────────
 
   Future<bool> acceptRequest(String requesterId) async {
     try {
@@ -120,19 +104,21 @@ class NotificationRepository {
     }
   }
 
-  // ── Decline request ───────────────────────────────────────────────────────
-
   Future<bool> declineRequest(String requesterId) async {
     try {
       await _api.delete('/connections/request/$requesterId');
+      final db = await _db.database;
+      await db.delete(
+        'connection_requests',
+        where: 'requester_id = ?',
+        whereArgs: [requesterId],
+      );
       await _db.invalidateCache(_requestCacheKey);
       return true;
     } catch (_) {
       return false;
     }
   }
-
-  // ── Unread count ──────────────────────────────────────────────────────────
 
   Future<int> getUnreadCount() async {
     final db = await _db.database;
@@ -142,12 +128,12 @@ class NotificationRepository {
     return result.first['count'] as int? ?? 0;
   }
 
-  // ── SQLite helpers ────────────────────────────────────────────────────────
-
   Future<List<NotificationEntity>> _getCachedNotifications() async {
     final db = await _db.database;
     final rows = await db.query(
       'notifications',
+      where: "type != ?",
+      whereArgs: ['connection_request'],
       orderBy: 'created_at DESC',
       limit: 50,
     );
@@ -170,36 +156,24 @@ class NotificationRepository {
   Future<List<ConnectionRequestEntity>> _getCachedRequests() async {
     final db = await _db.database;
     final rows = await db.query(
-      'notifications',
-      where: 'type = ?',
-      whereArgs: ['connection_request'],
+      'connection_requests',
       orderBy: 'created_at DESC',
     );
-    return rows.map((r) {
-      return ConnectionRequestEntity(
-        requesterId: r['id'] as String,
-        name: r['message'] as String,
-        username: '',
-        profileImageUrl: null,
-        createdAt: DateTime.parse(r['created_at'] as String),
-      );
-    }).toList();
+    return rows.map(ConnectionRequestModel.fromDb).toList();
   }
 
   Future<void> _cacheIncomingRequests(
     List<ConnectionRequestModel> models,
   ) async {
     final db = await _db.database;
+    await db.delete('connection_requests');
     final batch = db.batch();
     for (final r in models) {
-      batch.insert('notifications', {
-        'id': 'req_${r.requesterId}',
-        'type': 'connection_request',
-        'message': r.name,
-        'is_read': 0,
-        'created_at': r.createdAt.toIso8601String(),
-        'cached_at': DateTime.now().toIso8601String(),
-      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      batch.insert(
+        'connection_requests',
+        r.toDb(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
     }
     await batch.commit(noResult: true);
   }

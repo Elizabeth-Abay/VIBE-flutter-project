@@ -1,75 +1,117 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../data/models/message.dart';
+import '../providers/chat_notifier.dart';
 
-class ChatDetailScreen extends StatelessWidget {
-  final String userName;
-  const ChatDetailScreen({super.key, required this.userName});
+class ChatDetailScreen extends ConsumerStatefulWidget {
+  final String conversationId;
+
+  const ChatDetailScreen({super.key, required this.conversationId});
+
+  @override
+  ConsumerState<ChatDetailScreen> createState() => _ChatDetailScreenState();
+}
+
+class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: VibeColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-          onPressed: () => context.pop(),
-        ),
-        title: Row(
-          children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=$userName'),
+    final title = ref.watch(conversationTitleProvider(widget.conversationId));
+
+    return ProviderScope(
+      overrides: [
+        conversationIdProvider.overrideWithValue(widget.conversationId),
+      ],
+      child: Consumer(
+        builder: (context, ref, _) {
+          final state = ref.watch(chatThreadNotifierProvider);
+
+          return Scaffold(
+            backgroundColor: VibeColors.background,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new,
+                    color: Colors.white, size: 20),
+                onPressed: () => context.pop(),
+              ),
+              title: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
             ),
-            const SizedBox(width: 12),
-            Text(userName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          const Divider(color: Colors.white24, height: 1),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            body: Column(
               children: [
-                _bubble("Hey Are you up for a hackathon?", "2:45 AM", true, null),
-                _bubble("I wanted to invite you", "4:45 PM", true, null),
-                _bubble("Sure tell me the details", "1:56 AM", false, 'https://i.pravatar.cc/150?u=$userName'),
-                _bubble("It is Saturday and in ALX.", "3:55 PM", true, null),
-                _bubble("We are making an app", "3:55 PM", true, null),
-                _bubble("Sure sign me up", "5:26 AM", false, 'https://i.pravatar.cc/150?u=$userName'),
+                const Divider(color: Colors.white24, height: 1),
+                Expanded(child: _buildBody(state)),
+                _inputArea(ref),
               ],
             ),
-          ),
-          _inputArea(),
-        ],
+          );
+        },
       ),
     );
   }
 
-  Widget _bubble(String text, String time, bool isMe, String? avatar) {
+  Widget _buildBody(ChatThreadState state) {
+    return switch (state) {
+      ChatThreadLoading() => const Center(
+          child: CircularProgressIndicator(color: Colors.white),
+        ),
+      ChatThreadError(:final message) => Center(
+          child: Text(message, style: const TextStyle(color: Colors.white70)),
+        ),
+      ChatThreadLoaded(:final messages, :final currentUserId) =>
+        ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          itemCount: messages.length,
+          itemBuilder: (_, i) => _bubble(
+            messages[i],
+            currentUserId: currentUserId,
+          ),
+        ),
+      _ => const SizedBox.shrink(),
+    };
+  }
+
+  Widget _bubble(Message message, {String? currentUserId}) {
+    final isMe = currentUserId != null && message.isFromMe(currentUserId);
     return Padding(
       padding: const EdgeInsets.only(bottom: 28),
       child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMe) ...[
-            CircleAvatar(
+            const CircleAvatar(
               radius: 16,
-              backgroundImage: NetworkImage(avatar ?? 'https://i.pravatar.cc/150?u=default'),
+              child: Icon(Icons.person, size: 18, color: Colors.white54),
             ),
             const SizedBox(width: 10),
           ],
           Column(
-            crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment:
+                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               Container(
                 constraints: const BoxConstraints(maxWidth: 260),
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                 decoration: BoxDecoration(
                   gradient: isMe ? VibeColors.messageGradient : null,
                   color: isMe ? null : const Color(0xFF2C3149),
@@ -81,7 +123,7 @@ class ChatDetailScreen extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  text,
+                  message.text,
                   style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ),
@@ -89,7 +131,7 @@ class ChatDetailScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 4, right: 4),
                 child: Text(
-                  time,
+                  message.displayTime,
                   style: const TextStyle(color: Colors.grey, fontSize: 10),
                 ),
               ),
@@ -100,7 +142,7 @@ class ChatDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _inputArea() {
+  Widget _inputArea(WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Row(
@@ -123,23 +165,34 @@ class ChatDetailScreen extends StatelessWidget {
                 color: const Color(0xFF1E2235),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: const TextField(
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
+              child: TextField(
+                controller: _controller,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
                   hintText: 'Message',
                   hintStyle: TextStyle(color: Colors.white38),
                   border: InputBorder.none,
                 ),
+                onSubmitted: (text) => _send(ref, text),
               ),
             ),
           ),
           const SizedBox(width: 12),
-          Transform.rotate(
-            angle: -0.5,
-            child: const Icon(Icons.send_sharp, color: Colors.white, size: 30),
+          GestureDetector(
+            onTap: () => _send(ref, _controller.text),
+            child: Transform.rotate(
+              angle: -0.5,
+              child: const Icon(Icons.send_sharp, color: Colors.white, size: 30),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _send(WidgetRef ref, String text) async {
+    if (text.trim().isEmpty) return;
+    _controller.clear();
+    await ref.read(chatThreadNotifierProvider.notifier).sendMessage(text);
   }
 }

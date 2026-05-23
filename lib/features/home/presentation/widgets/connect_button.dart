@@ -62,6 +62,7 @@ class _ConnectButtonState extends State<ConnectButton>
     await _animController.forward();
     await _animController.reverse();
 
+    if (!mounted) return;
     setState(() {
       _state = ConnectButtonState.sending;
       _label = 'Sending';
@@ -69,6 +70,7 @@ class _ConnectButtonState extends State<ConnectButton>
 
     try {
       final result = await widget.onConnect(widget.userId);
+      if (!mounted) return;
 
       setState(() {
         if (result.statusCode == 200) {
@@ -80,6 +82,7 @@ class _ConnectButtonState extends State<ConnectButton>
         }
       });
     } catch (_) {
+      if (!mounted) return;
       setState(() {
         _state = ConnectButtonState.error;
         _label = 'Error';
@@ -141,6 +144,8 @@ class _ConnectButtonState extends State<ConnectButton>
                     : Text(
                         _label,
                         key: ValueKey(_label),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,

@@ -1,16 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite/sqflite.dart' show ConflictAlgorithm;
 import '../../../../core/database/database_helper.dart';
 import '../../../../core/network/api_client.dart';
+import '../local/user_local_cache.dart';
 import '../models/user_model.dart';
 import '../../domain/entities/user_entity.dart';
 
 /// Auth repository: single source of truth for sign-in, sign-up,
 /// sign-out, and fetching the currently cached user.
-///
-/// Pattern:
-///   1. Check local cache first (SQLite).
-///   2. On cache miss → call network → store result → return.
 class AuthRepository {
   AuthRepository._internal();
   static final AuthRepository instance = AuthRepository._internal();
@@ -20,8 +18,6 @@ class AuthRepository {
   final _storage = const FlutterSecureStorage();
 
   static const _cacheKey = 'current_user';
-
-  // ─── Sign In ─────────────────────────────────────────────────────────────
 
   Future<UserEntity> signIn({
     required String email,
@@ -38,8 +34,6 @@ class AuthRepository {
     await _cacheUser(user);
     return user;
   }
-
-  // ─── Sign Up ─────────────────────────────────────────────────────────────
 
   Future<UserEntity> signUp({
     required String username,
@@ -58,53 +52,56 @@ class AuthRepository {
     return user;
   }
 
-  // ─── Sign Out ────────────────────────────────────────────────────────────
-
   Future<void> signOut() async {
     await _api.clearToken();
-    await _db.clearTable('users');
-    await _db.invalidateCache(_cacheKey);
+    await UserLocalCache.clear();
+    if (kIsWeb) return;
+    try {
+      await _db.clearAllUserData();
+    } catch (_) {}
   }
 
-  // ─── Get Current User (cache-first) ──────────────────────────────────────
-
   Future<UserEntity?> getCurrentUser() async {
-    // 1. Try cache
-    final db = await _db.database;
-    final rows = await db.query('users', limit: 1);
-    if (rows.isNotEmpty) return UserModel.fromDb(rows.first);
+    if (kIsWeb) {
+      final webCached = await UserLocalCache.read();
+      if (webCached != null) return webCached;
+    } else {
+      try {
+        final db = await _db.database;
+        final rows = await db.query('users', limit: 1);
+        if (rows.isNotEmpty) return UserModel.fromDb(rows.first);
+      } catch (_) {}
+    }
 
-    // 2. Need a token to call network
     final token = await _api.getToken();
     if (token == null) return null;
 
-    // 3. Network fallback
     try {
       final response = await _api.get('/auth/me');
       final user = UserModel.fromJson(response['user'] as Map<String, dynamic>);
       await _cacheUser(user);
       return user;
     } catch (_) {
-      return null;
+      return kIsWeb ? await UserLocalCache.read() : null;
     }
   }
-
-  // ─── Token check ─────────────────────────────────────────────────────────
 
   Future<bool> hasToken() async {
     final token = await _storage.read(key: 'auth_token');
     return token != null && token.isNotEmpty;
   }
 
-  // ─── Private helpers ─────────────────────────────────────────────────────
-
   Future<void> _cacheUser(UserModel user) async {
-    final db = await _db.database;
-    await db.insert(
-      'users',
-      user.toDb(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    await _db.markCacheFresh(_cacheKey);
+    await UserLocalCache.save(user);
+    if (kIsWeb) return;
+    try {
+      final db = await _db.database;
+      await db.insert(
+        'users',
+        user.toDb(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      await _db.markCacheFresh(_cacheKey);
+    } catch (_) {}
   }
 }
