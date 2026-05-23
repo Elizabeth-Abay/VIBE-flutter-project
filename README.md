@@ -94,7 +94,7 @@ The goal is to build a simple offline platform where students can:
 
 ##  Team
 
-This is a group project for our course.
+This is a group project for our own course.
 
 ##  Author
 
