@@ -1,57 +1,48 @@
 import 'package:flutter/material.dart';
-import '../widgets/connection_toggle.dart';
-import './connected_screen.dart';
-import './sent_request.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/widgets/custom_bottom_nav.dart';
+import '../../../../core/widgets/top_navigation_bar.dart';
+import '../../../../core/utils/bottom_nav_handler.dart';
+import 'home_page.dart';
 
-/// Connections main layout — removes ALL mock data.
-/// Content is fully driven by Riverpod providers.
-class ConnectionsMainLayout extends StatefulWidget {
-  const ConnectionsMainLayout({super.key});
+/// Main shell that wraps HomePage with the top and bottom nav bars.
+/// All mock data removed — navigation is wired to BottomNavHandler
+/// which uses GoRouter to push routes.
+class MainNavigation extends ConsumerStatefulWidget {
+  const MainNavigation({super.key});
 
   @override
-  State<ConnectionsMainLayout> createState() => _ConnectionsMainLayoutState();
+  ConsumerState<MainNavigation> createState() => _MainNavigationState();
 }
 
-class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
-  int _activeTab = 0; // 0 = Connected, 1 = Sent-Requests
+class _MainNavigationState extends ConsumerState<MainNavigation> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF050517),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
+      backgroundColor: Colors.black,
+      body: Column(
+        children: [
+          // ── Top nav bar ────────────────────────────────────────────────
+          VibeTopNavBar(
+            onNotificationTap: () => context.push('/notifications'),
+            onConnectionsTap: () => context.push('/connected'),
+          ),
 
-            // Title
-            const Text(
-              'Connections',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          // ── Page content ───────────────────────────────────────────────
+          const Expanded(child: HomePage()),
+        ],
+      ),
 
-            // Toggle (Connected | Sent-Requests)
-            ConnectionsToggle(
-              onToggle: (index) => setState(() => _activeTab = index),
-            ),
-
-            const SizedBox(height: 10),
-
-            // Live content — no more mock lists
-            Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: _activeTab == 0
-                    ? const ConnectionsListContainer() // ← live from Riverpod
-                    : const SentRequestsListContainer(), // ← live from Riverpod
-              ),
-            ),
-          ],
-        ),
+      // ── Bottom nav bar ─────────────────────────────────────────────────
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+          BottomNavHandler.onTabTapped(context, index);
+        },
       ),
     );
   }

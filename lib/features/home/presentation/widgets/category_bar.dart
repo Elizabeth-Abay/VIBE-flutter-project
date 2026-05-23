@@ -1,43 +1,38 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/post_categories.dart'; // Your constants file
-import 'category_pill.dart'; // Your pill widget
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/constants/post_categories.dart';
+import '../providers/post_notifier.dart';
+import 'category_pill.dart';
 
-class CategoryBar extends StatefulWidget {
+/// Category filter bar wired to selectedCategoryProvider (Riverpod 3 Notifier).
+class CategoryBar extends ConsumerWidget {
   const CategoryBar({super.key});
 
   @override
-  State<CategoryBar> createState() => _CategoryBarState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selected = ref.watch(selectedCategoryProvider);
 
-class _CategoryBarState extends State<CategoryBar> {
-  String? selectedCategory;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 60, // Fixed height for the bar
-      padding: const EdgeInsets.symmetric(vertical: 10),
+    return SizedBox(
+      height: 60,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        // Use the constant list length
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         itemCount: postAppCategories.length,
         itemBuilder: (context, index) {
           final category = postAppCategories[index];
+          final isSelected = selected == category.name;
 
           return CategoryPill(
             label: category.name,
             icon: category.icon,
-            isSelected: selectedCategory == category.name,
+            isSelected: isSelected,
             onTap: () {
-              setState(() {
-                selectedCategory = category.name;
-              });
-              // Here you can add additional functionality like:
-              // - Filter posts by category
-              // - Navigate to category-specific page
-              // - Make API call to get posts for this category
-              print('Selected category: ${category.name}');
+              final next = isSelected ? null : category.name;
+              // Use .select() — StateProvider.state setter no longer exists
+              ref.read(selectedCategoryProvider.notifier).select(next);
+              ref
+                  .read(postsNotifierProvider.notifier)
+                  .fetchPosts(category: next);
             },
           );
         },

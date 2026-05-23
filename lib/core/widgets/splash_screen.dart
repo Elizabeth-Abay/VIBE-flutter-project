@@ -1,29 +1,37 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 
-/// Shown for a brief moment while the app checks if a token exists in secure
-/// storage. Prevents the user from seeing a flash of the sign-in screen.
+/// Shown while AuthNotifier checks for a saved token in secure storage.
+/// Prevents a flash of the sign-in screen on app launch.
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      backgroundColor: VibeColors.background,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Vibe',
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Serif',
-                color: Colors.white,
+            // Logo / wordmark
+            ShaderMask(
+              shaderCallback: (bounds) =>
+                  VibeColors.primaryGradient.createShader(bounds),
+              child: const Text(
+                'Vibe',
+                style: TextStyle(
+                  fontSize: 56,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Times New Roman',
+                  color: Colors.white, // masked by gradient
+                ),
               ),
             ),
-            SizedBox(height: 24),
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF40E5)),
+            const SizedBox(height: 40),
+            const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(VibeColors.primary),
+              strokeWidth: 2.5,
             ),
           ],
         ),

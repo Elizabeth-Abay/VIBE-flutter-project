@@ -1,48 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/routing/app_router.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
+  // Ensure Flutter engine is ready before any plugin calls (e.g. sqflite).
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
-    // ProviderScope is the Riverpod container — must wrap the entire app.
+    // ProviderScope is the Riverpod container — must be the outermost widget.
     const ProviderScope(child: VibeApp()),
   );
 }
 
-/// Root widget — ConsumerWidget so it can pass [ref] to the router.
+/// Root widget — ConsumerWidget so it can pass [ref] into the router.
 class VibeApp extends ConsumerWidget {
   const VibeApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // createRouter(ref) wires auth state to GoRouter's redirect logic.
+    // createRouter(ref) wires GoRouter's redirect to auth state changes.
     final router = AppRouter.createRouter(ref);
 
     return MaterialApp.router(
       title: 'Vibe',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1A0B2E),
-          brightness: Brightness.dark,
-        ),
-        scaffoldBackgroundColor: const Color(0xFF1A0B2E),
-        // Chip theme for tag input
-        chipTheme: ChipThemeData(
-          backgroundColor: const Color(0xFF2A1F5E),
-          labelStyle: const TextStyle(color: Colors.white),
-          side: const BorderSide(color: Color(0xFF7B72EF)),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        // SnackBar theme
-        snackBarTheme: const SnackBarThemeData(
-          behavior: SnackBarBehavior.floating,
-        ),
-      ),
+      // Use the project's own unified theme (VibeColors, AppTheme).
+      theme: AppTheme.darkTheme,
     );
   }
 }

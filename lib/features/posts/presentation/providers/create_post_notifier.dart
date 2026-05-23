@@ -7,37 +7,28 @@ import '../../../home/presentation/providers/post_notifier.dart';
 // ─── Riverpod 3: replace all StateProvider with Notifier ─────────────────────
 
 // Picked image file
-final pickedImageProvider = NotifierProvider<PickedImageNotifier, File?>(
-  PickedImageNotifier.new,
-);
-
+final pickedImageProvider =
+    NotifierProvider<PickedImageNotifier, File?>(PickedImageNotifier.new);
 class PickedImageNotifier extends Notifier<File?> {
-  @override
-  File? build() => null;
+  @override File? build() => null;
   void set(File? f) => state = f;
   void clear() => state = null;
 }
 
 // Upload in-progress flag
-final imageUploadingProvider = NotifierProvider<ImageUploadingNotifier, bool>(
-  ImageUploadingNotifier.new,
-);
-
+final imageUploadingProvider =
+    NotifierProvider<ImageUploadingNotifier, bool>(ImageUploadingNotifier.new);
 class ImageUploadingNotifier extends Notifier<bool> {
-  @override
-  bool build() => false;
+  @override bool build() => false;
   void set(bool v) => state = v;
 }
 
 // CDN URL after upload
 final uploadedImageUrlProvider =
     NotifierProvider<UploadedImageUrlNotifier, String?>(
-      UploadedImageUrlNotifier.new,
-    );
-
+        UploadedImageUrlNotifier.new);
 class UploadedImageUrlNotifier extends Notifier<String?> {
-  @override
-  String? build() => null;
+  @override String? build() => null;
   void set(String? url) => state = url;
   void clear() => state = null;
 }
@@ -45,12 +36,9 @@ class UploadedImageUrlNotifier extends Notifier<String?> {
 // Selected category string
 final createPostCategoryProvider =
     NotifierProvider<CreatePostCategoryNotifier, String>(
-      CreatePostCategoryNotifier.new,
-    );
-
+        CreatePostCategoryNotifier.new);
 class CreatePostCategoryNotifier extends Notifier<String> {
-  @override
-  String build() => '';
+  @override String build() => '';
   void set(String v) => state = v;
   void clear() => state = '';
 }
@@ -58,42 +46,26 @@ class CreatePostCategoryNotifier extends Notifier<String> {
 // Tags list
 final createPostTagsProvider =
     NotifierProvider<CreatePostTagsNotifier, List<String>>(
-      CreatePostTagsNotifier.new,
-    );
-
+        CreatePostTagsNotifier.new);
 class CreatePostTagsNotifier extends Notifier<List<String>> {
-  @override
-  List<String> build() => [];
+  @override List<String> build() => [];
   void set(List<String> v) => state = v;
   void add(String tag) {
     if (!state.contains(tag) && state.length < 8) {
       state = [...state, tag];
     }
   }
-
   void remove(String tag) => state = state.where((t) => t != tag).toList();
   void clear() => state = [];
 }
 
 // ─── Post submission state ────────────────────────────────────────────────────
 
-sealed class CreatePostState {
-  const CreatePostState();
-}
-
-class CreatePostInitial extends CreatePostState {
-  const CreatePostInitial();
-}
-
-class CreatePostLoading extends CreatePostState {
-  const CreatePostLoading();
-}
-
-class CreatePostSuccess extends CreatePostState {
-  const CreatePostSuccess();
-}
-
-class CreatePostError extends CreatePostState {
+sealed class CreatePostState { const CreatePostState(); }
+class CreatePostInitial extends CreatePostState { const CreatePostInitial(); }
+class CreatePostLoading extends CreatePostState { const CreatePostLoading(); }
+class CreatePostSuccess extends CreatePostState { const CreatePostSuccess(); }
+class CreatePostError   extends CreatePostState {
   final String message;
   const CreatePostError(this.message);
 }
@@ -102,11 +74,10 @@ class CreatePostError extends CreatePostState {
 
 final createPostProvider =
     NotifierProvider<CreatePostNotifier, CreatePostState>(
-      CreatePostNotifier.new,
-    );
+        CreatePostNotifier.new);
 
 class CreatePostNotifier extends Notifier<CreatePostState> {
-  final _repo = PostRepository.instance;
+  final _repo         = PostRepository.instance;
   final _imageService = ImageUploadService.instance;
 
   @override
@@ -178,17 +149,17 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
       return;
     }
 
-    final tags = ref.read(createPostTagsProvider);
+    final tags     = ref.read(createPostTagsProvider);
     final imageUrl = ref.read(uploadedImageUrlProvider);
 
     state = const CreatePostLoading();
     try {
       await _repo.createPost(
-        title: title.trim(),
+        title:       title.trim(),
         description: description.trim(),
-        category: category,
-        tags: tags,
-        imageUrl: imageUrl,
+        category:    category,
+        tags:        tags,
+        imageUrl:    imageUrl,
       );
       ref.invalidate(postsNotifierProvider);
       _resetForm();
@@ -212,3 +183,4 @@ class CreatePostNotifier extends Notifier<CreatePostState> {
     state = const CreatePostInitial();
   }
 }
+
