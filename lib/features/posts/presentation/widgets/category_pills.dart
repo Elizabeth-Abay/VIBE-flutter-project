@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/post_categories.dart';
 
-class CategoryPill extends StatelessWidget {
-  final CategoryModel category;
+/// Individual pill used in the create-post category bar.
+class CreatePostCategoryPill extends StatelessWidget {
+  final String label;
+  final IconData icon;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const CategoryPill({
+  const CreatePostCategoryPill({
     super.key,
-    required this.category,
+    required this.label,
+    required this.icon,
     required this.isSelected,
     required this.onTap,
   });
@@ -19,43 +22,24 @@ class CategoryPill extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xFFD98BF5), Color(0xFF7B72EF)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
+                  colors: [Color(0xFFE186FF), Color(0xFF6E85E3)],
                 )
               : null,
-          color: isSelected ? null : const Color(0xFF1E2D3D),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected
-                ? Colors.transparent
-                : Colors.white.withOpacity(0.12),
-            width: 1,
-          ),
+          color: isSelected ? null : Colors.white12,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              category.icon,
-              size: 15,
-              color: isSelected ? Colors.white : Colors.white.withOpacity(0.55),
-            ),
+            Icon(icon, size: 14, color: Colors.white),
             const SizedBox(width: 6),
             Text(
-              category.name,
-              style: TextStyle(
-                color: isSelected
-                    ? Colors.white
-                    : Colors.white.withOpacity(0.55),
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              ),
+              label,
+              style: const TextStyle(color: Colors.white, fontSize: 13),
             ),
           ],
         ),

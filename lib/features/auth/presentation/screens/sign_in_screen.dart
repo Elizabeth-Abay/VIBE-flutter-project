@@ -36,10 +36,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       return;
     }
 
-    await ref.read(authNotifierProvider.notifier).signIn(
-          email: email,
-          password: password,
-        );
+    await ref
+        .read(authNotifierProvider.notifier)
+        .signIn(email: email, password: password);
   }
 
   @override
@@ -92,10 +91,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             // Show spinner while loading, button otherwise.
             isLoading
                 ? const CircularProgressIndicator()
-                : ActionButton(
-                    text: "Sign in",
-                    onPressed: _onSignIn,
-                  ),
+                : ActionButton(text: "Sign in", onPressed: _onSignIn),
 
             TextButton(
               onPressed: () => context.push('/login-email'),

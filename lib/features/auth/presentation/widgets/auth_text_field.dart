@@ -90,4 +90,3 @@ class _AuthTextFieldState extends State<AuthTextField> {
     );
   }
 }
-

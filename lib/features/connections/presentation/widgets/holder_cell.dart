@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'heart_widget.dart';
 import '../../domain/entity/connected_user.dart';
+import 'heart_widget.dart';
 
+/// A single connected user row — profile image, name, username, heart.
 class ConnectionHolderCell extends StatelessWidget {
   final ConnectedUser user;
 
@@ -10,18 +11,25 @@ class ConnectionHolderCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       child: Row(
         children: [
-          // Profile Image
+          // Avatar — network image with local asset fallback
           CircleAvatar(
             radius: 24,
-            backgroundImage: AssetImage(user.profileImage),
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white12,
+            backgroundImage: user.profileImage.isNotEmpty
+                ? NetworkImage(user.profileImage)
+                : null,
+            child: user.profileImage.isEmpty
+                ? Text(
+                    user.name.isNotEmpty ? user.name[0].toUpperCase() : '?',
+                    style: const TextStyle(color: Colors.white),
+                  )
+                : null,
           ),
           const SizedBox(width: 16),
 
-          // User Details
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +43,7 @@ class ConnectionHolderCell extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  user.username,
+                  '@${user.username}',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 14,
@@ -45,7 +53,7 @@ class ConnectionHolderCell extends StatelessWidget {
             ),
           ),
 
-          // Heart Action Widget
+          // Heart — now driven by Riverpod state
           HeartButton(userId: user.userId, initialIsLiked: user.isLiked),
         ],
       ),

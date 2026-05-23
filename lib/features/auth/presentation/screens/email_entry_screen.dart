@@ -62,6 +62,7 @@ class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
               style: TextStyle(color: Colors.white54, fontSize: 14),
             ),
             const SizedBox(height: 40),
+
             AuthTextField(
               label: "Email Address",
               hintText: "you@example.com",
@@ -70,6 +71,7 @@ class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
               errorText: errorText,
             ),
             const SizedBox(height: 20),
+
             Align(
               alignment: Alignment.centerRight,
               child: isLoading
@@ -78,13 +80,10 @@ class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
                       height: 50,
                       child: Center(child: CircularProgressIndicator()),
                     )
-                  : ActionButton(
-                      text: "",
-                      isArrow: true,
-                      onPressed: _onNext,
-                    ),
+                  : ActionButton(text: "", isArrow: true, onPressed: _onNext),
             ),
             const SizedBox(height: 30),
+
             TextButton(
               onPressed: () => context.push('/signin'),
               child: const Text(

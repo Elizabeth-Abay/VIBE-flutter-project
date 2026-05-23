@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.3.0
+  sdk: ^3.11.1
 
 dependencies:
   flutter:
@@ -34,21 +34,27 @@ dependencies:
   # --- Network ---
   http: ^1.4.0
 
+  # --- Image Picker ---
+  image_picker: ^1.1.2
+
   # --- Utilities ---
   shared_preferences: ^2.5.3
+  mime: ^1.0.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  
- 
-  flutter_lints: ^3.0.0
-  build_runner: ^2.4.0
-  go_router_builder: ^4.0.1
 
-  # --- Riverpod Code Generation ---
+  flutter_lints: ^3.0.0
+
+  # --- Code generation ---
+  build_runner: ^2.6.0
+  go_router_builder: ^4.0.1
   riverpod_generator: ^3.0.0
+
+  # --- FIXED (IMPORTANT) ---
   custom_lint: ^0.8.1
+  custom_lint_core: ^0.8.0
   riverpod_lint: ^3.0.0
 
 flutter:
@@ -56,5 +62,3 @@ flutter:
 
   assets:
     - assets/images/
-
-    

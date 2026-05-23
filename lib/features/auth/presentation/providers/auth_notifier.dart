@@ -6,8 +6,9 @@ import '../../domain/entities/user_entity.dart';
 /// The single Riverpod provider the entire app uses for auth.
 /// Screens call: ref.watch(authNotifierProvider) to read state.
 /// Screens call: ref.read(authNotifierProvider.notifier).signIn(...) to act.
-final authNotifierProvider =
-    NotifierProvider<AuthNotifier, AuthState>(AuthNotifier.new);
+final authNotifierProvider = NotifierProvider<AuthNotifier, AuthState>(
+  AuthNotifier.new,
+);
 
 /// Manages the full authentication lifecycle.
 class AuthNotifier extends Notifier<AuthState> {
@@ -38,10 +39,7 @@ class AuthNotifier extends Notifier<AuthState> {
 
   // ─── Sign In ─────────────────────────────────────────────────────────────
 
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> signIn({required String email, required String password}) async {
     state = const AuthStateLoading();
     try {
       final user = await _repo.signIn(email: email, password: password);

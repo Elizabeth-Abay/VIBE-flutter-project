@@ -1,63 +1,67 @@
-import '../../domain/entity/post_fetch_obj.dart';
 import 'package:flutter/material.dart';
-import '../widgets/post_card.dart';
-import '../../../../core/utils/image_optimizer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/post_notifier.dart';
+import 'post_card.dart';
 
-final List<PostFetchObj> mockPosts = [
-  PostFetchObj(
-    title: 'Enjoying an outdoor concert',
-    imageUrl: ImageOptimizer.getOptimizedUrl(
-        'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4'),
-    description: 'The energy at this concert is amazing!',
-    tags: ['Music', 'Concert'],
-    userName: 'Emily Davis',
-  ),
-  PostFetchObj(
-    title: 'At a tech meet-up',
-    imageUrl: ImageOptimizer.getOptimizedUrl(
-        'https://images.unsplash.com/photo-1540575467063-178a50c2df87'),
-    description: 'Great insights during the meeting!',
-    tags: ['Tech', 'Networking'],
-    userName: 'James Brown',
-  ),
-  PostFetchObj(
-    title: 'Morning Hike',
-    imageUrl: ImageOptimizer.getOptimizedUrl(
-        'https://images.unsplash.com/photo-1551632432-c7360b7f0187'),
-    description: 'Breathtaking views from the top.',
-    tags: ['Nature', 'Hike'],
-    userName: 'Sarah Lee',
-  ),
-];
-
-class HorizontalPostFeed extends StatelessWidget {
+/// Live horizontal post feed — all mock data removed.
+/// Reads from PostsNotifier which uses SQLite cache-first.
+class HorizontalPostFeed extends ConsumerWidget {
   const HorizontalPostFeed({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      // Reduced height from 480 to 380 for a more compact look
-      height: 300,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        itemCount: mockPosts.length,
-        itemBuilder: (context, index) {
-          final post = mockPosts[index];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(postsNotifierProvider);
 
-          return Container(
-            margin: const EdgeInsets.only(right: 12),
-            child: SocialPostWidget(
-              title: post.title,
-              imageUrl: post.imageUrl ?? 'https://via.placeholder.com/200',
-              description: post.description,
-              tags: post.tags ?? [],
-              userName: post.userName,
-              userProfileImageUrl: post.userProfileImageUrl,
+    return switch (state) {
+      PostsLoading() => const Center(child: CircularProgressIndicator()),
+
+      PostsError(:final message) => Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.wifi_off, color: Colors.white24, size: 36),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              style: const TextStyle(color: Colors.white38, fontSize: 12),
             ),
-          );
-        },
+            TextButton(
+              onPressed: () =>
+                  ref.read(postsNotifierProvider.notifier).refresh(),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
       ),
-    );
+
+      PostsLoaded(:final posts) when posts.isEmpty => const Center(
+        child: Text('No posts yet.', style: TextStyle(color: Colors.white38)),
+      ),
+
+      PostsLoaded(:final posts) => SizedBox(
+        height: 300,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          itemCount: posts.length,
+          itemBuilder: (context, index) {
+            final post = posts[index];
+            return Container(
+              margin: const EdgeInsets.only(right: 12),
+              child: SocialPostWidget(
+                title: post.title,
+                imageUrl: post.imageUrl ?? '',
+                description: post.description,
+                tags: post.tags,
+                userName: post.userName,
+                userProfileImageUrl: post.userProfileImageUrl,
+              ),
+            );
+          },
+        ),
+      ),
+
+      _ => const SizedBox.shrink(),
+    };
   }
 }

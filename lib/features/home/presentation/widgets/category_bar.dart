@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/post_categories.dart'; // Your constants file
-import 'category_pill.dart';                          // Your pill widget
+import 'category_pill.dart'; // Your pill widget
 
 class CategoryBar extends StatefulWidget {
   const CategoryBar({super.key});
@@ -24,7 +24,7 @@ class _CategoryBarState extends State<CategoryBar> {
         itemCount: postAppCategories.length,
         itemBuilder: (context, index) {
           final category = postAppCategories[index];
-          
+
           return CategoryPill(
             label: category.name,
             icon: category.icon,

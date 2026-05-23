@@ -100,7 +100,8 @@ class DatabaseHelper {
   // ─── Cache-staleness helpers ─────────────────────────────────────────────
 
   /// Returns true if the cache for [key] is older than [maxAge] (or missing).
-  Future<bool> isCacheStale(String key, {Duration maxAge = const Duration(minutes: 5)}) async {
+  Future<bool> isCacheStale(String key,
+      {Duration maxAge = const Duration(minutes: 5)}) async {
     final db = await database;
     final rows = await db.query(
       'cache_meta',

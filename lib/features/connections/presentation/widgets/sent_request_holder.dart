@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../domain/entity/sent_request_user.dart';
-import './cancel_request_btn.dart';
+import 'cancel_request_btn.dart';
 
-
+/// A single sent-request row — avatar, name, timestamp, cancel button.
 class SentRequestHolderCell extends StatelessWidget {
   final SentRequestUser request;
 
@@ -14,7 +14,7 @@ class SentRequestHolderCell extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF16162E), // Card color from image
+        color: const Color(0xFF16162E),
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: Colors.white12),
       ),
@@ -24,9 +24,21 @@ class SentRequestHolderCell extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Network image with initial fallback (no AssetImage)
               CircleAvatar(
                 radius: 26,
-                backgroundImage: AssetImage(request.profileImage),
+                backgroundColor: Colors.white12,
+                backgroundImage: request.profileImage.isNotEmpty
+                    ? NetworkImage(request.profileImage)
+                    : null,
+                child: request.profileImage.isEmpty
+                    ? Text(
+                        request.name.isNotEmpty
+                            ? request.name[0].toUpperCase()
+                            : '?',
+                        style: const TextStyle(color: Colors.white),
+                      )
+                    : null,
               ),
               const SizedBox(width: 15),
               Expanded(
@@ -46,6 +58,7 @@ class SentRequestHolderCell extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 15),
+          // Cancel button now talks to SentRequestNotifier
           CancelRequestButton(
             userId: request.userId,
             initialStatus: request.isCancelled,

@@ -33,8 +33,8 @@ class VerificationError extends VerificationState {
 
 final verificationProvider =
     NotifierProvider<VerificationNotifier, VerificationState>(
-  VerificationNotifier.new,
-);
+      VerificationNotifier.new,
+    );
 
 // ── Notifier ──────────────────────────────────────────────────────────────────
 
@@ -43,10 +43,7 @@ class VerificationNotifier extends Notifier<VerificationState> {
   VerificationState build() => const VerificationInitial();
 
   /// Submits the 6-digit OTP for the given [email].
-  Future<void> verifyOtp({
-    required String email,
-    required String otp,
-  }) async {
+  Future<void> verifyOtp({required String email, required String otp}) async {
     if (otp.length != 6) {
       state = const VerificationError('Please enter the full 6-digit code.');
       return;

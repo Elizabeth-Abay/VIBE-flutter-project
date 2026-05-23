@@ -11,8 +11,8 @@ class ApiClient {
   static final ApiClient instance = ApiClient._internal();
 
   // TODO: replace with your real API base URL
-  static const String baseUrl = 'http://10.0.2.2:3000';
-  
+  static const String baseUrl = 'https://api.vibe.app/v1';
+
   final _storage = const FlutterSecureStorage();
 
   // ─── Token helpers ───────────────────────────────────────────────────────

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/connection_notifier.dart';
 
-class HeartButton extends StatefulWidget {
+/// Heart button — now wired to ConnectedNotifier so toggling
+/// updates the shared Riverpod state instead of local StatefulWidget state.
+class HeartButton extends ConsumerWidget {
   final String userId;
   final bool initialIsLiked;
 
@@ -11,33 +15,24 @@ class HeartButton extends StatefulWidget {
   });
 
   @override
-  State<HeartButton> createState() => _HeartButtonState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Read current like status from provider state (keeps it in sync).
+    final state = ref.watch(connectedNotifierProvider);
+    bool isLiked = initialIsLiked;
 
-class _HeartButtonState extends State<HeartButton> {
-  late bool isLiked;
+    if (state is ConnectedLoaded) {
+      final match = state.users.where((u) => u.userId == userId);
+      if (match.isNotEmpty) isLiked = match.first.isLiked;
+    }
 
-  @override
-  void initState() {
-    super.initState();
-    isLiked = widget.initialIsLiked;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(
         isLiked ? Icons.favorite : Icons.favorite_border,
-        color: isLiked ? Colors.blue : Colors.white, // Matches image_9fb9f6.png
+        color: isLiked ? Colors.blue : Colors.white,
         size: 32,
       ),
-      onPressed: () {
-        setState(() {
-          isLiked = !isLiked;
-        });
-        // You can use widget.userId here to trigger a backend update
-        print("Toggled like for User ID: ${widget.userId}");
-      },
+      onPressed: () =>
+          ref.read(connectedNotifierProvider.notifier).toggleLike(userId),
     );
   }
 }

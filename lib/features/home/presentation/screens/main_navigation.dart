@@ -1,36 +1,58 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../core/widgets/custom_bottom_nav.dart'; // Using your custom widget path
-import '../../../../core/widgets/top_navigation_bar.dart';
-import '../../../../core/utils/bottom_nav_handler.dart';
+import '../widgets/connection_toggle.dart';
+import './connected_screen.dart';
+import './sent_request.dart';
 
-class MainNavigation extends StatefulWidget {
-  const MainNavigation({super.key});
+/// Connections main layout — removes ALL mock data.
+/// Content is fully driven by Riverpod providers.
+class ConnectionsMainLayout extends StatefulWidget {
+  const ConnectionsMainLayout({super.key});
+
   @override
-  State<MainNavigation> createState() => _MainNavigationState();
+  State<ConnectionsMainLayout> createState() => _ConnectionsMainLayoutState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
-  final int _currentIndex = 0;
-
-  // The pages for each tab. In Clean Architecture, these usually represent
-  // different feature modules.
-  final List<Widget> _pages = [
-    const HomePage(),
-    // and other pages
-  ];
-
-  // This handles the tab switching and is where you'll eventually
-  // trigger backend requests via your Providers.
+class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
+  int _activeTab = 0; // 0 = Connected, 1 = Sent-Requests
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      // IndexedStack is preferred over the simple list index to
-      // preserve the state (like scroll position) of your pages.
-      body: IndexedStack(index: _currentIndex, children: _pages),
+      backgroundColor: const Color(0xFF050517),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+
+            // Title
+            const Text(
+              'Connections',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            // Toggle (Connected | Sent-Requests)
+            ConnectionsToggle(
+              onToggle: (index) => setState(() => _activeTab = index),
+            ),
+
+            const SizedBox(height: 10),
+
+            // Live content — no more mock lists
+            Expanded(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: _activeTab == 0
+                    ? const ConnectionsListContainer() // ← live from Riverpod
+                    : const SentRequestsListContainer(), // ← live from Riverpod
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

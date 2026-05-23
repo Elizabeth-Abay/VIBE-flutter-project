@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/connection_notifier.dart';
 
-
-class CancelRequestButton extends StatefulWidget {
+/// Cancel / Request-Again button — wired to SentRequestNotifier.
+/// Uses optimistic UI: state updates immediately, network call follows.
+class CancelRequestButton extends ConsumerWidget {
   final String userId;
-  final bool initialStatus;
+  final bool initialStatus; // true = already cancelled
 
   const CancelRequestButton({
     super.key,
@@ -12,32 +15,26 @@ class CancelRequestButton extends StatefulWidget {
   });
 
   @override
-  State<CancelRequestButton> createState() => _CancelRequestButtonState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Derive current cancelled status from live provider state.
+    final state = ref.watch(sentRequestNotifierProvider);
+    bool isCancelled = initialStatus;
 
-class _CancelRequestButtonState extends State<CancelRequestButton> {
-  late bool isCancelled;
+    if (state is SentRequestLoaded) {
+      final match = state.requests.where((r) => r.userId == userId);
+      if (match.isNotEmpty) isCancelled = match.first.isCancelled;
+    }
 
-  @override
-  void initState() {
-    super.initState();
-    isCancelled = widget.initialStatus;
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        setState(() => isCancelled = !isCancelled);
-        // Clean Architecture: Trigger a UseCase here using widget.userId
-      },
+      onTap: () =>
+          ref.read(sentRequestNotifierProvider.notifier).cancelRequest(userId),
       child: Container(
         width: 140,
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25),
           gradient: const LinearGradient(
-            colors: [Color(0xFFE186FF), Color(0xFF6E85E3)], // Gradient from image
+            colors: [Color(0xFFE186FF), Color(0xFF6E85E3)],
           ),
         ),
         child: Center(

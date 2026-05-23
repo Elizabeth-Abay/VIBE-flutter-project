@@ -21,14 +21,14 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
       name: 'Mariamawit',
       profileImage: 'assets/mariamawit.png',
       timestamp: '2m ago',
-      isCancelled: true, // This will show "Request-Again" initially
+      isCancelled: true,
     ),
     SentRequestUser(
       userId: 'req_2',
       name: 'Hailu',
       profileImage: 'assets/hailu.png',
       timestamp: '15m ago',
-      isCancelled: false, // This will show "Cancel" initially
+      isCancelled: false,
     ),
     SentRequestUser(
       userId: 'req_3',
@@ -52,7 +52,7 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
       name: 'Lisa Carter',
       username: '@Lisa123',
       profileImage: 'assets/lisa_avatar.png',
-      isLiked: true, // Blue heart
+      isLiked: true,
     ),
     ConnectedUser(
       userId: 'conn_2',
@@ -80,7 +80,7 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
       name: 'Helen',
       username: '@Helen',
       profileImage: 'assets/helen_avatar.png',
-      isLiked: false, // White heart
+      isLiked: false,
     ),
     ConnectedUser(
       userId: 'conn_6',
@@ -104,7 +104,8 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
       isLiked: false,
     ),
   ];
-  int _activeTab = 0; // 0 = Connected, 1 = Sent-Requests
+
+  int _activeTab = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +114,7 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
       body: Column(
         children: [
           const SizedBox(height: 10),
-          // --- Shared Connections Title ---
+
           const Text(
             'Connections',
             style: TextStyle(
@@ -123,7 +124,6 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
             ),
           ),
 
-          // --- Shared Toggle Widget ---
           ConnectionsToggle(
             onToggle: (index) {
               setState(() => _activeTab = index);
@@ -132,15 +132,13 @@ class _ConnectionsMainLayoutState extends State<ConnectionsMainLayout> {
 
           const SizedBox(height: 10),
 
-          // --- DYNAMIC CONTENT AREA ---
           Expanded(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
+
               child: _activeTab == 0
                   ? ConnectionsListContainer(connections: connectedMockData)
-                  : SentRequestsListContainer(
-                      requests: fakeSentRequests,
-                    ), // Your cancel list
+                  : SentRequestsListContainer(),
             ),
           ),
         ],

@@ -30,8 +30,8 @@ class EmailEntryError extends EmailEntryState {
 
 final emailEntryProvider =
     NotifierProvider<EmailEntryNotifier, EmailEntryState>(
-  EmailEntryNotifier.new,
-);
+      EmailEntryNotifier.new,
+    );
 
 // ── Notifier ──────────────────────────────────────────────────────────────────
 

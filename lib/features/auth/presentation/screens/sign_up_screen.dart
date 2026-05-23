@@ -44,7 +44,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
     if (password.length < 8) {
       setState(
-          () => _errorMessage = 'Password must have at least 8 characters.');
+        () => _errorMessage = 'Password must have at least 8 characters.',
+      );
       return;
     }
     if (password != confirm) {
@@ -52,27 +53,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       return;
     }
 
-    await ref.read(authNotifierProvider.notifier).signUp(
-          username: username,
-          email: email,
-          password: password,
-        );
+    await ref
+        .read(authNotifierProvider.notifier)
+        .signUp(username: username, email: email, password: password);
   }
 
   @override
   Widget build(BuildContext context) {
     // Navigate on success, show error on failure.
     ref.listen<AuthState>(authNotifierProvider, (_, next) {
-    if (next is AuthStateAuthenticated) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) context.go('/interest-selection');
-      });
-    } else if (next is AuthStateError) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(() => _errorMessage = next.message);
-      });
-    }
-  });
+      if (next is AuthStateAuthenticated) {
+        context.go('/interest-selection');
+      } else if (next is AuthStateError) {
+        setState(() => _errorMessage = next.message);
+      }
+    });
 
     final authState = ref.watch(authNotifierProvider);
     final isLoading = authState is AuthStateLoading;
@@ -91,23 +86,24 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               style: TextStyle(fontSize: 18, color: Colors.white70),
             ),
             const SizedBox(height: 40),
-            AuthTextField(
-              label: "User Name",
-              controller: _usernameController,
-            ),
+
+            AuthTextField(label: "User Name", controller: _usernameController),
             const SizedBox(height: 20),
+
             AuthTextField(
               label: "Email",
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 20),
+
             AuthTextField(
               label: "Password",
               isPassword: true,
               controller: _passwordController,
             ),
             const SizedBox(height: 20),
+
             AuthTextField(
               label: "Confirm Password",
               isPassword: true,
@@ -115,6 +111,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               errorText: _errorMessage,
             ),
             const SizedBox(height: 40),
+
             isLoading
                 ? const CircularProgressIndicator()
                 : ActionButton(
