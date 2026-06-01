@@ -18,6 +18,10 @@ const emailTransporter = nodeMailer.createTransport({
 
 const nodemailer = require("nodemailer");
 
+
+
+const nodemailer = require("nodemailer");
+
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE || "gmail",
   host: process.env.EMAIL_HOST,
@@ -102,6 +106,110 @@ async function sendEmail({
       attachments,
     };
 
+    const result = await transporter.sendMail(mailOptions);
+
+    console.log("Email sent successfully:", result.messageId);
+
+    return {
+      success: true,
+      messageId: result.messageId,
+    };
+  } catch (error) {
+    console.error("Email sending failed:", error);
+
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
+}
+
+async function sendWelcomeEmail(email, username) {
+  return sendEmail({
+    to: email,
+    subject: "Welcome to Our Platform",
+    html: createEmailTemplate({
+      title: "Welcome",
+      username,
+      message:
+        "Thank you for creating an account. We are excited to have you with us.",
+      buttonText: "Get Started",
+      buttonLink: process.env.CLIENT_URL,
+    }),
+  });
+}
+
+async function sendPasswordResetEmail(email, username, resetLink) {
+  return sendEmail({
+    to: email,
+    subject: "Reset Your Password",
+    html: createEmailTemplate({
+      title: "Password Reset",
+      username,
+      message:
+        "We received a request to reset your password. Click the button below.",
+      buttonText: "Reset Password",
+      buttonLink: resetLink,
+    }),
+  });
+}
+
+async function sendVerificationEmail(email, username, verificationLink) {
+  return sendEmail({
+    to: email,
+    subject: "Verify Your Account",
+    html: createEmailTemplate({
+      title: "Email Verification",
+      username,
+      message:
+        "Please verify your email address to activate your account.",
+      buttonText: "Verify Account",
+      buttonLink: verificationLink,
+    }),
+  });
+}
+
+async function sendAdminNotification(subject, message) {
+  return sendEmail({
+    to: process.env.ADMIN_EMAIL,
+    subject,
+    html: `
+      <h3>Admin Notification</h3>
+      <p>${message}</p>
+    `,
+  });
+}
+
+async function sendBulkEmails(recipients, subject, htmlContent) {
+  const results = [];
+
+  for (const recipient of recipients) {
+    const result = await sendEmail({
+      to: recipient,
+      subject,
+      html: htmlContent,
+    });
+
+    results.push({
+      email: recipient,
+      success: result.success,
+    });
+  }
+
+  return results;
+}
+
+module.exports = {
+  transporter,
+  verifyConnection,
+  createEmailTemplate,
+  sendEmail,
+  sendWelcomeEmail,
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+  sendAdminNotification,
+  sendBulkEmails,
+};
     const result = await transporter.sendMail(mailOptions);
 
     console.log("Email sent successfully:", result.messageId);
