@@ -49,9 +49,9 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// ===================================================
+
 // Upload Directories
-// ===================================================
+
 
 const uploadDirectories = {
   images: "uploads/images",
@@ -67,9 +67,6 @@ Object.values(uploadDirectories).forEach((directory) => {
   }
 });
 
-// ===================================================
-// Allowed File Types
-// ===================================================
 
 const imageTypes = [
   "image/jpeg",
@@ -86,9 +83,7 @@ const documentTypes = [
 
 const allowedTypes = [...imageTypes, ...documentTypes];
 
-// ===================================================
-// File Validation
-// ===================================================
+
 
 const fileFilter = (req, file, cb) => {
   if (allowedTypes.includes(file.mimetype)) {
@@ -103,9 +98,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// ===================================================
-// Storage Configuration
-// ===================================================
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -131,9 +124,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// ===================================================
-// Main Multer Instance
-// ===================================================
 
 const upload = multer({
   storage,
@@ -144,9 +134,7 @@ const upload = multer({
   },
 });
 
-// ===================================================
-// Profile Image Upload
-// ===================================================
+
 
 const profileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -173,9 +161,7 @@ const profileUpload = multer({
   },
 });
 
-// ===================================================
-// Memory Storage
-// ===================================================
+
 
 const memoryUpload = multer({
   storage: multer.memoryStorage(),
@@ -184,9 +170,7 @@ const memoryUpload = multer({
   },
 });
 
-// ===================================================
-// Utility Functions
-// ===================================================
+
 
 const deleteFile = async (filePath) => {
   try {
@@ -218,9 +202,7 @@ const getFileSizeInMB = (bytes) => {
   return (bytes / (1024 * 1024)).toFixed(2);
 };
 
-// ===================================================
-// Upload Statistics
-// ===================================================
+
 
 const getUploadStats = () => {
   try {
@@ -243,9 +225,7 @@ const getUploadStats = () => {
   }
 };
 
-// ===================================================
-// Validation Helpers
-// ===================================================
+
 
 const isImage = (file) => {
   return imageTypes.includes(file.mimetype);
@@ -261,9 +241,7 @@ const validateImageSize = (file, maxSizeMB = 5) => {
   return file.size <= maxSize;
 };
 
-// ===================================================
-// Exports
-// ===================================================
+
 
 module.exports = {
   upload,
