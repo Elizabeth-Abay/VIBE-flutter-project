@@ -43,4 +43,241 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
+// multerConfig.js
+
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+// ===================================================
+// Upload Directories
+// ===================================================
+
+const uploadDirectories = {
+  images: "uploads/images",
+  documents: "uploads/documents",
+  profiles: "uploads/profiles",
+  temp: "uploads/temp",
+};
+
+// Create directories if they don't exist
+Object.values(uploadDirectories).forEach((directory) => {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true });
+  }
+});
+
+// ===================================================
+// Allowed File Types
+// ===================================================
+
+const imageTypes = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+const documentTypes = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+
+const allowedTypes = [...imageTypes, ...documentTypes];
+
+// ===================================================
+// File Validation
+// ===================================================
+
+const fileFilter = (req, file, cb) => {
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(
+      new Error(
+        "Invalid file type. Only images and documents are allowed."
+      ),
+      false
+    );
+  }
+};
+
+// ===================================================
+// Storage Configuration
+// ===================================================
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (imageTypes.includes(file.mimetype)) {
+      cb(null, uploadDirectories.images);
+    } else if (documentTypes.includes(file.mimetype)) {
+      cb(null, uploadDirectories.documents);
+    } else {
+      cb(null, uploadDirectories.temp);
+    }
+  },
+
+  filename: (req, file, cb) => {
+    const uniqueName =
+      Date.now() +
+      "-" +
+      Math.round(Math.random() * 1e9);
+
+    cb(
+      null,
+      uniqueName + path.extname(file.originalname)
+    );
+  },
+});
+
+// ===================================================
+// Main Multer Instance
+// ===================================================
+
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10 MB
+    files: 5,
+  },
+});
+
+// ===================================================
+// Profile Image Upload
+// ===================================================
+
+const profileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDirectories.profiles);
+  },
+
+  filename: (req, file, cb) => {
+    const userId = req.user?.id || "guest";
+
+    cb(
+      null,
+      `profile-${userId}-${Date.now()}${path.extname(
+        file.originalname
+      )}`
+    );
+  },
+});
+
+const profileUpload = multer({
+  storage: profileStorage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
+
+// ===================================================
+// Memory Storage
+// ===================================================
+
+const memoryUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
+
+// ===================================================
+// Utility Functions
+// ===================================================
+
+const deleteFile = async (filePath) => {
+  try {
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.error("Delete file error:", error);
+    return false;
+  }
+};
+
+const fileExists = (filePath) => {
+  return fs.existsSync(filePath);
+};
+
+const getFileExtension = (filename) => {
+  return path.extname(filename);
+};
+
+const getFileName = (filePath) => {
+  return path.basename(filePath);
+};
+
+const getFileSizeInMB = (bytes) => {
+  return (bytes / (1024 * 1024)).toFixed(2);
+};
+
+// ===================================================
+// Upload Statistics
+// ===================================================
+
+const getUploadStats = () => {
+  try {
+    const stats = {};
+
+    Object.entries(uploadDirectories).forEach(
+      ([key, directory]) => {
+        if (fs.existsSync(directory)) {
+          stats[key] = fs.readdirSync(directory).length;
+        } else {
+          stats[key] = 0;
+        }
+      }
+    );
+
+    return stats;
+  } catch (error) {
+    console.error("Stats error:", error);
+    return {};
+  }
+};
+
+// ===================================================
+// Validation Helpers
+// ===================================================
+
+const isImage = (file) => {
+  return imageTypes.includes(file.mimetype);
+};
+
+const isDocument = (file) => {
+  return documentTypes.includes(file.mimetype);
+};
+
+const validateImageSize = (file, maxSizeMB = 5) => {
+  const maxSize = maxSizeMB * 1024 * 1024;
+
+  return file.size <= maxSize;
+};
+
+// ===================================================
+// Exports
+// ===================================================
+
+module.exports = {
+  upload,
+  profileUpload,
+  memoryUpload,
+  deleteFile,
+  fileExists,
+  getFileExtension,
+  getFileName,
+  getFileSizeInMB,
+  getUploadStats,
+  isImage,
+  isDocument,
+  validateImageSize,
+  uploadDirectories,
+};
 module.exports = upload;
