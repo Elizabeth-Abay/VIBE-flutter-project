@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f2f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            background-color: #6c5ce7;
+            padding: 30px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .content {
+            padding: 40px 30px;
+            text-align: center;
+            color: #2d3436;
+        }
+
+        .otp-box {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            color: #6c5ce7;
+            background-color: #efedfd;
+            padding: 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 20px 0;
+            border: 2px dashed #a29bfe;
+        }
+
+        .footer {
+            background-color: #f9f9fb;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #636e72;
+        }
+
+        .welcome-text {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #4834d4;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Our Community!</h1>
+        </div>
+        <div class="content">
+            <h2 class="welcome-text">HELLO</h2>
+            <p>We're excited to have you on board. To get started and keep your account secure, please use the following
+                One-Time Password (OTP) to verify your email:</p>
+
+            <div class="otp-box">
+                <%= otp %>
+            </div>
+
+            <p>This code is valid for <strong>10 minutes</strong>. If you didn't request this, you can safely ignore
+                this email.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2026 Your Company Name. All rights reserved.</p>
+            <p>Addis Ababa, Ethiopia</p>
+        </div>
+    </div>
+</body>
+
+</html>
