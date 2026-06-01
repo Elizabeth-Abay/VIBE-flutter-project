@@ -66,16 +66,16 @@ class AppRouter {
 
       routes: [
         // ── Splash ────────────────────────────────────────────────────────
-        GoRoute(
-          path: '/splash',
-          builder: (_, __) => const SplashScreen(),
-          redirect: (_, __) {
-            final ready = ref.read(authReadyProvider);
-            if (!ready) return null; // Stay on splash while checking token
-            final auth = ref.read(authNotifierProvider);
-            return auth is AuthStateAuthenticated ? '/home' : '/start-screen';
-          },
-        ),
+        // GoRoute(
+        //   path: '/splash',
+        //   builder: (_, __) => const SplashScreen(),
+        //   redirect: (_, __) {
+        //     final ready = ref.read(authReadyProvider);
+        //     if (!ready) return null; // Stay on splash while checking token
+        //     final auth = ref.read(authNotifierProvider);
+        //     return auth is AuthStateAuthenticated ? '/home' : '/start-screen';
+        //   },
+        // ),
 
         // ── Onboarding ────────────────────────────────────────────────────
         GoRoute(path: '/start-screen', builder: (_, __) => const StartScreen()),

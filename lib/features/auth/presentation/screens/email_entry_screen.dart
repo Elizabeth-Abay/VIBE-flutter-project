@@ -69,7 +69,7 @@ class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
             if (ApiClient.isMockMode) ...[
               const SizedBox(height: 8),
               Text(
-                'Dev mode: OTP is ${ApiConfig.mockOtpCode}',
+                '',
                 style: TextStyle(
                   color: Colors.purple.shade200,
                   fontSize: 12,

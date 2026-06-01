@@ -118,7 +118,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
             if (ApiConfig.useMockBackend) ...[
               const SizedBox(height: 8),
               Text(
-                'Dev mode: enter ${ApiConfig.mockOtpCode}',
+                '',
                 style: TextStyle(color: Colors.purple.shade200, fontSize: 12),
               ),
             ],
