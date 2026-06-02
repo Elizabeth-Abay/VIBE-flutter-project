@@ -71,6 +71,8 @@ class AuthService {
             // get the otp from db
             let result = await authModelPg.getOtp(id);
 
+            console.log("Result from verifyUser is " , result);
+
             if (!result.success) return result;
 
             let { otp_hashed } = result.data;

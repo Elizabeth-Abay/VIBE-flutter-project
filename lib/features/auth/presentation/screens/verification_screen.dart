@@ -138,9 +138,8 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                       controller: _controllers[index],
                       focusNode: _focusNodes[index],
                       textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       maxLength: 1,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onChanged: (v) => _onDigitChanged(v, index),
                       decoration: InputDecoration(
                         counterText: '',

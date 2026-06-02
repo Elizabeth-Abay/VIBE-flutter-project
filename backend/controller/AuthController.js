@@ -34,7 +34,12 @@ class AuthController {
 
     async verifyUserOtp(req, res, next) {
         try {
+            
             let { id, OTP } = req.body;
+
+            console.log("Verifying otp" , { id, OTP })
+
+            
 
             let result = await authService.verifyUser({ id, OTP })
 
