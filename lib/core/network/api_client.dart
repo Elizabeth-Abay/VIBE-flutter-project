@@ -14,7 +14,7 @@ class ApiClient {
   ApiClient._internal();
   static final ApiClient instance = ApiClient._internal();
 
-  static const String baseUrl = ApiConfig.productionBaseUrl;
+  static const String baseUrl = ApiConfig.testBaseUrl;
 
   final _storage = const FlutterSecureStorage();
 
@@ -72,9 +72,7 @@ class ApiClient {
     Map<String, dynamic>? body,
     bool auth = true,
   }) async {
-    if (ApiConfig.useMockBackend) {
-      return MockApiBackend.post(path, body: body);
-    }
+  
     final response = await http.post(
       Uri.parse('$baseUrl$path'),
       headers: await _headers(auth: auth),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/network/api_client.dart';
-import '../../../../core/network/api_config.dart';
+// import '../../../../core/network/api_config.dart';
 import '../../../../core/utils/safe_navigation.dart';
 import '../providers/email_entry_notifier.dart';
 import '../providers/registration_session_notifier.dart';
@@ -10,6 +10,7 @@ import '../widgets/auth_text_field.dart';
 import '../widgets/action_button.dart';
 
 class EmailEntryScreen extends ConsumerStatefulWidget {
+  // stateful widget + access to ref
   const EmailEntryScreen({super.key});
 
   @override
@@ -18,6 +19,7 @@ class EmailEntryScreen extends ConsumerStatefulWidget {
 
 class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
   final _emailController = TextEditingController();
+  // text holder
 
   @override
   void dispose() {
@@ -26,6 +28,7 @@ class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
   }
 
   Future<void> _onNext() async {
+    // what happens when next arrow gets clicked
     await ref
         .read(emailEntryProvider.notifier)
         .submitEmail(_emailController.text.trim());

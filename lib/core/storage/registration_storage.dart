@@ -11,10 +11,10 @@ class RegistrationStorage {
   final _storage = const FlutterSecureStorage();
 
   Future<void> saveVerificationSession({
-    required String sessionId,
+    required String userId,
     required String email,
   }) async {
-    await _storage.write(key: _verificationSessionIdKey, value: sessionId);
+    await _storage.write(key: _verificationSessionIdKey, value: userId);
     await _storage.write(key: _verificationEmailKey, value: email);
   }
 
@@ -28,4 +28,6 @@ class RegistrationStorage {
     await _storage.delete(key: _verificationSessionIdKey);
     await _storage.delete(key: _verificationEmailKey);
   }
+
+
 }

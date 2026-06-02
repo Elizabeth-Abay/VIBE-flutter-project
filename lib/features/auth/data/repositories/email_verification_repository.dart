@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../core/network/api_client.dart';
-import '../../../../core/network/api_config.dart';
-import '../../../../core/network/mock_api_backend.dart';
 import '../../../../core/storage/registration_storage.dart';
 import '../models/verify_email_result.dart';
 
@@ -19,11 +17,13 @@ class EmailVerificationRepository {
   Future<VerifyEmailResult> verifyEmail(String email) async {
     try {
       final VerifyEmailResult result;
-      if (ApiConfig.useMockBackend) {
-        result = await MockApiBackend.verifyEmail(email);
-      } else {
-        result = await _verifyEmailProduction(email);
-      }
+      // if (ApiConfig.useMockBackend) {
+      //   // result = await MockApiBackend.verifyEmail(email);
+      // } else {
+
+      // }
+
+      result = await _verifyEmailProduction(email);
 
       if (result is VerifyEmailSuccess) {
         await _storage.saveVerificationSession(

@@ -57,7 +57,7 @@ class AppRouter {
   static GoRouter createRouter(WidgetRef ref) {
     return GoRouter(
       navigatorKey: _rootNavKey,
-      initialLocation: '/splash',
+      initialLocation: '/start-screen',
       debugLogDiagnostics: false,
 
       // Re-runs redirect() whenever auth state changes.
