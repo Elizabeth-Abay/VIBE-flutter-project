@@ -11,7 +11,7 @@ class DeleteAccountScreen extends ConsumerWidget {
     // Navigate to signin when account is deleted
     ref.listen<ProfileState>(profileNotifierProvider, (_, next) {
       if (next is ProfileDeleted) {
-        context.go('/signin');
+        context.go('/sign-in');
       } else if (next is ProfileError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(next.message), backgroundColor: Colors.red),

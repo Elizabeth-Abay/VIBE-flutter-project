@@ -36,7 +36,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final email = (session.email ?? fromRoute).trim();
     if (email.isEmpty) {
       if (!session.otpVerified) {
-        context.go('/login-email');
+        context.go('/sign-up-email-enter');
       }
       return;
     }

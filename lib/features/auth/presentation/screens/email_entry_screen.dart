@@ -100,7 +100,7 @@ class _EmailEntryScreenState extends ConsumerState<EmailEntryScreen> {
             const SizedBox(height: 30),
 
             TextButton(
-              onPressed: () => context.push('/signin'),
+              onPressed: () => context.push('/sign-in'),
               child: const Text(
                 "Already have account? Sign in",
                 style: TextStyle(color: Colors.white),

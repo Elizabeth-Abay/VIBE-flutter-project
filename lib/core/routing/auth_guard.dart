@@ -10,9 +10,9 @@ const _publicRoutes = {
   '/welcome2',
   '/welcome3',
   '/welcome4',
-  '/signin',
-  '/signup',
-  '/login-email',
+  '/sign-in',
+  '/enter-user-info-first',
+  '/sign-up-email-enter',
   '/verify',
 };
 
@@ -43,7 +43,7 @@ String? authRedirect(WidgetRef ref, String location) {
   final isOnboarding = _onboardingRoutes.contains(location);
 
   // Not logged in and trying to reach a protected screen.
-  if (!isAuthenticated && !isPublic) return '/signin';
+  if (!isAuthenticated && !isPublic) return '/sign-in';
 
   // Logged in but on a pure-auth screen (not onboarding).
   if (isAuthenticated && isPublic && !isOnboarding) return '/home';
