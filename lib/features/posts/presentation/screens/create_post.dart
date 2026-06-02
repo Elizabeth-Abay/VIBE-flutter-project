@@ -43,12 +43,14 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
 
   String get _userName {
     final s = ref.read(authNotifierProvider);
-    return s is AuthStateAuthenticated ? s.user.username : 'You';
+    //  s is AuthStateAuthenticated ?  find a way to put thus
+    return 'You';
   }
 
   String? get _userAvatar {
     final s = ref.read(authNotifierProvider);
-    return s is AuthStateAuthenticated ? s.user.avatarUrl : null;
+    // s is AuthStateAuthenticated ? s.user.avatarUrl : 
+    return  null;
   }
 
   // ── Submit ─────────────────────────────────────────────────────────────────

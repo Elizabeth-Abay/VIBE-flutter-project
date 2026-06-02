@@ -28,7 +28,7 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       final user = await _repo.getCurrentUser();
       if (user != null) {
-        state = AuthStateAuthenticated(user);
+        state = AuthStateAuthenticated();
       } else {
         state = const AuthStateUnauthenticated();
       }
@@ -43,7 +43,14 @@ class AuthNotifier extends Notifier<AuthState> {
     state = const AuthStateLoading();
     try {
       final user = await _repo.signIn(email: email, password: password);
-      state = AuthStateAuthenticated(user);
+
+      if (user == false) {
+        AuthStateUnauthenticated();
+        return;
+      }
+      AuthStateUnauthenticated();
+
+      state = AuthStateAuthenticated();
     } on Exception catch (e) {
       state = AuthStateError(e.toString().replaceAll('Exception: ', ''));
     }
@@ -53,17 +60,24 @@ class AuthNotifier extends Notifier<AuthState> {
 
   Future<void> signUp({
     required String username,
-    required String email,
     required String password,
+    required String name,
   }) async {
     state = const AuthStateLoading();
     try {
       final user = await _repo.signUp(
         username: username,
-        email: email,
         password: password,
+        name: name,
       );
-      state = AuthStateAuthenticated(user);
+      // user - true or false
+
+      if (user == false) {
+        AuthStateUnauthenticated();
+        return;
+      }
+
+      state = AuthStateAuthenticated();
     } on Exception catch (e) {
       state = AuthStateError(e.toString().replaceAll('Exception: ', ''));
     }
@@ -76,12 +90,10 @@ class AuthNotifier extends Notifier<AuthState> {
     state = const AuthStateUnauthenticated();
   }
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────
-
-  UserEntity? get currentUser {
-    final s = state;
-    return s is AuthStateAuthenticated ? s.user : null;
-  }
+  // UserEntity? get currentUser {
+  //   final s = state;
+  //   return s is AuthStateAuthenticated ? s.user : null;
+  // }
 
   bool get isAuthenticated => state is AuthStateAuthenticated;
 }

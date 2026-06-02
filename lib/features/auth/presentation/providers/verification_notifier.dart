@@ -68,11 +68,25 @@ class VerificationNotifier extends Notifier<VerificationState> {
         );
         return;
       }
-      await ApiClient.instance.post(
+      final response = await ApiClient.instance.post(
         '/auth/verify-user-otp',
         body: {'id': userId, 'OTP': otp},
         auth: false,
       );
+
+      final accessToken = response['accessToken'];
+      final refreshToken = response['refreshToken'];
+
+      print("Access Token $accessToken" );
+      print("refresh Token $refreshToken");
+      
+      await ref
+          .read(registrationStorageProvider)
+          .saveAuthTokens(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          );
+
       state = const VerificationSuccess();
     } on ApiException catch (e) {
       if (e.statusCode == 400) {

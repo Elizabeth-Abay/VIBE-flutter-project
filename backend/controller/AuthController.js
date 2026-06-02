@@ -93,7 +93,7 @@ class AuthController {
             let result = await authService.logIn({ email, password });
 
             return result.success ?
-                res.status(200).json(result.data) :
+                res.status(200).json(result) :
                 res.status(400).json(result);
 
 

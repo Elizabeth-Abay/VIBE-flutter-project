@@ -102,7 +102,8 @@ class ChatThreadNotifier extends Notifier<ChatThreadState> {
     state = const ChatThreadLoading();
     try {
       final auth = ref.read(authNotifierProvider);
-      final userId = auth is AuthStateAuthenticated ? auth.user.id : null;
+      //  auth is AuthStateAuthenticated ? auth.user.id : 
+      final userId = null;
       final messages = await _repo.fetchMessages(_conversationId);
       state = ChatThreadLoaded(
         messages: messages,

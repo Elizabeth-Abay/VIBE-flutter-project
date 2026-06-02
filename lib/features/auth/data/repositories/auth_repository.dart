@@ -15,41 +15,46 @@ class AuthRepository {
 
   final _db = DatabaseHelper.instance;
   final _api = ApiClient.instance;
-  final _storage = const FlutterSecureStorage();
+  // final _storage = const FlutterSecureStorage();
 
   static const _cacheKey = 'current_user';
 
-  Future<UserEntity> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> signIn({required String email, required String password}) async {
     final response = await _api.post(
       '/auth/login',
       body: {'email': email, 'password': password},
       auth: false,
     );
-    final token = response['token'] as String;
-    await _api.saveToken(token);
-    final user = UserModel.fromJson(response['user'] as Map<String, dynamic>);
-    await _cacheUser(user);
-    return user;
+
+    if (!response['success']) return false;
+
+    final tokens = response['data'] as Map<String, String>;
+    // bc it is { accessToken , refreshToken }
+
+    final accessToken = tokens['accessToken'];
+    final refreshToken = tokens['refreshToken'];
+    await _api.saveToken(accessToken : accessToken! , refreshToken:  refreshToken!);
+    
+    return true;
   }
 
-  Future<UserEntity> signUp({
+  Future<bool> signUp({
     required String username,
-    required String email,
     required String password,
+    required String name,
   }) async {
     final response = await _api.post(
-      '/auth/register',
-      body: {'username': username, 'email': email, 'password': password},
-      auth: false,
+      '/profile/enter-user-info-first-time',
+      body: {'userName': username, 'password': password, 'name': name},
+      auth: true,
     );
-    final token = response['token'] as String;
-    await _api.saveToken(token);
-    final user = UserModel.fromJson(response['user'] as Map<String, dynamic>);
-    await _cacheUser(user);
-    return user;
+
+    // final token = response['token'] as String;
+    // await _api.saveToken(token);
+
+    if (response['success']) return true;
+
+    return false;
   }
 
   Future<void> signOut() async {
@@ -87,7 +92,7 @@ class AuthRepository {
   }
 
   Future<bool> hasToken() async {
-    final token = await _storage.read(key: 'auth_token');
+    final token = await _api.getToken();
     return token != null && token.isNotEmpty;
   }
 

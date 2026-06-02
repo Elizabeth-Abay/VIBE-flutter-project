@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'api_config.dart';
 import 'mock_api_backend.dart';
+import '../storage/registration_storage.dart';
 
 /// Centralised HTTP client.
 /// All repositories use [ApiClient.instance] to make authenticated requests.
@@ -20,46 +21,25 @@ class ApiClient {
 
   // ─── Token helpers ───────────────────────────────────────────────────────
 
-  Future<String?> getToken() => _storage.read(key: 'auth_token');
-
-  Future<void> saveToken(String token) =>
-      _storage.write(key: 'auth_token', value: token);
-
-  Future<void> clearToken() => _storage.delete(key: 'auth_token');
-
-  // ─── Base headers ────────────────────────────────────────────────────────
-
   Future<Map<String, String>> _headers({bool auth = true}) async {
-    final headers = {'Content-Type': 'application/json'};
-    if (auth) {
-      final token = await getToken();
-      if (token != null) headers['Authorization'] = 'Bearer $token';
-    }
-    return headers;
+  final headers = {'Content-Type': 'application/json'};
+  if (auth) {
+    // 🎯 Ask your central storage for the token instead of doing it locally!
+    final token = await RegistrationStorage.instance.getAccessToken();
+    if (token != null) headers['Authorization'] = 'Bearer $token';
   }
+  return headers;
+}
 
-  // ─── HTTP verbs ──────────────────────────────────────────────────────────
+  Future<void> saveToken({required String accessToken ,required String refreshToken}) => RegistrationStorage.instance.saveAuthTokens(accessToken: accessToken , refreshToken:  refreshToken);
+
+  Future<void> clearToken() => RegistrationStorage.instance.clearAuthTokens();
+
+  Future<String?> getToken() => RegistrationStorage.instance.getAccessToken();
+  
+  // ─── HTTP verbs 
 
   Future<Map<String, dynamic>> get(String path) async {
-    if (ApiConfig.useMockBackend) {
-      final normalized = path.split('?').first;
-      if (normalized == '/auth/me') {
-        final token = await getToken();
-        return MockApiBackend.userForToken(token);
-      }
-      if (normalized == '/profile/me') {
-        final token = await getToken();
-        final user =
-            MockApiBackend.userForToken(token)['user'] as Map<String, dynamic>;
-        return {
-          'profile': {
-            ...user,
-            'vibes': user['vibes'] ?? <String, String>{},
-          },
-        };
-      }
-      return MockApiBackend.get(path);
-    }
     final response = await http.get(
       Uri.parse('$baseUrl$path'),
       headers: await _headers(),
@@ -145,7 +125,7 @@ class ApiClient {
   }
 }
 
-// ─── Exception ───────────────────────────────────────────────────────────────
+// ─── Exception ─────
 
 class ApiException implements Exception {
   final int statusCode;
