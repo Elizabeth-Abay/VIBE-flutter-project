@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repository/post_repository.dart';
 import '../../domain/entity/post_entity.dart';
 
-
 /// Tracks the active selection pill state layout value (defaults to 'books')
 final selectedCategoryProvider = NotifierProvider<CategoryNotifier, String>(
   CategoryNotifier.new,
@@ -27,7 +26,6 @@ final postsFeedProvider = FutureProvider<List<PostEntity>>((ref) async {
   final category = ref.watch(selectedCategoryProvider);
   return PostRepository.instance.getPostsInACategory(category);
 });
-
 
 /// Tracks standard async compilation state transitions when writing mutations to the database
 final createPostNotifierProvider =
@@ -79,5 +77,15 @@ class CreatePostNotifier extends Notifier<AsyncValue<bool>> {
       state = AsyncValue.error(e, stack);
       return false;
     }
+  }
+
+  Future<void> refreshPosts({String? category}) async {
+    // 1. Force the UI into a loading state (renders shimmers/spinners instantly)
+    state = const AsyncLoading();
+
+    // 2. Execute the async network call and assign the result securely
+    state = await AsyncValue.guard(() async {
+      return await _fetchFeedData(category: category);
+    });
   }
 }

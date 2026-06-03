@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/post_categories.dart';
-import '../providers/post_notifier.dart';
+import '../../../posts/presentation/providers/post_provider.dart'; // 🎯 Centered import to access post_notifier shared states
 import 'category_pill.dart';
 
-/// Category filter bar wired to selectedCategoryProvider (Riverpod 3 Notifier).
+/// Category filter bar wired to selectedCategoryProvider (Riverpod Notifier).
 class CategoryBar extends ConsumerWidget {
-  const CategoryBar({super.key});
+  // 🎯 Added constructor configuration profiles to make this component modular
+  final List<dynamic> categories =  postAppCategories;
+  final Function(List<dynamic>)? onSelectionChanged;
+
+  const CategoryBar({
+    super.key,
+    this.onSelectionChanged,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Watches the active selected string tag state (e.g. 'Academics', 'Dating', etc.)
     final selected = ref.watch(selectedCategoryProvider);
 
     return SizedBox(
@@ -17,9 +25,9 @@ class CategoryBar extends ConsumerWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        itemCount: postAppCategories.length,
+        itemCount: categories.length,
         itemBuilder: (context, index) {
-          final category = postAppCategories[index];
+          final category = categories[index];
           final isSelected = selected == category.name;
 
           return CategoryPill(
@@ -27,12 +35,20 @@ class CategoryBar extends ConsumerWidget {
             icon: category.icon,
             isSelected: isSelected,
             onTap: () {
-              final next = isSelected ? null : category.name;
-              // Use .select() — StateProvider.state setter no longer exists
-              ref.read(selectedCategoryProvider.notifier).select(next);
-              ref
-                  .read(postsNotifierProvider.notifier)
-                  .fetchPosts(category: next);
+              final nextLabel = isSelected ? '' : category.name;
+
+              // ── 1. If an external explicit callback runner is assigned (like on Create Post Page)
+              if (onSelectionChanged != null) {
+                onSelectionChanged!([category]);
+              } else {
+                // ── 2. Fallback to standard global Feed filter actions
+                ref.read(selectedCategoryProvider.notifier).updateCategory(nextLabel);
+                
+                // Triggers an immediate refresh on the main home feed stream
+                ref.read(createPostNotifierProvider.notifier).refreshPosts(
+                      category: nextLabel.isEmpty ? null : nextLabel,
+                    );
+              }
             },
           );
         },
