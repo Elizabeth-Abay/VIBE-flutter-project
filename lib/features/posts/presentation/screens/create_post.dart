@@ -66,6 +66,7 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
 
   Future<void> _onPost() async {
     final selectedCat = ref.read(selectedCategoryProvider);
+    print("selected category $selectedCat");
     final selectedFile = ref.read(pickedImageProvider);
 
     // 🎯 Passes all dynamic data fields cleanly to your unified multipart request handler

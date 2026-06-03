@@ -123,7 +123,9 @@ class ConnectionController {
             let { id } = req.decodedAccess;
             let result = await connectionService.getMatchedConnections(id);
 
-            console.log(`getMatchedConnections ${result} `);
+            console.log(`getMatchedConnections `);
+            console.log(result);
+
 
 
             return (result.success) ? res.status(200).json(result.data) : res.status(400).json(result);

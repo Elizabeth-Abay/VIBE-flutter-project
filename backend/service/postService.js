@@ -13,6 +13,8 @@ class PostService {
             // get ids from the graph and content from postgres
             let result = await postModelG.selectPostsBasedOnCategory(categorySelected);
 
+            console.log(result);
+
             if (result?.data.length === 0) return result;
 
             // else have the posts information be extracted from the postgres

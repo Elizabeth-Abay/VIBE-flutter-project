@@ -19,7 +19,7 @@ class PostRepository {
     );
 
     // Dynamic extraction supporting both variants from your Node controller response
-    final List<dynamic> rawList = response['posts'] ?? response['result'] ?? [];
+    final List<dynamic> rawList = response['data'];
 
     return rawList
         .map(
@@ -40,6 +40,8 @@ class PostRepository {
         'POST',
         '/post/make-post',
       );
+
+      print(" category selected is $category");
 
       // Maps directly to your Express: let { categorySelected, postTitle, postContent } = req.body;
       multipartRequest.fields['postTitle'] = title;

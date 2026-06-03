@@ -13,11 +13,15 @@ final connectionsFeedProvider = FutureProvider<List<ConnectedUser>>((
   return await _connectionRepo.getAllConnections();
 });
 
-
+final connectionRepositoryProvider = Provider<ConnectionRepository>((ref) {
+  // Return your instance here
+  return ConnectionRepository.instance;
+});
 
 final peopleNotifierProvider = FutureProvider<List<dynamic>>((ref) async {
-  // Calls your repository's GET endpoint: '/connection/matched-users'
-  return await ConnectionRepository.instance.getMatchedUsers();
+  final repository = ref.read(connectionRepositoryProvider);
+
+  return await repository.getMatchedUsers();
 });
 
 // ─── 2. Global Action State Notifier ─────────────────────────────────────────

@@ -11,8 +11,10 @@ class ConnectionRepository {
 
   // ─── GET: Fetch Matched Recommendations ──────────────────────────────────
   Future<List<MatchedUser>> getMatchedUsers() async {
+    print('Hellooo');
     final response = await _api.get('/connection/matched-users');
-    final List<dynamic> data = response as List<dynamic>;
+    final dataList = response['data'];
+    final List<dynamic> data = dataList as List<dynamic>;
 
     print("getMatchedUsers  $data");
 
