@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repository/profile_repository.dart';
 import '../../domain/entities/profile_entity.dart';
 import '../../../auth/presentation/providers/auth_notifier.dart';
+import '../../../interests/data/repository/interest_repo.dart'; // 🎯 Clean Architecture cross-feature import
 
 // ─── Profile state ────────────────────────────────────────────────────────────
 
@@ -45,7 +46,9 @@ final profileNotifierProvider = NotifierProvider<ProfileNotifier, ProfileState>(
 // ─── Notifier ─────────────────────────────────────────────────────────────────
 
 class ProfileNotifier extends Notifier<ProfileState> {
-  final _repo = ProfileRepository.instance;
+  final _profileRepo = ProfileRepository.instance;
+  final _interestsRepo =
+      InterestsRepository.instance; // 🎯 Standalone Data Access Layer
 
   @override
   ProfileState build() {
@@ -58,7 +61,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
   Future<void> loadProfile() async {
     state = const ProfileLoading();
     try {
-      final profile = await _repo.getProfile();
+      final profile = await _profileRepo.getProfile();
       if (profile != null) {
         state = ProfileLoaded(profile);
       } else {
@@ -79,7 +82,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
   }) async {
     state = const ProfileLoading();
     try {
-      final updated = await _repo.updateProfile(
+      final updated = await _profileRepo.updateProfile(
         username: username,
         bio: bio,
         avatarUrl: avatarUrl,
@@ -91,69 +94,39 @@ class ProfileNotifier extends Notifier<ProfileState> {
     }
   }
 
-  // ── Save interests ───────────────────────────────────────────────────────
-
-  Future<void> saveInterests(Map<String, String> vibes) async {
-    try {
-      print('Vibes is $vibes');
-      final Map<String, String> scoreMapping = {
-        'Love': '10',
-        'Like': '8',
-        'Neutral': '5',
-        'Bothered': '1',
-        'Hate': '0',
-      };
-
-      final List<Map<String, String>> vibesList = vibes.entries.map((entry) {
-        final String interestName = entry.key; // e.g., "Music"
-        final String label = entry.value; // e.g., "Love"
-
-        // Look up the score, fallback to '0' if a label isn't found in the rules
-        final String score = scoreMapping[label] ?? '0';
-
-        return {interestName: score};
-      }).toList();
-
-      await _repo.saveInterests(vibesList);
-
-      final current = state;
-      if (current is ProfileLoaded) {
-        state = ProfileLoaded(current.profile.copyWith(vibes: vibes));
-      }
-    } catch (e) {
-      state = ProfileError(e.toString());
-    }
-  }
+  // ─── Save / Update Interests ─────────────────────────────────────────────
 
   Future<void> updateInterests(Map<String, String> vibes) async {
+    // 1. Map labels to backend numeric strings (matching your schema layout)
+    final Map<String, int> scoreMapping = {
+      'Love': 10,
+      'Like': 8,
+      'Neutral': 5,
+      'Bothered': 1,
+      'Hate': 0,
+    };
+
+    // Format into what your backend expects: [{"interest": "Music", "score": "10"}, ...]
+    final List<Map<String, int>> formattedList = vibes.entries.map((entry) {
+      return {entry.key: scoreMapping[entry.value] ?? 0};
+    }).toList();
+
     try {
-      print('Vibes is $vibes');
-      final Map<String, String> scoreMapping = {
-        'Love': '10',
-        'Like': '8',
-        'Neutral': '5',
-        'Bothered': '1',
-        'Hate': '0',
-      };
+      // 3. Fire payload out to your standalone network API client layer
+      await _interestsRepo.updateInterests(formattedList);
 
-      final List<Map<String, String>> vibesList = vibes.entries.map((entry) {
-        final String interestName = entry.key; // e.g., "Music"
-        final String label = entry.value; // e.g., "Love"
-
-        // Look up the score, fallback to '0' if a label isn't found in the rules
-        final String score = scoreMapping[label] ?? '0';
-
-        return {interestName: score};
-      }).toList();
-
-      await _repo.updateInterests(vibesList);
-
+      // 5. Instantly alert state stream listeners for zero-latency screen UI re-renders
       final current = state;
       if (current is ProfileLoaded) {
         state = ProfileLoaded(current.profile.copyWith(vibes: vibes));
+      } else if (current is ProfileUpdated) {
+        state = ProfileUpdated(current.profile.copyWith(vibes: vibes));
       }
     } catch (e) {
-      state = ProfileError(e.toString());
+      // ⚠️ DO NOT set the state to ProfileError here!
+      // If you do, the entire selection screen UI will crash and disappear.
+      // Instead, we rethrow the network exception up to InterestsSavingNotifier so the snackbar catches it.
+      rethrow;
     }
   }
 
@@ -162,7 +135,7 @@ class ProfileNotifier extends Notifier<ProfileState> {
   Future<void> deleteAccount() async {
     state = const ProfileLoading();
     try {
-      await _repo.deleteAccount();
+      await _profileRepo.deleteAccount();
       // Sign the user out in the auth notifier too
       await ref.read(authNotifierProvider.notifier).signOut();
       state = const ProfileDeleted();
