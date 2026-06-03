@@ -68,15 +68,38 @@ class ProfileRepository {
 
   // ─── Save interests (called after interest selection screen) ─────────────
 
-  Future<void> saveInterests(Map<String, String> vibes) async {
-    await _api.put('/profile/interests', body: {'vibes': vibes});
-    // Update the cached profile's vibes map
+  Future<void> saveInterests(List<Map<String, String>> vibesList) async {
+    await _api.post(
+      '/interest/put-in-interests',
+      body: {'interestedIn': vibesList},
+    );
+
+    final Map<String, String> reconstructedMap = {
+      for (var item in vibesList) item['interest']!: item['score']!,
+    };
+
+    // 3. Keep the cache updated
     final cached = await _getCachedProfile();
     if (cached != null) {
-      await _cacheProfile(cached.copyWith(vibes: vibes));
+      await _cacheProfile(cached.copyWith(vibes: reconstructedMap));
     }
   }
 
+  Future<void> updateInterests(List<Map<String, String>> vibesList) async {
+    await _api.post(
+      '/interest/update-interests',
+      body: {'interestedIn': vibesList},
+    );
+
+    final Map<String, String> reconstructedMap = {
+      for (var item in vibesList) item['interest']!: item['score']!,
+    };
+
+    final cached = await _getCachedProfile();
+    if (cached != null) {
+      await _cacheProfile(cached.copyWith(vibes: reconstructedMap));
+    }
+  }
   // ─── Delete account ──────────────────────────────────────────────────────
 
   Future<void> deleteAccount() async {

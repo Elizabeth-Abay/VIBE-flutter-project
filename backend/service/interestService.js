@@ -10,6 +10,8 @@ class InterestService {
             // sentInfo = { id , interestedIn : { name : value }}
             // convert that to interests : [ { name : something , value : Number(value)}]
 
+            console.log("interestedIn ", interestedIn);
+
             let interests = [];
 
 
@@ -21,16 +23,19 @@ class InterestService {
                 let val = Object.values(interest);;
 
                 let Obj = {
-                    name: key,
+                    name: key.toLowerCase(),
                     rated_as: Number(val)
                 }
 
-                // console.log(Obj)
 
                 interests.push(Obj)
             }
 
+            console.log("interests reorganized " , interests);
+
             let result = await interestModelG.linkingUserWithInterests({ id, interests });
+
+            console.log("Result of linking intersts " , result);
 
             return (result.success) ? { success: true } : {
                 success: false,

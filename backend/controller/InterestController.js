@@ -14,6 +14,8 @@ class InterestLinkerController {
 
             let result = await interestService.linkingInterest({ id, interestedIn });
 
+            console.log("result" , result);
+
             return (result.success) ? res.status(200).json({
                 success: true,
                 message: "Interests linked successfully"

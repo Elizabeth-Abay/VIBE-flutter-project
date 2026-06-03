@@ -95,7 +95,59 @@ class ProfileNotifier extends Notifier<ProfileState> {
 
   Future<void> saveInterests(Map<String, String> vibes) async {
     try {
-      await _repo.saveInterests(vibes);
+      print('Vibes is $vibes');
+      final Map<String, String> scoreMapping = {
+        'Love': '10',
+        'Like': '8',
+        'Neutral': '5',
+        'Bothered': '1',
+        'Hate': '0',
+      };
+
+      final List<Map<String, String>> vibesList = vibes.entries.map((entry) {
+        final String interestName = entry.key; // e.g., "Music"
+        final String label = entry.value; // e.g., "Love"
+
+        // Look up the score, fallback to '0' if a label isn't found in the rules
+        final String score = scoreMapping[label] ?? '0';
+
+        return {interestName: score};
+      }).toList();
+
+      await _repo.saveInterests(vibesList);
+
+      final current = state;
+      if (current is ProfileLoaded) {
+        state = ProfileLoaded(current.profile.copyWith(vibes: vibes));
+      }
+    } catch (e) {
+      state = ProfileError(e.toString());
+    }
+  }
+
+  Future<void> updateInterests(Map<String, String> vibes) async {
+    try {
+      print('Vibes is $vibes');
+      final Map<String, String> scoreMapping = {
+        'Love': '10',
+        'Like': '8',
+        'Neutral': '5',
+        'Bothered': '1',
+        'Hate': '0',
+      };
+
+      final List<Map<String, String>> vibesList = vibes.entries.map((entry) {
+        final String interestName = entry.key; // e.g., "Music"
+        final String label = entry.value; // e.g., "Love"
+
+        // Look up the score, fallback to '0' if a label isn't found in the rules
+        final String score = scoreMapping[label] ?? '0';
+
+        return {interestName: score};
+      }).toList();
+
+      await _repo.updateInterests(vibesList);
+
       final current = state;
       if (current is ProfileLoaded) {
         state = ProfileLoaded(current.profile.copyWith(vibes: vibes));

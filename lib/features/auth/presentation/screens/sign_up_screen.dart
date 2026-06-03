@@ -110,11 +110,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     // ── Trigger Endpoint /enter-user-info-first-time ─────────────────────────
     await ref
         .read(authNotifierProvider.notifier)
-        .signUp(
-          username: username,
-          password: password,
-          name: name,
-        );
+        .signUp(username: username, password: password, name: name);
   }
 
   @override
@@ -127,6 +123,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ref.read(registrationSessionProvider.notifier).clear();
         ref.read(usernameCheckProvider.notifier).reset();
         FocusManager.instance.primaryFocus?.unfocus();
+
+        // 🏠 Navigate here safely now that we KNOW registration succeeded
+        if (context.mounted) {
+          context.go('/interest-selection');
+        }
       } else if (next is AuthStateError) {
         if (!context.mounted) return;
         setState(() => _errorMessage = next.message);
@@ -192,9 +193,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               const SizedBox(height: 20),
 
               // 🏷️ Username Input Box with Real-time Async Checking
-              UsernameInputField(
-                controller: _usernameController
-              ),
+              UsernameInputField(controller: _usernameController),
 
               // 🚦 Sub-Widget: Dynamic Username Feedback Builder
               Padding(
