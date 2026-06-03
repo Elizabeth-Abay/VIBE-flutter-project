@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../providers/create_post_notifier.dart';
+import '../providers/post_provider.dart';// 🎯 Points to your modernized notifier file
 import '../widgets/image_picker_sheet.dart';
 import '../widgets/image_preview.dart';
 import '../widgets/tag_input.dart';
@@ -14,6 +13,11 @@ import '../widgets/post_title.dart';
 import '../../../../core/constants/post_categories.dart';
 import '../../../../features/auth/presentation/providers/auth_notifier.dart';
 import '../../../../features/auth/domain/entities/auth_state.dart';
+import '../widgets/image_add_btn.dart';
+
+// Assuming these two keys live inside your image picker widget state file
+final pickedImageProvider = StateProvider<File?>((ref) => null);
+final imageUploadingProvider = StateProvider<bool>((ref) => false);
 
 class CreatePostPage extends ConsumerStatefulWidget {
   const CreatePostPage({super.key});
@@ -28,7 +32,8 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
 
   @override
   void deactivate() {
-    ref.read(createPostProvider.notifier).resetState();
+    // 🎯 Invalidates to drop old inputs out of memory stream on exit
+    ref.invalidate(createPostNotifierProvider);
     super.deactivate();
   }
 
@@ -43,58 +48,77 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
 
   String get _userName {
     final s = ref.read(authNotifierProvider);
-    //  s is AuthStateAuthenticated ?  find a way to put thus
+    // 🎯 Typecheck checks user authentication records cleanly!
+    // if (s is AuthStateAuthenticated) {
+    //   return s.user.name; // Or s.user.username based on your Auth model setup
+    // }
     return 'You';
   }
 
   String? get _userAvatar {
     final s = ref.read(authNotifierProvider);
-    // s is AuthStateAuthenticated ? s.user.avatarUrl : 
-    return  null;
+    // 🎯 Unwraps avatar binary URLs safely if logged in
+    // if (s is AuthStateAuthenticated) {
+    //   return s.user.avatarUrl;
+    // }
+    return null;
   }
 
   // ── Submit ─────────────────────────────────────────────────────────────────
 
   Future<void> _onPost() async {
+    final selectedCat = ref.read(selectedCategoryProvider);
+    final selectedFile = ref.read(pickedImageProvider);
+
+    // 🎯 Passes all dynamic data variables down to your multipart repository
     await ref
-        .read(createPostProvider.notifier)
-        .submitPost(
-          title: _titleController.text,
-          description: _descriptionController.text,
+        .read(createPostNotifierProvider.notifier)
+        .handleMakePost(
+          title: _titleController.text.trim(),
+          content: _descriptionController.text.trim(),
+          category: selectedCat.isEmpty ? 'General' : selectedCat,
+          imageFile: selectedFile,
         );
   }
 
   @override
   Widget build(BuildContext context) {
     // ── React to state changes ───────────────────────────────────────────────
-    ref.listen<CreatePostState>(createPostProvider, (_, next) {
-      if (next is CreatePostSuccess) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.check_circle, color: Colors.white),
-                SizedBox(width: 8),
-                Text('Post published!'),
-              ],
+    ref.listen<AsyncValue<bool>>(createPostNotifierProvider, (_, next) {
+      next.whenOrNull(
+        data: (success) {
+          if (success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.white),
+                    SizedBox(width: 8),
+                    Text('Post published!'),
+                  ],
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
+            // Resets chosen image pointer back to clean state before pop out
+            ref.read(pickedImageProvider.notifier).state = null;
+            context.pop();
+          }
+        },
+        error: (err, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(err.toString()),
+              backgroundColor: Colors.redAccent,
             ),
-            backgroundColor: Colors.green,
-          ),
-        );
-        context.pop();
-      } else if (next is CreatePostError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.message),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-      }
+          );
+        },
+      );
     });
 
-    final postState = ref.watch(createPostProvider);
-    final isLoading = postState is CreatePostLoading;
-    final selectedCat = ref.watch(createPostCategoryProvider);
+    final postState = ref.watch(createPostNotifierProvider);
+    final isLoading = postState.isLoading;
+    final selectedCat = ref.watch(selectedCategoryProvider);
     final isUploading = ref.watch(imageUploadingProvider);
 
     return Scaffold(
@@ -129,9 +153,12 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                       child: CategoryBar(
                         categories: postAppCategories,
                         onSelectionChanged: (selected) {
-                          // Use the first selected category (single-select)
-                          ref.read(createPostCategoryProvider.notifier).state =
-                              selected.isNotEmpty ? selected.first.name : '';
+                          final label = selected.isNotEmpty
+                              ? selected.first.name
+                              : '';
+                          ref
+                              .read(selectedCategoryProvider.notifier)
+                              .updateCategory(label);
                         },
                       ),
                     ),
@@ -190,7 +217,7 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Image button (left)
-                  _ImageAddButton(isUploading: isUploading),
+                  ImageAddButton(isUploading: isUploading),
 
                   // Post button (right)
                   isLoading
@@ -211,65 +238,4 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
 
 // ─── Image add button with upload spinner ─────────────────────────────────────
 
-class _ImageAddButton extends ConsumerWidget {
-  final bool isUploading;
 
-  const _ImageAddButton({required this.isUploading});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hasPicked = ref.watch(pickedImageProvider) != null;
-
-    return GestureDetector(
-      onTap: isUploading ? null : () => ImagePickerSheet.show(context),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: hasPicked
-              ? const Color(0xFF2A1F5E)
-              : Colors.white.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: hasPicked ? const Color(0xFF7B72EF) : Colors.white12,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            isUploading
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFE186FF),
-                      ),
-                    ),
-                  )
-                : Icon(
-                    hasPicked
-                        ? Icons.check_circle_outline
-                        : Icons.add_photo_alternate_outlined,
-                    color: hasPicked ? const Color(0xFF7B72EF) : Colors.white54,
-                    size: 20,
-                  ),
-            const SizedBox(width: 8),
-            Text(
-              isUploading
-                  ? 'Uploading...'
-                  : hasPicked
-                  ? 'Change Photo'
-                  : 'Add Photo',
-              style: TextStyle(
-                color: hasPicked ? const Color(0xFF7B72EF) : Colors.white54,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -22,22 +22,28 @@ class ApiClient {
   // ─── Token helpers ───────────────────────────────────────────────────────
 
   Future<Map<String, String>> _headers({bool auth = true}) async {
-  final headers = {'Content-Type': 'application/json'};
-  if (auth) {
-    // 🎯 Ask your central storage for the token instead of doing it locally!
-    final token = await RegistrationStorage.instance.getAccessToken();
-    if (token != null) headers['Authorization'] = 'Bearer $token';
+    final headers = {'Content-Type': 'application/json'};
+    if (auth) {
+      // 🎯 Ask your central storage for the token instead of doing it locally!
+      final token = await RegistrationStorage.instance.getAccessToken();
+      if (token != null) headers['Authorization'] = 'Bearer $token';
+    }
+    return headers;
   }
-  return headers;
-}
 
-  Future<void> saveToken({required String accessToken ,required String refreshToken}) => RegistrationStorage.instance.saveAuthTokens(accessToken: accessToken , refreshToken:  refreshToken);
+  Future<void> saveToken({
+    required String accessToken,
+    required String refreshToken,
+  }) => RegistrationStorage.instance.saveAuthTokens(
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+  );
 
   Future<void> clearToken() => RegistrationStorage.instance.clearAuthTokens();
 
   Future<String?> getToken() => RegistrationStorage.instance.getAccessToken();
-  
-  // ─── HTTP verbs 
+
+  // ─── HTTP verbs
 
   Future<Map<String, dynamic>> get(String path) async {
     final response = await http.get(
@@ -52,8 +58,6 @@ class ApiClient {
     Map<String, dynamic>? body,
     bool auth = true,
   }) async {
-
-  
     final response = await http.post(
       Uri.parse('$baseUrl$path'),
       headers: await _headers(auth: auth),
@@ -88,6 +92,41 @@ class ApiClient {
     return _handleResponse(response);
   }
 
+  http.MultipartRequest createMultipartRequest(String method, String path) {
+    final url = Uri.parse('$baseUrl$path');
+    final request = http.MultipartRequest(method, url);
+
+    final _token = getToken();
+
+    // Automatically inject your bearer access token if it exists
+
+    request.headers['Authorization'] = 'Bearer $_token';
+
+    // Express 'multer' middleware expects standard multipart content type headers
+    request.headers['Accept'] = 'application/json';
+
+    return request;
+  }
+
+  // ─── 2. Send Multipart Request Helper ──────────────────────────────────────
+  /// Sends the streamed multipart payload and processes it using the standard client parser.
+  Future<Map<String, dynamic>> sendMultipartRequest(
+    http.MultipartRequest request,
+  ) async {
+    try {
+      // 1. Sends the request down the pipeline stream
+      final streamedResponse = await request.send();
+
+      // 2. Converts the http.StreamedResponse into a standard http.Response object
+      final response = await http.Response.fromStream(streamedResponse);
+
+      // 3. Passes it down to your unified error handler method!
+      return _handleResponse(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // ─── Response handler ────────────────────────────────────────────────────
 
   Map<String, dynamic> _handleResponse(http.Response response) {
@@ -118,8 +157,8 @@ class ApiClient {
       debugPrint(
         ApiConfig.useMockBackend
             ? '🧪 Vibe API: MOCK mode (OTP ${ApiConfig.mockOtpCode}, '
-                'password ${ApiConfig.mockPassword}, '
-                'ReqRes ${ApiConfig.reqresDemoEmail})'
+                  'password ${ApiConfig.mockPassword}, '
+                  'ReqRes ${ApiConfig.reqresDemoEmail})'
             : '🌐 Vibe API: $baseUrl',
       );
     }
