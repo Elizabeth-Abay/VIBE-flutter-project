@@ -1,101 +1,122 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repository/connection_repository.dart';
-import '../../domain/entity/matched_user.dart';
+import '../../domain/entity/connected_user.dart';
 
-enum ConnectStatus { idle, loading, success }
+final _connectionRepo = ConnectionRepository.instance;
 
-class PeopleState {
-  final List<MatchedUser> users;
-  final Map<String, ConnectStatus> buttonStatuses;
+// ─── 1. Fetch Existing Connections Stream ────────────────────────────────────
+/// Automatically pulls and caches your list of active friends/connections.
+/// Invalidate this provider to pull a fresh list instantly after mutating states.
+final connectionsFeedProvider = FutureProvider<List<ConnectedUser>>((
+  ref,
+) async {
+  return await _connectionRepo.getAllConnections();
+});
 
-  const PeopleState({required this.users, required this.buttonStatuses});
 
-  PeopleState copyWith({
-    List<MatchedUser>? users,
-    Map<String, ConnectStatus>? buttonStatuses,
-  }) {
-    return PeopleState(
-      users: users ?? this.users,
-      buttonStatuses: buttonStatuses ?? this.buttonStatuses,
+
+final peopleNotifierProvider = FutureProvider<List<dynamic>>((ref) async {
+  // Calls your repository's GET endpoint: '/connection/matched-users'
+  return await ConnectionRepository.instance.getMatchedUsers();
+});
+
+
+// ─── 2. Global Action State Notifier ─────────────────────────────────────────
+/// Manages async network transitions (idle, loading, success, error) when
+/// executing actions like sending, accepting, or rejecting requests.
+final connectionActionProvider =
+    NotifierProvider<ConnectionActionNotifier, AsyncValue<void>>(
+      ConnectionActionNotifier.new,
     );
-  }
-}
 
-final peopleNotifierProvider =
-    StateNotifierProvider<PeopleNotifier, AsyncValue<PeopleState>>((ref) {
-      return PeopleNotifier();
-    });
-
-class PeopleNotifier extends StateNotifier<AsyncValue<PeopleState>> {
-  PeopleNotifier() : super(const AsyncLoading()) {
-    fetchMatches();
+class ConnectionActionNotifier extends Notifier<AsyncValue<void>> {
+  @override
+  AsyncValue<void> build() {
+    return const AsyncData(null); // Initial idle state
   }
 
-  final _repo = ConnectionRepository.instance;
-
-  Future<void> fetchMatches() async {
+  // ─── Send Connection Request ───────────────────────────────────────────────
+  Future<bool> sendRequest(String connectToId) async {
     state = const AsyncLoading();
+
     try {
-      final list = await _repo.getMatchedUsers();
-      state = AsyncValue.data(PeopleState(users: list, buttonStatuses: {}));
+      final success = await _connectionRepo.requestConnection(connectToId);
+      if (success) {
+        state = const AsyncData(null);
+        return true;
+      }
+      state = AsyncValue.error(
+        'Failed to send connection request.',
+        StackTrace.current,
+      );
+      return false;
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);
+      return false;
     }
   }
 
-  Future<void> connectWithUser(String userId) async {
-    final currentAsync = state;
-    if (currentAsync is! AsyncData) return;
-    final current = currentAsync.value;
-
-    // Set clicked button to spinning wheel
-    state = AsyncValue.data(
-      current.copyWith(
-        buttonStatuses: Map.from(current.buttonStatuses)
-          ..[userId] = ConnectStatus.loading,
-      ),
-    );
+  // ─── Accept Incoming Connection ────────────────────────────────────────────
+  Future<bool> acceptRequest(String senderId) async {
+    state = const AsyncLoading();
 
     try {
-      final isSuccessful = await _repo.requestConnection(userId);
-
-      if (isSuccessful) {
-        // Change color state tracking variable to success (Green)
-        state = AsyncValue.data(
-          state.value!.copyWith(
-            buttonStatuses: Map.from(state.value!.buttonStatuses)
-              ..[userId] = ConnectStatus.success,
-          ),
-        );
-
-        // Wait 2 seconds, then remove the card item completely from memory
-        await Future.delayed(const Duration(seconds: 2));
-
-        if (mounted) {
-          state = AsyncValue.data(
-            state.value!.copyWith(
-              users: state.value!.users.where((u) => u.id != userId).toList(),
-              buttonStatuses: Map.from(state.value!.buttonStatuses)
-                ..remove(userId),
-            ),
-          );
-        }
-      } else {
-        _resetButton(userId);
+      final success = await _connectionRepo.acceptConnection(senderId);
+      if (success) {
+        state = const AsyncData(null);
+        // Refresh your active connection feed instantly so the new friend pops up
+        ref.invalidate(connectionsFeedProvider);
+        return true;
       }
-    } catch (_) {
-      _resetButton(userId);
+      state = AsyncValue.error(
+        'Could not accept connection.',
+        StackTrace.current,
+      );
+      return false;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      return false;
     }
   }
 
-  void _resetButton(String userId) {
-    if (mounted && state is AsyncData) {
-      state = AsyncValue.data(
-        state.value!.copyWith(
-          buttonStatuses: Map.from(state.value!.buttonStatuses)
-            ..[userId] = ConnectStatus.idle,
-        ),
+  // ─── Reject Incoming Connection ────────────────────────────────────────────
+  Future<bool> rejectRequest(String senderId) async {
+    state = const AsyncLoading();
+
+    try {
+      final success = await _connectionRepo.rejectConnection(senderId);
+      if (success) {
+        state = const AsyncData(null);
+        return true;
+      }
+      state = AsyncValue.error('Could not reject request.', StackTrace.current);
+      return false;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      return false;
+    }
+  }
+
+  // ─── Disconnect / Unfriend User ────────────────────────────────────────────
+  Future<bool> removeConnection(String targetUserId) async {
+    state = const AsyncLoading();
+
+    try {
+      final success = await _connectionRepo.disconnectUser(targetUserId);
+      if (success) {
+        state = const AsyncData(null);
+        // Drop the unbefriended user out of the cache list instantly
+        ref.invalidate(connectionsFeedProvider);
+        return true;
+      }
+      state = AsyncValue.error(
+        'Failed to remove connection.',
+        StackTrace.current,
       );
+      return false;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      return false;
     }
   }
 }
