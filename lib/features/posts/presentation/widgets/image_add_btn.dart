@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/post_provider.dart';
 import './image_picker_sheet.dart';
+import '../providers/image_provider.dart';
 
 
 class ImageAddButton extends ConsumerWidget {

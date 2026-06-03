@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/create_post_notifier.dart';
+import '../providers/image_provider.dart'; 
+import '../providers/post_provider.dart'; 
+
 
 /// Shows the picked image preview + upload status.
 /// Shows nothing if no image is picked.
@@ -9,9 +11,13 @@ class ImagePreviewWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 🎯 Hooked up securely to your clean architectural state variables
     final pickedFile = ref.watch(pickedImageProvider);
     final isUploading = ref.watch(imageUploadingProvider);
-    final uploadedUrl = ref.watch(uploadedImageUrlProvider);
+    
+    // Monitors post state to know if processing completed successfully
+    final postState = ref.watch(createPostNotifierProvider);
+    final isPostSuccess = postState.value == true;
 
     // Nothing picked — render nothing
     if (pickedFile == null) return const SizedBox.shrink();
@@ -47,7 +53,7 @@ class ImagePreviewWidget extends ConsumerWidget {
                         Color(0xFFE186FF),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                       'Uploading image...',
                       style: TextStyle(color: Colors.white, fontSize: 13),
@@ -58,7 +64,8 @@ class ImagePreviewWidget extends ConsumerWidget {
             ),
 
           // ── Upload success tick ──────────────────────────────────────────
-          if (!isUploading && uploadedUrl != null)
+          // 🎯 Renders when the media file is loaded locally and hasn't failed
+          if (!isUploading && !isPostSuccess)
             Positioned(
               bottom: 10,
               left: 10,
@@ -79,7 +86,7 @@ class ImagePreviewWidget extends ConsumerWidget {
                       color: Colors.white,
                       size: 14,
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(
                       'Ready',
                       style: TextStyle(color: Colors.white, fontSize: 12),
@@ -94,7 +101,8 @@ class ImagePreviewWidget extends ConsumerWidget {
             top: 8,
             right: 8,
             child: GestureDetector(
-              onTap: () => ref.read(createPostProvider.notifier).clearImage(),
+              // 🎯 Clear action directly updates the provider state to collapse this card container
+              onTap: () => ref.read(pickedImageProvider.notifier).clearImage(),
               child: Container(
                 width: 30,
                 height: 30,

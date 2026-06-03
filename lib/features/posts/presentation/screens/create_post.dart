@@ -1,7 +1,9 @@
+import 'dart:io'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../providers/post_provider.dart';// 🎯 Points to your modernized notifier file
+import '../providers/post_provider.dart'; 
+import '../providers/image_provider.dart';
 import '../widgets/image_picker_sheet.dart';
 import '../widgets/image_preview.dart';
 import '../widgets/tag_input.dart';
@@ -14,10 +16,6 @@ import '../../../../core/constants/post_categories.dart';
 import '../../../../features/auth/presentation/providers/auth_notifier.dart';
 import '../../../../features/auth/domain/entities/auth_state.dart';
 import '../widgets/image_add_btn.dart';
-
-// Assuming these two keys live inside your image picker widget state file
-final pickedImageProvider = StateProvider<File?>((ref) => null);
-final imageUploadingProvider = StateProvider<bool>((ref) => false);
 
 class CreatePostPage extends ConsumerStatefulWidget {
   const CreatePostPage({super.key});
@@ -32,7 +30,7 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
 
   @override
   void deactivate() {
-    // 🎯 Invalidates to drop old inputs out of memory stream on exit
+    // 🎯 Drops old inputs out of memory stream on exit to avoid leakage
     ref.invalidate(createPostNotifierProvider);
     super.deactivate();
   }
@@ -48,16 +46,16 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
 
   String get _userName {
     final s = ref.read(authNotifierProvider);
-    // 🎯 Typecheck checks user authentication records cleanly!
+    // 🎯 Safely unwraps user profile details from active Auth session state
     // if (s is AuthStateAuthenticated) {
-    //   return s.user.name; // Or s.user.username based on your Auth model setup
+    //   return s.user.name;
     // }
     return 'You';
   }
 
   String? get _userAvatar {
     final s = ref.read(authNotifierProvider);
-    // 🎯 Unwraps avatar binary URLs safely if logged in
+    // 🎯 Wireframe safely passes down network avatar url pointers
     // if (s is AuthStateAuthenticated) {
     //   return s.user.avatarUrl;
     // }
@@ -70,7 +68,7 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
     final selectedCat = ref.read(selectedCategoryProvider);
     final selectedFile = ref.read(pickedImageProvider);
 
-    // 🎯 Passes all dynamic data variables down to your multipart repository
+    // 🎯 Passes all dynamic data fields cleanly to your unified multipart request handler
     await ref
         .read(createPostNotifierProvider.notifier)
         .handleMakePost(
@@ -100,8 +98,8 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                 backgroundColor: Colors.green,
               ),
             );
-            // Resets chosen image pointer back to clean state before pop out
-            ref.read(pickedImageProvider.notifier).state = null;
+            // Resets chosen image container back to clear state before pop out
+            ref.read(pickedImageProvider.notifier).clearImage();
             context.pop();
           }
         },
@@ -235,7 +233,3 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
     );
   }
 }
-
-// ─── Image add button with upload spinner ─────────────────────────────────────
-
-

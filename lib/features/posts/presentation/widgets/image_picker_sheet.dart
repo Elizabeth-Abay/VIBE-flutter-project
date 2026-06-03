@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/create_post_notifier.dart';
+import 'package:image_picker/image_picker.dart';
+import '../providers/image_provider.dart'; 
 
 /// Bottom sheet that lets the user choose between gallery and camera.
 /// Call [ImagePickerSheet.show] from any widget.
@@ -16,6 +18,35 @@ class ImagePickerSheet extends ConsumerWidget {
       ),
       builder: (_) => const ImagePickerSheet(),
     );
+  }
+
+  // ── Helper Function to execute the physical system pick ───────────────────
+  Future<void> _handleImagePick(WidgetRef ref, BuildContext context, ImageSource source) async {
+    final picker = ImagePicker();
+    
+    try {
+      // ⏳ 1. Trigger the uploading spinner state layout guard
+      ref.read(imageUploadingProvider.notifier).setUploading(true);
+      
+      // Dismiss the bottom sheet window overlay quickly
+      if (context.mounted) Navigator.pop(context);
+
+      // 📸 2. Fire the underlying native camera/gallery hardware module
+      final XFile? pickedFile = await picker.pickImage(
+        source: source,
+        imageQuality: 80, // Compress slightly to optimize network transit payloads
+      );
+
+      if (pickedFile != null) {
+        // 💾 3. Save the native reference path straight into your global provider storage
+        ref.read(pickedImageProvider.notifier).setImage(File(pickedFile.path));
+      }
+    } catch (e) {
+      debugPrint("Media Picker Failure: $e");
+    } finally {
+      // 🛑 4. Turn off your uploading loader configurations smoothly
+      ref.read(imageUploadingProvider.notifier).setUploading(false);
+    }
   }
 
   @override
@@ -54,10 +85,7 @@ class ImagePickerSheet extends ConsumerWidget {
             _OptionTile(
               icon: Icons.photo_library_outlined,
               label: 'Choose from Gallery',
-              onTap: () async {
-                Navigator.pop(context);
-                await ref.read(createPostProvider.notifier).pickFromGallery();
-              },
+              onTap: () => _handleImagePick(ref, context, ImageSource.gallery),
             ),
             const SizedBox(height: 12),
 
@@ -65,10 +93,7 @@ class ImagePickerSheet extends ConsumerWidget {
             _OptionTile(
               icon: Icons.camera_alt_outlined,
               label: 'Take a Photo',
-              onTap: () async {
-                Navigator.pop(context);
-                await ref.read(createPostProvider.notifier).pickFromCamera();
-              },
+              onTap: () => _handleImagePick(ref, context, ImageSource.camera),
             ),
             const SizedBox(height: 12),
 
