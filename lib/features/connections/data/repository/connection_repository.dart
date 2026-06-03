@@ -2,7 +2,6 @@ import '../../../../core/network/api_client.dart';
 import '../../domain/entity/matched_user.dart';
 import '../../domain/entity/connected_user.dart';
 
-
 // this repo is used to make all connection related requests
 class ConnectionRepository {
   ConnectionRepository._internal();
@@ -14,6 +13,9 @@ class ConnectionRepository {
   Future<List<MatchedUser>> getMatchedUsers() async {
     final response = await _api.get('/connection/matched-users');
     final List<dynamic> data = response as List<dynamic>;
+
+    print("getMatchedUsers  $data");
+
     return data
         .map((json) => MatchedUser.fromJson(json as Map<String, dynamic>))
         .toList();
@@ -23,6 +25,8 @@ class ConnectionRepository {
   Future<List<ConnectedUser>> getAllConnections() async {
     final response = await _api.get('/connection/all-connections');
     final List<dynamic> data = response as List<dynamic>;
+
+    print(" getAllConnections  $data");
     return data
         .map((json) => ConnectedUser.fromJson(json as Map<String, dynamic>))
         .toList();
@@ -34,6 +38,8 @@ class ConnectionRepository {
       '/connection/request-connection',
       body: {'connectToId': connectToId},
     );
+
+    print("requestConnection  $response");
     return response['success'] == true;
   }
 
@@ -43,6 +49,9 @@ class ConnectionRepository {
       '/connection/accept-connection',
       body: {'acceptedId': senderId}, // Matches your Node Joi schema field name
     );
+
+    print(" acceptconnectUser  $response");
+
     return response['success'] == true;
   }
 
@@ -52,6 +61,8 @@ class ConnectionRepository {
       '/connection/reject-connection',
       body: {'rejectedId': senderId},
     );
+
+    print("reject connectUser  $response");
     return response['success'] == true;
   }
 
@@ -61,9 +72,8 @@ class ConnectionRepository {
       '/connection/disconnect-user',
       body: {'disconnectedId': targetUserId},
     );
+
+    print(" disconnectUser  $response");
     return response['success'] == true;
   }
-
-
-
 }

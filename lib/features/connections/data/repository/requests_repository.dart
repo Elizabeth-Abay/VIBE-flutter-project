@@ -24,6 +24,9 @@ class RequestRepository {
       final response = await _api.get('/request/received-requests');
 
       final List<dynamic> dataList = response as List<dynamic>;
+
+      print(" getReceivedRequest  $dataList");
+
       return dataList
           .map(
             (json) =>
@@ -51,6 +54,9 @@ class RequestRepository {
       final response = await _api.get('/request/sent-requests');
 
       final List<dynamic> dataList = response as List<dynamic>;
+
+      print(" getSentRequests  $dataList");
+
       return dataList
           .map(
             (json) =>
@@ -83,6 +89,8 @@ class RequestRepository {
               targetUserId, // Matches RequestSchema.cancelRequest Joi key
         },
       );
+
+      print("cancelRequest  $response");
 
       // Robust check supporting both structural formats: plain boolean or map payload status checks
 
