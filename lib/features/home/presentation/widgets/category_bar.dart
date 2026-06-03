@@ -7,13 +7,10 @@ import 'category_pill.dart';
 /// Category filter bar wired to selectedCategoryProvider (Riverpod Notifier).
 class CategoryBar extends ConsumerWidget {
   // 🎯 Added constructor configuration profiles to make this component modular
-  final List<dynamic> categories =  postAppCategories;
+  final List<dynamic> categories = postAppCategories;
   final Function(List<dynamic>)? onSelectionChanged;
 
-  const CategoryBar({
-    super.key,
-    this.onSelectionChanged,
-  });
+  const CategoryBar({super.key, this.onSelectionChanged});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,21 +31,17 @@ class CategoryBar extends ConsumerWidget {
             label: category.name,
             icon: category.icon,
             isSelected: isSelected,
-            onTap: () {
-              final nextLabel = isSelected ? '' : category.name;
 
-              // ── 1. If an external explicit callback runner is assigned (like on Create Post Page)
-              if (onSelectionChanged != null) {
-                onSelectionChanged!([category]);
-              } else {
-                // ── 2. Fallback to standard global Feed filter actions
-                ref.read(selectedCategoryProvider.notifier).updateCategory(nextLabel);
-                
-                // Triggers an immediate refresh on the main home feed stream
-                ref.read(createPostNotifierProvider.notifier).refreshPosts(
-                      category: nextLabel.isEmpty ? null : nextLabel,
-                    );
-              }
+            onTap: () {
+              final nextLabel = isSelected
+                  ? 'books'
+                  : category
+                        .name; // Keep 'books' as your default fallback asset
+              ref
+                  .read(selectedCategoryProvider.notifier)
+                  .updateCategory(nextLabel);
+              // 🎯 Boom! postsFeedProvider watches this value, catches the update,
+              // and loads your fresh network data stream immediately.
             },
           );
         },

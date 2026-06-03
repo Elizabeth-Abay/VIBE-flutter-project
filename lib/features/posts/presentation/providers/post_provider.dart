@@ -1,9 +1,11 @@
-// home/presentation/providers/post_notifier.dart
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repository/post_repository.dart';
 import '../../domain/entity/post_entity.dart';
 
+final _repository = PostRepository.instance;
+
+// ─── 1. Holds Selected Category State ────────────────────────────────────────
 /// Tracks the active selection pill state layout value (defaults to 'books')
 final selectedCategoryProvider = NotifierProvider<CategoryNotifier, String>(
   CategoryNotifier.new,
@@ -20,18 +22,21 @@ class CategoryNotifier extends Notifier<String> {
   }
 }
 
-/// Automatically tracks, requests, caches, and updates the UI matching selectedCategoryProvider
+// ─── 2. Automagically Watches Category & Fetches Feed ────────────────────────
+/// Automatically tracks, requests, caches, and updates the UI matching selectedCategoryProvider.
+/// To trigger a refresh here, you just call ref.invalidate(postsFeedProvider).
 final postsFeedProvider = FutureProvider<List<PostEntity>>((ref) async {
-  // Watches our modern category notifier provider cleanly
+  // 🚀 MAGIC: Because this WATCHES selectedCategoryProvider, the moment the 
+  // user taps a new category pill, this feed auto-fetches the new network data!
   final category = ref.watch(selectedCategoryProvider);
-  return PostRepository.instance.getPostsInACategory(category);
+  return _repository.getPostsInACategory(category);
 });
 
+// ─── 3. Handles Creating a Single New Post Mutation ──────────────────────────
 /// Tracks standard async compilation state transitions when writing mutations to the database
-final createPostNotifierProvider =
-    NotifierProvider<CreatePostNotifier, AsyncValue<bool>>(
-      CreatePostNotifier.new,
-    );
+final createPostNotifierProvider = NotifierProvider<CreatePostNotifier, AsyncValue<bool>>(
+  CreatePostNotifier.new,
+);
 
 class CreatePostNotifier extends Notifier<AsyncValue<bool>> {
   @override
@@ -50,7 +55,7 @@ class CreatePostNotifier extends Notifier<AsyncValue<bool>> {
     state = const AsyncLoading();
 
     try {
-      final success = await PostRepository.instance.createPost(
+      final success = await _repository.createPost(
         title: title,
         content: content,
         category: category,
@@ -60,7 +65,8 @@ class CreatePostNotifier extends Notifier<AsyncValue<bool>> {
       if (success) {
         state = const AsyncData(true);
 
-        // Invalidates the list view feed if the updated content matches the active filter pill
+        // 🎯 If the new post matches what the user is looking at right now, 
+        // clear the old list cache and reload the feed seamlessly.
         final currentFilter = ref.read(selectedCategoryProvider).toLowerCase();
         if (currentFilter == category.toLowerCase()) {
           ref.invalidate(postsFeedProvider);
@@ -77,15 +83,5 @@ class CreatePostNotifier extends Notifier<AsyncValue<bool>> {
       state = AsyncValue.error(e, stack);
       return false;
     }
-  }
-
-  Future<void> refreshPosts({String? category}) async {
-    // 1. Force the UI into a loading state (renders shimmers/spinners instantly)
-    state = const AsyncLoading();
-
-    // 2. Execute the async network call and assign the result securely
-    state = await AsyncValue.guard(() async {
-      return await _fetchFeedData(category: category);
-    });
   }
 }
