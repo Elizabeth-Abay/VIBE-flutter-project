@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/people_notifier.dart';
+import '../providers/request_provider.dart';
 import '../widgets/sent_request_holder.dart';
 
 /// Sent requests list — dynamically handles async states via standard AsyncValue matching.
@@ -9,8 +9,8 @@ class SentRequestsListContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 🎯 Watches our dedicated async sent requests stream
-    final state = ref.watch(sentRequestsFeedProvider);
+    // 🎯 FIX: Changed variable target name to match your exact provider name 'sentRequestsProvider'
+    final state = ref.watch(sentRequestsProvider);
 
     return state.when(
       // ── 1. Loading State ───────────────────────────────────────────────────
@@ -34,7 +34,8 @@ class SentRequestsListContainer extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             TextButton(
-              onPressed: () => ref.invalidate(sentRequestsFeedProvider),
+              // 🎯 FIX: Updated the invalidation target to clear the correct cache stream
+              onPressed: () => ref.invalidate(sentRequestsProvider),
               child: const Text(
                 'Retry',
                 style: TextStyle(color: Color(0xFFBB86FC)),

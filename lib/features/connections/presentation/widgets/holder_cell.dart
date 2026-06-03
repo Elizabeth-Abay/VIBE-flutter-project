@@ -54,7 +54,7 @@ class ConnectionHolderCell extends StatelessWidget {
           ),
 
           // Heart — now driven by Riverpod state
-          HeartButton(userId: user.userId, initialIsLiked: user.isLiked),
+          HeartButton(userId: user.userId, initialIsLiked: false),
         ],
       ),
     );
