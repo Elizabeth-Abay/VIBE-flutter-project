@@ -3,54 +3,79 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/people_notifier.dart';
 import '../widgets/sent_request_holder.dart';
 
-/// Sent requests list — driven by SentRequestNotifier (cache-first).
+/// Sent requests list — dynamically handles async states via standard AsyncValue matching.
 class SentRequestsListContainer extends ConsumerWidget {
   const SentRequestsListContainer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(sentRequestNotifierProvider);
+    // 🎯 Watches our dedicated async sent requests stream
+    final state = ref.watch(sentRequestsFeedProvider);
 
-    return switch (state) {
-      SentRequestLoading() => const Center(child: CircularProgressIndicator()),
-      SentRequestError(:final message) => Center(
+    return state.when(
+      // ── 1. Loading State ───────────────────────────────────────────────────
+      loading: () => const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE186FF)),
+        ),
+      ),
+
+      // ── 2. Error State ─────────────────────────────────────────────────────
+      error: (error, stackTrace) => Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.wifi_off, color: Colors.white38, size: 36),
             const SizedBox(height: 8),
             Text(
-              message,
+              error.toString(),
               style: const TextStyle(color: Colors.white38, fontSize: 13),
+              textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 8),
             TextButton(
-              onPressed: () =>
-                  ref.read(sentRequestNotifierProvider.notifier).fetchSent(),
-              child: const Text('Retry'),
+              onPressed: () => ref.invalidate(sentRequestsFeedProvider),
+              child: const Text(
+                'Retry',
+                style: TextStyle(color: Color(0xFFBB86FC)),
+              ),
             ),
           ],
         ),
       ),
-      SentRequestLoaded(:final requests) when requests.isEmpty => const Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.send_outlined, color: Colors.white24, size: 48),
-            SizedBox(height: 12),
-            Text(
-              'No sent requests',
-              style: TextStyle(color: Colors.white38, fontSize: 14),
+
+      // ── 3. Data Loaded Success State ───────────────────────────────────────
+      data: (requests) {
+        if (requests.isEmpty) {
+          return const Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.send_outlined, color: Colors.white24, size: 48),
+                SizedBox(height: 12),
+                Text(
+                  'No sent requests',
+                  style: TextStyle(color: Colors.white38, fontSize: 14),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      SentRequestLoaded(:final requests) => ListView.builder(
-        padding: const EdgeInsets.only(top: 10, bottom: 20),
-        itemCount: requests.length,
-        itemBuilder: (context, index) =>
-            SentRequestHolderCell(request: requests[index]),
-      ),
-      _ => const SizedBox.shrink(),
-    };
+          );
+        }
+
+        return ListView.builder(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.only(
+            top: 10,
+            bottom: 20,
+            left: 16,
+            right: 16,
+          ),
+          itemCount: requests.length,
+          itemBuilder: (context, index) {
+            return SentRequestHolderCell(request: requests[index]);
+          },
+        );
+      },
+    );
   }
 }

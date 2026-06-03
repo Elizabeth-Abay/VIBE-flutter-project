@@ -20,7 +20,6 @@ final peopleNotifierProvider = FutureProvider<List<dynamic>>((ref) async {
   return await ConnectionRepository.instance.getMatchedUsers();
 });
 
-
 // ─── 2. Global Action State Notifier ─────────────────────────────────────────
 /// Manages async network transitions (idle, loading, success, error) when
 /// executing actions like sending, accepting, or rejecting requests.

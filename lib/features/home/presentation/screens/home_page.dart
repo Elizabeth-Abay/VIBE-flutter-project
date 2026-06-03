@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/post_categories.dart'; // Ensure this points to postAppCategories
 import '../../../posts/presentation/providers/post_provider.dart'; // Handles your feed updates centrally
-import '../../../connections/presentation/providers/people_notifier.dart'; // Handles your connection streams
+import '../../../connections/presentation/providers/connection_notifier.dart'; // Handles your connection streams
 import '../widgets/posts_bar.dart';
 import '../widgets/category_bar.dart'; // 🎯 FIX: Added missing horizontal feed widget import
 import '../widgets/recommended_ppl_list.dart';

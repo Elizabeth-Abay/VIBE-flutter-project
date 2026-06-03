@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../connections/presentation/providers/people_notifier.dart';
+import '../../../connections/presentation/providers/connection_notifier.dart';
 // 🎯 FIX: Added the missing import so Dart knows what ConnectResult is!
 import '../../domain/entity/connection_request_sending_result.dart';
 import 'recommended_person_card.dart';
