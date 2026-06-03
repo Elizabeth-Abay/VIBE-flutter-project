@@ -10,7 +10,13 @@ class RequestController {
             // { id , canceled }
             let { id } = req.decodedAccess;
             let { canceled } = req.body;
+
+            console.log(`cancelRequest ${canceled}`);
+
             let result = await requestService.cancelConnectionRequest({ id, canceled });
+
+            console.log(` cancelRequest ${result}`);
+
 
             return (result.success) ? res.status(200).json({ success: true }) : res.status(400).json(result);
 
@@ -31,6 +37,8 @@ class RequestController {
             let { id } = req.decodedAccess;
             let result = await requestService.getSentRequests(id);
 
+            console.log(`getSentRequests ${result}`);
+
             return (result.success) ? res.status(200).json(result) : res.status(400).json(result);
 
         } catch (err) {
@@ -49,6 +57,8 @@ class RequestController {
         try {
             let { id } = req.decodedAccess;
             let result = await requestService.getPendingRequests(id);
+
+            console.log(`getPendingRequests ${result}`);
 
 
             return (result.success) ? res.status(200).json(result) : res.status(400).json(result);
