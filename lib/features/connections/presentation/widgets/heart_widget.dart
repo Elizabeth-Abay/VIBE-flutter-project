@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/connection_notifier.dart';
+import '../providers/people_notifier.dart';
 
 /// Heart button — now wired to ConnectedNotifier so toggling
 /// updates the shared Riverpod state instead of local StatefulWidget state.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/post_notifier.dart';
-import '../../../connections/presentation/providers/connection_notifier.dart';
+import '../../../connections/presentation/providers/people_notifier.dart';
 import '../../domain/entity/connection_request_sending_result.dart';
 import 'recommended_person_card.dart';
 

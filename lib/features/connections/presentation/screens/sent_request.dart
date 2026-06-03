@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/connection_notifier.dart';
+import '../providers/people_notifier.dart';
 import '../widgets/sent_request_holder.dart';
 
 /// Sent requests list — driven by SentRequestNotifier (cache-first).

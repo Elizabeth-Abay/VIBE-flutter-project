@@ -7,8 +7,9 @@ class PostController {
     async getPostsInACategory(req, res, next) {
         try {
             let { categorySelected } = req.category;
+            console.log("categorySelected " , categorySelected.toLowerCase());
 
-            let result = await postService.getPostsInACategory(categorySelected);
+            let result = await postService.getPostsInACategory(categorySelected.toLowerCase());
 
             return (result.success) ?
                 res.status(200).json(result) : res.status(400).json({ message: 'bad request' })

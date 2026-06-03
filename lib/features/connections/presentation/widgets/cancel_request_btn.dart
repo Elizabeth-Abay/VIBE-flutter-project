@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/connection_notifier.dart';
+import '../providers/people_notifier.dart';
 
 /// Cancel / Request-Again button — wired to SentRequestNotifier.
 /// Uses optimistic UI: state updates immediately, network call follows.
