@@ -21,19 +21,22 @@ class AuthRepository {
 
   Future<bool> signIn({required String email, required String password}) async {
     final response = await _api.post(
-      '/auth/login',
+      '/auth/log-in',
       body: {'email': email, 'password': password},
       auth: false,
     );
 
     if (!response['success']) return false;
 
-    final tokens = response['data'] as Map<String, String>;
+    final tokens = response['data'] as Map<String, dynamic>;
     // bc it is { accessToken , refreshToken }
 
-    final accessToken = tokens['accessToken'];
-    final refreshToken = tokens['refreshToken'];
-    await _api.saveToken(accessToken : accessToken! , refreshToken:  refreshToken!);
+
+
+
+    final accessToken = tokens['accessToken'] as String?;
+    final refreshToken = tokens['refreshToken'] as String?;
+    await _api.saveToken(accessToken: accessToken!, refreshToken: refreshToken!);
     
     return true;
   }

@@ -87,10 +87,13 @@ class AuthController {
 
     async logIn(req, res, next) {
         try {
+            console.log("Log in called");
             // email and password
             let { email, password } = req.body;
 
             let result = await authService.logIn({ email, password });
+
+            console.log("result of login " , result);
 
             return result.success ?
                 res.status(200).json(result) :

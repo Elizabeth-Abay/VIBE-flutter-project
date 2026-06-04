@@ -27,6 +27,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   Future<void> _onSignIn() async {
+    // this thing fires when the log in button is clicked
     setState(() => _errorMessage = null);
 
     final email = _emailController.text.trim();

@@ -42,16 +42,15 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> signIn({required String email, required String password}) async {
     state = const AuthStateLoading();
     try {
-      final user = await _repo.signIn(email: email, password: password);
+      final success = await _repo.signIn(email: email, password: password);
 
-      if (user == false) {
-        AuthStateUnauthenticated();
+      if (!success) {
+        state = const AuthStateError('Invalid email or password.');
         return;
       }
-      AuthStateUnauthenticated();
 
-      state = AuthStateAuthenticated();
-    } on Exception catch (e) {
+      state = const AuthStateAuthenticated();
+    } catch (e) {
       state = AuthStateError(e.toString().replaceAll('Exception: ', ''));
     }
   }
@@ -65,20 +64,19 @@ class AuthNotifier extends Notifier<AuthState> {
   }) async {
     state = const AuthStateLoading();
     try {
-      final user = await _repo.signUp(
+      final success = await _repo.signUp(
         username: username,
         password: password,
         name: name,
       );
-      // user - true or false
 
-      if (user == false) {
-        AuthStateUnauthenticated();
+      if (!success) {
+        state = const AuthStateError('Registration failed. Please try again.');
         return;
       }
 
-      state = AuthStateAuthenticated();
-    } on Exception catch (e) {
+      state = const AuthStateAuthenticated();
+    } catch (e) {
       state = AuthStateError(e.toString().replaceAll('Exception: ', ''));
     }
   }

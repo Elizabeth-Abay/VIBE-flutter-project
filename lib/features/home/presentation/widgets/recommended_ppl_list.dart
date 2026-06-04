@@ -13,7 +13,7 @@ class RecommendedConnectionsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 🎯 Watches the global async recommendations profile stream
-    final state = ref.read(peopleNotifierProvider);
+    final state = ref.watch(peopleNotifierProvider);
 
 
     return state.when(
