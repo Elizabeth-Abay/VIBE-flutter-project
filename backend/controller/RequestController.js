@@ -55,6 +55,7 @@ class RequestController {
 
     async getPendingRequests(req, res, next) {
         try {
+            console.log("Requesting for received request")
             let { id } = req.decodedAccess;
             let result = await requestService.getPendingRequests(id);
 

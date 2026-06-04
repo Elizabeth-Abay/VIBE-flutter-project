@@ -43,24 +43,29 @@ class NotificationRepository {
   }
 
   Future<List<ConnectionRequestEntity>> fetchIncomingRequests() async {
-    final isStale = await _db.isCacheStale(
-      _requestCacheKey,
-      maxAge: const Duration(minutes: 2),
-    );
+    // final isStale = await _db.isCacheStale(
+    //   _requestCacheKey,
+    //   maxAge: const Duration(minutes: 2),
+    // );
 
-    if (!isStale) {
-      final cached = await _getCachedRequests();
-      if (cached.isNotEmpty) return cached;
-    }
+    // if (!isStale) {
+    //   final cached = await _getCachedRequests();
+    //   if (cached.isNotEmpty) return cached;
+    // }
 
     try {
-      final response = await _api.get('/connections/incoming');
-      final raw = response['requests'] as List<dynamic>;
+      final response = await _api.get('/request/received-requests');
+      print("response");
+      print(response);
+      final raw = response['data'] as List<dynamic>;
       final models = raw
           .map(
             (j) => ConnectionRequestModel.fromJson(j as Map<String, dynamic>),
           )
           .toList();
+
+      print("models");
+      print(models);
 
       await _cacheIncomingRequests(models);
       await _db.markCacheFresh(_requestCacheKey);
@@ -94,8 +99,8 @@ class NotificationRepository {
   Future<bool> acceptRequest(String requesterId) async {
     try {
       await _api.post(
-        '/connections/accept',
-        body: {'requester_id': requesterId},
+        '/connection/accept-connection',
+        body: {'acceptedId': requesterId},
       );
       await _db.invalidateCache(_requestCacheKey);
       return true;
@@ -106,7 +111,10 @@ class NotificationRepository {
 
   Future<bool> declineRequest(String requesterId) async {
     try {
-      await _api.delete('/connections/request/$requesterId');
+      await _api.post(
+        '/connection/reject-connection',
+        body: {'rejectedId': requesterId},
+      );
       final db = await _db.database;
       await db.delete(
         'connection_requests',
