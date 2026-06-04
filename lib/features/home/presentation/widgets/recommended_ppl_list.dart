@@ -15,8 +15,6 @@ class RecommendedConnectionsList extends ConsumerWidget {
     // 🎯 Watches the global async recommendations profile stream
     final state = ref.read(peopleNotifierProvider);
 
-    // 🎯 Watches the loading/error state of requests being sent, accepted, or rejected
-    // final actionState = ref.watch(connectionActionProvider);
 
     return state.when(
       // ── 1. Loading State ───────────────────────────────────────────────────
@@ -83,7 +81,7 @@ class RecommendedConnectionsList extends ConsumerWidget {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: UserConnectionCard(
                       userId: person.user_id,
-                      displayName: person.name,
+                      displayName: person.Name,
                       username: person.user_name,
                       userProfileImageUrl: person.profile_url,
                       // 🎯 Invokes our dynamic action provider safely on user tap

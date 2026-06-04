@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repository/connection_repository.dart';
 import '../../domain/entity/connected_user.dart';
+import '../../domain/entity/matched_user.dart';
 
 final _connectionRepo = ConnectionRepository.instance;
 
@@ -18,9 +19,8 @@ final connectionRepositoryProvider = Provider<ConnectionRepository>((ref) {
   return ConnectionRepository.instance;
 });
 
-final peopleNotifierProvider = FutureProvider<List<dynamic>>((ref) async {
+final peopleNotifierProvider = FutureProvider<List<MatchedUser>>((ref) async {
   final repository = ref.read(connectionRepositoryProvider);
-
   return await repository.getMatchedUsers();
 });
 

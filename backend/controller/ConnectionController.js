@@ -128,7 +128,7 @@ class ConnectionController {
 
 
 
-            return (result.success) ? res.status(200).json(result.data) : res.status(400).json(result);
+            return (result.success) ? res.status(200).json(result) : res.status(400).json(result);
 
         } catch (err) {
             if (typeof err === 'object' && !err.from) {

@@ -45,11 +45,20 @@ class ApiClient {
 
   // ─── HTTP verbs
 
-  Future<Map<String, dynamic>> get(String path) async {
+  Future<dynamic> get(String path) async {
     final response = await http.get(
       Uri.parse('$baseUrl$path'),
       headers: await _headers(),
     );
+
+    final bodyElt = response.body;
+    // it is an array
+
+    print("bodyElt is $bodyElt");
+    if (path == '/connection/matched-users'){
+      return _handleResponseForMatched(response);
+    }
+
     return _handleResponse(response);
   }
 
@@ -127,12 +136,31 @@ class ApiClient {
     }
   }
 
-  // ─── Response handler ────────────────────────────────────────────────────
+  Map<String, dynamic> _handleResponseForMatched(http.Response response) {
+    Map<String, dynamic> body;
+    try {
+      body = jsonDecode(response.body) as Map<String, dynamic>;
+      print("body after decoding $body");
+    } catch (_) {
+      throw ApiException(
+        statusCode: response.statusCode,
+        message: 'Invalid server response',
+      );
+    }
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return body;
+    }
+    throw ApiException(
+      statusCode: response.statusCode,
+      message: body['message'] as String? ?? 'Unknown error',
+    );
+  }
 
   Map<String, dynamic> _handleResponse(http.Response response) {
     Map<String, dynamic> body;
     try {
       body = jsonDecode(response.body) as Map<String, dynamic>;
+      print("body after decoding $body");
     } catch (_) {
       throw ApiException(
         statusCode: response.statusCode,
