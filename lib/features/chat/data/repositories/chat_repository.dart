@@ -50,9 +50,9 @@ class ChatRepository {
     // }
 
     try {
-      final response = await _api.get('/chats/get-single-chat/$chatWith');
+      final response = await _api.get('/chat/get-single-chat/$chatWith');
       final raw = response['data'];
-      final chatId = response['_id'];
+      final chatId = raw['_id'];
       final userInfo = raw['otherUserProfile'];
 
       // here chat_id , and the otherUser's info info will be sent
