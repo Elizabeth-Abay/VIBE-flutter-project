@@ -1,37 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../../core/widgets/user_avatar.dart';
-import '../providers/chat_notifier.dart';
 import '../../data/models/chat_user.dart';
+import '../providers/chat_notifier.dart'; // ← Make sure this import is correct
 
 class ChatListScreen extends ConsumerWidget {
   const ChatListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(chatListNotifierProvider);
+    final asyncChats = ref.watch(allChatsProvider);
 
-    return switch (state) {
-      ChatListLoading() => const Center(
-          child: CircularProgressIndicator(color: Colors.white),
+    return Scaffold(
+      backgroundColor: const Color(0xFF050517),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF050517),
+        title: const Text('Chats', style: TextStyle(color: Colors.white)),
+        elevation: 0,
+      ),
+      body: asyncChats.when(
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: Color(0xFFBB86FC)),
         ),
-      ChatListError(:final message) => Center(
-          child: Text(message, style: const TextStyle(color: Colors.white70)),
+        error: (error, stackTrace) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  color: Colors.redAccent,
+                  size: 48,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Failed to load chats',
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  error.toString(),
+                  style: const TextStyle(color: Colors.white54),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => ref.refresh(allChatsProvider),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+          ),
         ),
-      ChatListLoaded(:final conversations) => _ConversationList(
+        data: (conversations) => _ConversationList(
           conversations: conversations,
-          onRefresh: () =>
-              ref.read(chatListNotifierProvider.notifier).refresh(),
+          onRefresh: () => ref.refresh(allChatsProvider),
         ),
-      _ => const SizedBox.shrink(),
-    };
+      ),
+    );
   }
 }
 
 class _ConversationList extends StatelessWidget {
   final List<ChatUser> conversations;
-  final Future<void> Function() onRefresh;
+  final VoidCallback onRefresh;
 
   const _ConversationList({
     required this.conversations,
@@ -50,7 +85,7 @@ class _ConversationList extends StatelessWidget {
     }
 
     return RefreshIndicator(
-      onRefresh: onRefresh,
+      onRefresh: () async => onRefresh(),
       color: Colors.white,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -58,7 +93,7 @@ class _ConversationList extends StatelessWidget {
         itemBuilder: (context, index) {
           final user = conversations[index];
           return GestureDetector(
-            onTap: () => context.push('/chat-detail/${user.id}'),
+            onTap: () => context.push('/chat-detail/${user.chatWith}'),
             child: Container(
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.all(12),
@@ -70,7 +105,7 @@ class _ConversationList extends StatelessWidget {
               child: Row(
                 children: [
                   UserAvatar(
-                    imageUrl: user.avatar,
+                    imageUrl: user.profileUrl,
                     name: user.name,
                     radius: 28,
                   ),
@@ -87,18 +122,6 @@ class _ConversationList extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-                        if (user.lastMessage.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            user.lastMessage,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white54,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ),
@@ -109,7 +132,12 @@ class _ConversationList extends StatelessWidget {
                     null,
                   ),
                   const SizedBox(width: 12),
-                  _iconButton(context, Icons.block, Colors.redAccent, '/blocked'),
+                  _iconButton(
+                    context,
+                    Icons.block,
+                    Colors.redAccent,
+                    '/blocked',
+                  ),
                 ],
               ),
             ),

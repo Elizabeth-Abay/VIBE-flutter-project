@@ -117,7 +117,7 @@ class AppRouter {
         GoRoute(
           path: '/chat-detail/:id',
           builder: (_, state) => ChatDetailScreen(
-            conversationId: state.pathParameters['id'] ?? '',
+            chatWith: state.pathParameters['id'] ?? '',
           ),
         ),
 

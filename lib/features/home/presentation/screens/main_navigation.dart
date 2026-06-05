@@ -52,7 +52,7 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
       case 1:
         return const ChatListScreen();
       case 3:
-        return const SavedMessagesScreen(embedded: true);
+        // return const SavedMessagesScreen(embedded: true);
       case 4:
         return const ProfileViewScreen(embedded: true);
       default:

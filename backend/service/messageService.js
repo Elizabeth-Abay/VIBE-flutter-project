@@ -51,7 +51,8 @@ class MessageService {
                         mine: true,
                         msgId: msg._id,
                         text: msg.text,
-                        createdAt: msg.created_at
+                        createdAt: msg.created_at,
+                        chatId : chatId
                         // profileUrl: usersProfileUrl.profile_url,
                         // name: usersProfileUrl.name,
                         // userName: usersProfileUrl.user_name,
@@ -74,6 +75,7 @@ class MessageService {
                         msgId: msg._id,
                         text: msg.text,
                         createdAt: msg.created_at,
+                        chatId : chatId
                         // profileUrl: otherUserProfileUrl.profile_url,
                         // name: otherUserProfileUrl.name,
                         // userName: otherUserProfileUrl.user_name,
