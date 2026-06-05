@@ -211,9 +211,15 @@ class ChatModel {
             // if there is one find it else create new
             let existingChat = await this.findOne({ id, type: 'self' });
 
+            console.log("existing Chat");
+            console.log(existingChat);
+
             if (existingChat.success) return existingChat;
 
             let newChat = await this.createOne({ id, type: 'self' });
+
+            console.log("new Chat");
+            console.log(newChat);
 
             return newChat;
 

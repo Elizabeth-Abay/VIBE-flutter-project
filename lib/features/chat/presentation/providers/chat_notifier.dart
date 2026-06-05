@@ -69,10 +69,14 @@ class SingleChatNotifier extends AsyncNotifier<Map<String, dynamic>> {
       'otherUserProfile': result.elementAt(1),
     };
   }
+}
 
-  /// Optional: Manual refresh
-  Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _fetchSingleChat(currentChatWith));
+class SelfChatNotifier extends AsyncNotifier<Map<String, dynamic>> {
+  ChatRepository get _repository => ref.read(chatRepositoryProvider);
+
+  @override
+  Future<String> build() async {
+    print("running get all");
+    return _repository.getASelfChat();
   }
 }

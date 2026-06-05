@@ -84,6 +84,31 @@ class ChatRepository {
     }
   }
 
+  Future<String> getASelfChat() async {
+    // final isStale = await _db.isCacheStale(_conversationsKey);
+    // if (!isStale) {
+    //   final cached = await _getCachedConversations();
+    //   if (cached.isNotEmpty) return cached;
+    // }
+
+    try {
+      final response = await _api.get('/chat/self-chat');
+      final raw = response['data'];
+      final chatId = raw['_id'];
+      print("raw");
+      print(raw);
+      print("chatId");
+      print(chatId);
+
+      // it returns the chatId
+      return chatId;
+    } catch (err) {
+      //print("Error ");
+      //print(err);
+      return '';
+    }
+  }
+
   Future<List<ChatUser>> _getCachedConversations() async {
     final db = await _db.database;
     final rows = await db.query('conversations', orderBy: 'updated_at DESC');
