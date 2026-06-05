@@ -22,6 +22,7 @@ class AllChatsNotifier extends AsyncNotifier<List<ChatUser>> {
 
   @override
   Future<List<ChatUser>> build() async {
+    print("running get all");
     return _repository.getAllChats();
   }
 

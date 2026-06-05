@@ -5,9 +5,14 @@ const chatService = new ChatService();
 class ChatController {
     async getAllChats(req, res, next) {
         try {
+
+
             let { id } = req.decodedAccess;
 
             let result = await chatService.getAllChats(id);
+
+            console.log("result of getAllChats");
+            console.log(result);
 
             return (result.success) ?
                 res.status(200).json(result)

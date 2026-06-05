@@ -27,16 +27,23 @@ class ChatRepository {
     }
 
     try {
-      final response = await _api.get('/chats/get-all');
+      final response = await _api.get('/chat/get-all');
       final raw = response['data'] as List<dynamic>;
+      print("raw");
+      print(raw);
       final users = raw
           .map((j) => ChatUser.fromJson(j as Map<String, dynamic>))
           .toList();
 
-      await _cacheConversations(users);
-      await _db.markCacheFresh(_conversationsKey);
+      print("users");
+
+      print(users);
+      // await _cacheConversations(users);
+      // await _db.markCacheFresh(_conversationsKey);
       return users;
-    } catch (_) {
+    } catch (e) {
+      print("Error");
+      print(e);
       return _getCachedConversations();
     }
   }

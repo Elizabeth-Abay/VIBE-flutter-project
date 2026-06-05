@@ -3,7 +3,7 @@ class ChatUser {
   final String chatId;
   final String chatWith;
   final String name;
-  final String profileUrl;
+  final String? profileUrl;
   final String userName;
 
   const ChatUser({
@@ -11,7 +11,7 @@ class ChatUser {
     required this.chatWith,
     required this.name,
     required this.userName,
-    required this.profileUrl,
+    this.profileUrl,
   });
 
   factory ChatUser.fromJson(Map<String, dynamic> json) {
@@ -20,7 +20,7 @@ class ChatUser {
       chatWith: json['participant_id'],
       name: json['name'] as String,
       userName: json['user_name'],
-      profileUrl: json['profile_url'] as String,
+      profileUrl: json['profile_url'] as String?,
     );
   }
 
@@ -30,7 +30,7 @@ class ChatUser {
       chatWith: row['participant_id'] as String,
       name: row['name'] as String,
       userName: row['user_name'],
-      profileUrl: row['profile_url'] as String,
+      profileUrl: row['profile_url'] as String?,
     );
   }
 
