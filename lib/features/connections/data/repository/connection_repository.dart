@@ -25,8 +25,11 @@ class ConnectionRepository {
 
   // ─── GET: Fetch Existing Friends/Connections ─────────────────────────────
   Future<List<ConnectedUser>> getAllConnections() async {
+    print("getAllConnections executing");
     final response = await _api.get('/connection/all-connections');
-    final List<dynamic> data = response as List<dynamic>;
+    print("$response");
+    final dataList = response['data'];
+    final List<dynamic> data = dataList as List<dynamic>;
 
     print(" getAllConnections  $data");
     return data

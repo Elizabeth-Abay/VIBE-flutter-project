@@ -26,7 +26,7 @@ class ChatController {
     async createOrFindChat(req, res, next) {
         try {
             let { id } = req.decodedAccess;
-            let { chatWith } = req.body;
+            let { chatWith } = req.params;
 
             let result = await chatService.createOrFindChat({ id, chatWith });
 

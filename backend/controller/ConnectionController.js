@@ -98,10 +98,12 @@ class ConnectionController {
 
     async getAllConnections(req, res, next) {
         try {
+            console.log(`getAllConnections`);
+
             let { id } = req.decodedAccess;
             let result = await connectionService.getAllConnections(id);
 
-            console.log(`getAllConnections ${result} `);
+            console.log(result);
 
 
             return (result.success) ? res.status(200).json(result) : res.status(400).json(result);

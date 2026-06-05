@@ -122,4 +122,21 @@ class ConnectionActionNotifier extends Notifier<AsyncValue<void>> {
       return false;
     }
   }
+
+  Future<List<ConnectedUser>> getAllConnections() async {
+    state = const AsyncLoading();
+
+    try {
+      print('Getting All connections');
+      final connections = await _connectionRepo.getAllConnections();
+
+      print("result is $connections");
+      state = const AsyncData(null); // Clear loading state back to idle
+      return connections;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      // Return an empty list or rethrow depending on how your UI handles errors
+      return [];
+    }
+  }
 }

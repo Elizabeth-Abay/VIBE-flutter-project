@@ -51,7 +51,7 @@ class ChatRepository {
     }
 
     try {
-      final response = await _api.get('/chats/$conversationId/messages');
+      final response = await _api.get('/chat/get-single-chat/$conversationId');
       final raw = response['messages'] as List<dynamic>;
       final currentUser = await AuthRepository.instance.getCurrentUser();
       final myId = currentUser?.id ?? 'me';
