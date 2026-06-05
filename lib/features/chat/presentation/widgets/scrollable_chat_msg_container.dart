@@ -43,33 +43,37 @@ class ScrollableChatMsgContainer extends ConsumerWidget {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(24.0),
-              child: Text(
-                'No messages yet.',
-                style: TextStyle(color: Colors.white38, fontSize: 14),
+              // Giving it an alignment prevents the Center from collapsing completely during hit tests
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'No messages yet.',
+                  style: TextStyle(color: Colors.white38, fontSize: 14),
+                ),
               ),
             ),
           );
+        } else {
+          return ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            reverse: true, // ← Important for chat (newest at bottom)
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              final message = messages[index];
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: ChatBubble(
+                  messageId: message.msgId,
+                  text: message.text,
+                  isMine: message.isMine, // ← Fixed: was .mine
+                  chatId: chatId, // ← Required by ChatBubble
+                ),
+              );
+            },
+          );
         }
-
-        return ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          reverse: true, // ← Important for chat (newest at bottom)
-          itemCount: messages.length,
-          itemBuilder: (context, index) {
-            final message = messages[index];
-
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: ChatBubble(
-                messageId: message.msgId,
-                text: message.text,
-                isMine: message.isMine, // ← Fixed: was .mine
-                chatId: chatId, // ← Required by ChatBubble
-              ),
-            );
-          },
-        );
       },
     );
   }

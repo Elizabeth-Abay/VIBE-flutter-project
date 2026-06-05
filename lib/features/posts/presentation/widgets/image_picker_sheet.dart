@@ -42,7 +42,8 @@ class ImagePickerSheet extends ConsumerWidget {
         ref.read(pickedImageProvider.notifier).setImage(File(pickedFile.path));
       }
     } catch (e) {
-      debugPrint("Media Picker Failure: $e");
+      // debug
+      print("Media Picker Failure: $e");
     } finally {
       // 🛑 4. Turn off your uploading loader configurations smoothly
       ref.read(imageUploadingProvider.notifier).setUploading(false);

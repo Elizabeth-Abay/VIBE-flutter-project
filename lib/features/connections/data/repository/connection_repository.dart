@@ -11,11 +11,11 @@ class ConnectionRepository {
 
   // ─── GET: Fetch Matched Recommendations ──────────────────────────────────
   Future<List<MatchedUser>> getMatchedUsers() async {
-    print('running getMatchedUsers');
+    //print('running getMatchedUsers');
     final response = await _api.get('/connection/matched-users');
-    print('found the result of getMatchedUsers');
+    //print('found the result of getMatchedUsers');
     final dataList = response['data'];
-    print(dataList);
+    //print(dataList);
     final List<dynamic> data = dataList as List<dynamic>;
 
     return data
@@ -25,13 +25,13 @@ class ConnectionRepository {
 
   // ─── GET: Fetch Existing Friends/Connections ─────────────────────────────
   Future<List<ConnectedUser>> getAllConnections() async {
-    print("getAllConnections executing");
+    //print("getAllConnections executing");
     final response = await _api.get('/connection/all-connections');
-    print("$response");
+    //print("$response");
     final dataList = response['data'];
     final List<dynamic> data = dataList as List<dynamic>;
 
-    print(" getAllConnections  $data");
+    //print(" getAllConnections  $data");
     return data
         .map((json) => ConnectedUser.fromJson(json as Map<String, dynamic>))
         .toList();
@@ -44,7 +44,7 @@ class ConnectionRepository {
       body: {'connectToId': connectToId},
     );
 
-    print("requestConnection  $response");
+    //print("requestConnection  $response");
     return response['success'] == true;
   }
 
@@ -55,7 +55,7 @@ class ConnectionRepository {
       body: {'acceptedId': senderId}, // Matches your Node Joi schema field name
     );
 
-    print(" acceptconnectUser  $response");
+    //print(" acceptconnectUser  $response");
 
     return response['success'] == true;
   }
@@ -67,7 +67,7 @@ class ConnectionRepository {
       body: {'rejectedId': senderId},
     );
 
-    print("reject connectUser  $response");
+    //print("reject connectUser  $response");
     return response['success'] == true;
   }
 
@@ -78,7 +78,7 @@ class ConnectionRepository {
       body: {'disconnectedId': targetUserId},
     );
 
-    print(" disconnectUser  $response");
+    //print(" disconnectUser  $response");
     return response['success'] == true;
   }
 }

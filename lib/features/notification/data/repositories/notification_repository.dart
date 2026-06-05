@@ -55,8 +55,8 @@ class NotificationRepository {
 
     try {
       final response = await _api.get('/request/received-requests');
-      print("response");
-      print(response);
+      //print("response");
+      //print(response);
       final raw = response['data'] as List<dynamic>;
       final models = raw
           .map(
@@ -64,8 +64,8 @@ class NotificationRepository {
           )
           .toList();
 
-      print("models");
-      print(models);
+      //print("models");
+      //print(models);
 
       await _cacheIncomingRequests(models);
       await _db.markCacheFresh(_requestCacheKey);

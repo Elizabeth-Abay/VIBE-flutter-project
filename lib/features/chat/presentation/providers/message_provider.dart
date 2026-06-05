@@ -28,9 +28,12 @@ class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
   Future<List<Message>> build() async {
     final messages = await _repository.fetchMessages(currentChatId);
 
+    //print("Having messages returned");
+    //print(messages);
+
     // Reverse the list so newest message is at index 0
     // (perfect for ListView.builder with reverse: true)
-    return messages.reversed.toList();
+    return messages.toList();
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -108,8 +111,7 @@ class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
     );
 
     final success = await _repository.deleteMessage(
-      msgId: messageId,
-      chatId: currentChatId,
+      msgId: messageId
     );
 
     if (!success) {

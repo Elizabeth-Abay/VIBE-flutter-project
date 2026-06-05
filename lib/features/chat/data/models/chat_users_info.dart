@@ -1,20 +1,20 @@
 /// Domain + data model for a chat conversation list item.
 class ChatUserInfo{
   final String name;
-  final String profileUrl;
+  final String? profileUrl;
   final String userName;
 
   const ChatUserInfo({
     required this.name,
     required this.userName,
-    required this.profileUrl,
+    this.profileUrl,
   });
 
   factory ChatUserInfo.fromJson(Map<String, dynamic> json) {
     return ChatUserInfo (
       name: json['name'] as String,
       userName: json['user_name'],
-      profileUrl: json['profile_url'] as String,
+      profileUrl: json['profile_url'] as String?,
     );
   }
 
@@ -22,7 +22,7 @@ class ChatUserInfo{
     return ChatUserInfo (
       name: row['name'] as String,
       userName: row['user_name'],
-      profileUrl: row['profile_url'] as String,
+      profileUrl: row['profile_url'] as String?,
     );
   }
 

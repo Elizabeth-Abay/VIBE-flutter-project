@@ -8,7 +8,7 @@ class InterestsRepository {
 
   /// Sends the formatted array of interest scores straight to the server
   Future<bool> saveInterests(List<Map<String, int>> formattedVibesList) async {
-    print("Foramated interests $formattedVibesList");
+    //print("Foramated interests $formattedVibesList");
 
     final response = await _api.post(
       '/interest/put-in-interests',
@@ -21,7 +21,7 @@ class InterestsRepository {
   Future<bool> updateInterests(
     List<Map<String, int>> formattedVibesList,
   ) async {
-    print("Foramated interests $formattedVibesList");
+    //print("Foramated interests $formattedVibesList");
 
     final response = await _api.post(
       '/interest/put-in-interests',

@@ -127,10 +127,10 @@ class ConnectionActionNotifier extends Notifier<AsyncValue<void>> {
     state = const AsyncLoading();
 
     try {
-      print('Getting All connections');
+      //print('Getting All connections');
       final connections = await _connectionRepo.getAllConnections();
 
-      print("result is $connections");
+      //print("result is $connections");
       state = const AsyncData(null); // Clear loading state back to idle
       return connections;
     } catch (e, stack) {

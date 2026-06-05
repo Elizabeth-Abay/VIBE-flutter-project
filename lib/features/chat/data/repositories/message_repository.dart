@@ -28,6 +28,10 @@ class MessageRepository {
     try {
       final response = await _api.get('/message/get-messages/$chatId');
       final raw = response['data'] as List<dynamic>;
+
+      //print("raw");
+      //print(raw);
+
       final users = raw
           .map((j) => ChatUser.fromJson(j as Map<String, dynamic>))
           .toList();
@@ -54,12 +58,18 @@ class MessageRepository {
       final response = await _api.get('/message/get-messages/$chatId');
       final raw = response['data'] as List<dynamic>;
 
+      //print("responses ");
+      //print(raw);
+
       final messages = raw
           .map((j) => Message.fromJson(j as Map<String, dynamic>))
           .toList();
 
-      await _cacheMessages(chatId, messages);
-      await _db.markCacheFresh(cacheKey);
+      //print("Messages");
+      // messages.map((j) => //print(j));
+
+      // await _cacheMessages(chatId, messages);
+      // await _db.markCacheFresh(cacheKey);
       return messages;
     } catch (_) {
       return _getCachedMessages(chatId);
@@ -103,12 +113,12 @@ class MessageRepository {
     }
   }
 
-  Future<bool> deleteMessage({
-    required String msgId,
-    required String chatId,
-  }) async {
+  Future<bool> deleteMessage({required String msgId}) async {
     try {
-      final response = await _api.delete('/message/delete-message/$msgId');
+      final response = await _api.get('/message/delete-message/$msgId');
+
+      print("response for delete");
+      print(response);
 
       if (response['success'] == true) {
         final db = await _db.database;

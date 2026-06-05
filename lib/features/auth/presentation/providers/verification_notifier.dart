@@ -77,8 +77,8 @@ class VerificationNotifier extends Notifier<VerificationState> {
       final accessToken = response['accessToken'];
       final refreshToken = response['refreshToken'];
 
-      print("Access Token $accessToken" );
-      print("refresh Token $refreshToken");
+      //print("Access Token $accessToken" );
+      //print("refresh Token $refreshToken");
       
       await ref
           .read(registrationStorageProvider)
@@ -90,13 +90,13 @@ class VerificationNotifier extends Notifier<VerificationState> {
       state = const VerificationSuccess();
     } on ApiException catch (e) {
       if (e.statusCode == 400) {
-        print(e);
+        //print(e);
         state = const VerificationError('Invalid or expired code. Try again.');
       } else {
         state = VerificationError(e.message);
       }
     } catch (err) {
-      print(err);
+      //print(err);
       state = const VerificationError('Network error. Please try again.');
     }
   }

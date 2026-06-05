@@ -1,4 +1,5 @@
 const MessageService = require('../service/messageService');
+const { deleteAcc } = require('./DeleteController');
 
 const messageService = new MessageService();
 
@@ -11,6 +12,10 @@ class MessageController {
             let { chatId } = req.params;
 
             let result = await messageService.getMessagesInAChat({ id, chatId });
+
+            // console.log("result of getMessagesInChat");
+            // console.log(result);
+
 
             return (result.success)
                 ?
@@ -31,9 +36,9 @@ class MessageController {
         try {
             let { id } = req.decodedAccess;
 
-            let { chatId, message , type } = req.body;
+            let { chatId, message, type } = req.body;
 
-            let result = await messageService.createMessage({ id, chatId, message , type });
+            let result = await messageService.createMessage({ id, chatId, message, type });
 
             return (result.success)
                 ?
@@ -76,10 +81,14 @@ class MessageController {
     async deleteMessage(req, res, next) {
         try {
             let { id } = req.decodedAccess;
+            console.log("delete Messgae");
 
             let { msgId } = req.params;
 
             let result = await messageService.deleteMessage({ id, msgId });
+
+            console.log("delete Messgae");
+            console.log(result);
 
             return (result.success)
                 ?

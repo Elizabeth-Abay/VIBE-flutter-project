@@ -55,7 +55,7 @@ class InterestsSavingNotifier extends Notifier<bool> {
       // Send payload down to data layer
       final bool savedInterest = await _repo.saveInterests(formattedList);
 
-      print("Result from the backend $savedInterest") ;
+      //print("Result from the backend $savedInterest") ;
       state = false;
       return savedInterest;
     } catch (e) {

@@ -17,6 +17,8 @@ class ChatBubble extends ConsumerWidget {
     required this.chatId,
   });
 
+  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final myBubbleColor = const Color(0xFF6A1B9A);

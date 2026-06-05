@@ -54,7 +54,7 @@ class ApiClient {
     final bodyElt = response.body;
     // it is an array
 
-    print("bodyElt is $bodyElt");
+    //print("bodyElt is $bodyElt");
     if (path == '/connection/matched-users') {
       return _handleResponseForMatched(response);
     }
@@ -140,7 +140,7 @@ class ApiClient {
     Map<String, dynamic> body;
     try {
       body = jsonDecode(response.body) as Map<String, dynamic>;
-      print("body after decoding $body");
+      //print("body after decoding $body");
     } catch (_) {
       throw ApiException(
         statusCode: response.statusCode,
@@ -159,9 +159,9 @@ class ApiClient {
   Map<String, dynamic> _handleResponse(http.Response response) {
     Map<String, dynamic> body;
     try {
-      print("trying to decode the result");
+      //print("trying to decode the result");
       body = jsonDecode(response.body) as Map<String, dynamic>;
-      print("body after decoding $body");
+      //print("body after decoding $body");
     } catch (_) {
       throw ApiException(
         statusCode: response.statusCode,

@@ -25,7 +25,7 @@ class RequestRepository {
 
       final List<dynamic> dataList = response as List<dynamic>;
 
-      print(" getReceivedRequest  $dataList");
+      //print(" getReceivedRequest  $dataList");
 
       return dataList
           .map(
@@ -55,7 +55,7 @@ class RequestRepository {
 
       final List<dynamic> dataList = response['data'] as List<dynamic>;
 
-      print(" getSentRequests  $dataList");
+      //print(" getSentRequests  $dataList");
 
       return dataList
           .map(
@@ -90,7 +90,7 @@ class RequestRepository {
         },
       );
 
-      print("cancelRequest  $response");
+      //print("cancelRequest  $response");
 
       // Robust check supporting both structural formats: plain boolean or map payload status checks
 

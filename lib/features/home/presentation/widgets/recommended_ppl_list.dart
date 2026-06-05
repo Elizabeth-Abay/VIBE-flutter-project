@@ -75,7 +75,7 @@ class RecommendedConnectionsList extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   final person = people[index];
 
-                  print("$person");
+                  //print("$person");
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),

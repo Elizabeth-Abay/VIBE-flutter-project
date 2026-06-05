@@ -84,7 +84,7 @@ class EmailEntryNotifier extends Notifier<EmailEntryState> {
         state = EmailEntryError(e.message);
       }
     } catch (errror) {
-      print("Error is ${errror}");
+      //print("Error is ${errror}");
       state = const EmailEntryError('Network error. Please try again.');
     }
   }

@@ -41,7 +41,7 @@ class PostRepository {
         '/post/make-post',
       );
 
-      print(" category selected is $category");
+      //print(" category selected is $category");
 
       // Maps directly to your Express: let { categorySelected, postTitle, postContent } = req.body;
       multipartRequest.fields['postTitle'] = title;

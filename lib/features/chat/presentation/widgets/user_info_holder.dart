@@ -4,10 +4,7 @@ import '../../data/models/chat_users_info.dart';
 class UserInfoHolder extends StatelessWidget implements PreferredSizeWidget {
   final ChatUserInfo userInfo;
 
-  const UserInfoHolder({
-    super.key,
-    required this.userInfo
-  });
+  const UserInfoHolder({super.key, required this.userInfo});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +27,22 @@ class UserInfoHolder extends StatelessWidget implements PreferredSizeWidget {
           CircleAvatar(
             radius: 20,
             backgroundColor: Colors.grey[800],
-            backgroundImage: NetworkImage(userInfo.profileUrl),
+            // If profileUrl is not null, load the network image. Otherwise, set it to null.
+            backgroundImage: userInfo.profileUrl != null
+                ? NetworkImage(userInfo.profileUrl!)
+                : null,
+            // If there's no profile image, display the first letter of the username as a fallback child
+            child: userInfo.profileUrl == null
+                ? Text(
+                    userInfo.userName.isNotEmpty
+                        ? userInfo.userName[0].toUpperCase()
+                        : '?',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                : null, // If the image is loading, we don't need text underneath it
           ),
           const SizedBox(width: 12),
           Expanded(

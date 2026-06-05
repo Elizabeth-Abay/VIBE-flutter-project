@@ -132,8 +132,8 @@ class IncomingRequestsNotifier extends Notifier<RequestsState> {
     state = const RequestsLoading();
     try {
       final requests = await _repo.fetchIncomingRequests();
-      print("requests being printed");
-      print(requests);
+      //print("requests being printed");
+      //print(requests);
       state = RequestsLoaded(requests);
     } catch (e) {
       state = RequestsError(e.toString());
