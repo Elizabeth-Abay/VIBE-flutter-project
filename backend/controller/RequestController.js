@@ -37,7 +37,8 @@ class RequestController {
             let { id } = req.decodedAccess;
             let result = await requestService.getSentRequests(id);
 
-            console.log(`getSentRequests ${result}`);
+            console.log(`getSentRequests`);
+            console.log(result);
 
             return (result.success) ? res.status(200).json(result) : res.status(400).json(result);
 
@@ -59,7 +60,8 @@ class RequestController {
             let { id } = req.decodedAccess;
             let result = await requestService.getPendingRequests(id);
 
-            console.log(`getPendingRequests ${result}`);
+            console.log(`getPendingRequest`);
+            console.log(result);
 
 
             return (result.success) ? res.status(200).json(result) : res.status(400).json(result);

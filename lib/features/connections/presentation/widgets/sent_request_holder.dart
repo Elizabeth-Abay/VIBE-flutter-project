@@ -28,12 +28,12 @@ class SentRequestHolderCell extends StatelessWidget {
               CircleAvatar(
                 radius: 26,
                 backgroundColor: Colors.white12,
-                backgroundImage: request.profileImg != ''
+                backgroundImage: request.profileImg != null
                     ? NetworkImage(request.profileImg!)
                     : null,
                 child: request.profileImg != ''
                     ? Text(
-                        request.name.isNotEmpty
+                        request.name != ''
                             ? request.name[0].toUpperCase()
                             : '?',
                         style: const TextStyle(color: Colors.white),

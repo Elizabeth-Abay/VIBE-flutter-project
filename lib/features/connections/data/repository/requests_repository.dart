@@ -53,7 +53,7 @@ class RequestRepository {
     try {
       final response = await _api.get('/request/sent-requests');
 
-      final List<dynamic> dataList = response as List<dynamic>;
+      final List<dynamic> dataList = response['data'] as List<dynamic>;
 
       print(" getSentRequests  $dataList");
 
