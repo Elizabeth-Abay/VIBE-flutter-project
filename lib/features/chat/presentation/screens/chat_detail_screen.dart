@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/chat_users_info.dart';
 import '../widgets/user_info_holder.dart';
 import '../widgets/chat_input_bar.dart';
 import '../widgets/scrollable_chat_msg_container.dart';
@@ -36,10 +37,11 @@ class ChatDetailScreen extends ConsumerWidget {
           data: (chatData) {
             // Extract data from the provider
             final String chatId = chatData['chatId'] as String;
-            final otherUserProfile = chatData['otherUserProfile'];
+            final otherUserProfileRaw = chatData['otherUserProfile'];
 
-            // Extract user name safely
-            final String otherUserName = _getOtherUserName(otherUserProfile);
+            // Extract user profile safely
+            final ChatUserInfo otherUserProfile = _getOtherUserInfo(otherUserProfileRaw);
+            final String otherUserName = otherUserProfile.name;
 
             return Column(
               children: [
@@ -106,15 +108,21 @@ class ChatDetailScreen extends ConsumerWidget {
     );
   }
 
-  // Helper to safely extract user name
-  String _getOtherUserName(dynamic userInfo) {
-    if (userInfo == null) return '';
-    if (userInfo is List && userInfo.isNotEmpty) {
-      return userInfo.first['name']?.toString() ?? '';
+  // Helper to safely extract user profile
+  ChatUserInfo _getOtherUserInfo(dynamic userInfo) {
+    if (userInfo is ChatUserInfo) {
+      return userInfo;
+    }
+    if (userInfo is Iterable && userInfo.isNotEmpty) {
+      final first = userInfo.first;
+      if (first is ChatUserInfo) return first;
+      if (first is Map) {
+        return ChatUserInfo.fromJson(Map<String, dynamic>.from(first));
+      }
     }
     if (userInfo is Map) {
-      return userInfo['name']?.toString() ?? '';
+      return ChatUserInfo.fromJson(Map<String, dynamic>.from(userInfo));
     }
-    return '';
+    return const ChatUserInfo(name: '', userName: '', profileUrl: '');
   }
 }

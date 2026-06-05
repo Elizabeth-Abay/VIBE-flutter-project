@@ -53,20 +53,29 @@ class ChatRepository {
       final response = await _api.get('/chat/get-single-chat/$chatWith');
       final raw = response['data'];
       final chatId = raw['_id'];
+      print("chatId");
+
+      print(chatId);
       final userInfo = raw['otherUserProfile'];
+
+      print("userinfo");
+      print(userInfo);
 
       // here chat_id , and the otherUser's info info will be sent
       final usersInfoDisplayed = userInfo.map(
         (j) => ChatUserInfo.fromJson(j as Map<String, dynamic>),
       );
 
+      print("usersInfoDisplayed");
+      print(usersInfoDisplayed);
       await _db.markCacheFresh(_conversationsKey);
       return {chatId, usersInfoDisplayed};
-    } catch (_) {
+    } catch (err) {
+      print("Error ");
+      print(err);
       return {};
     }
   }
-
 
   Future<List<ChatUser>> _getCachedConversations() async {
     final db = await _db.database;

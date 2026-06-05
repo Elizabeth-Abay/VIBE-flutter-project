@@ -32,6 +32,8 @@ class ChatController {
 
             let result = await chatService.createOrFindChat({ id, chatWith });
 
+            console.log(result);
+
             return (result.success)
                 ?
                 res.status(200).json(result)
