@@ -108,7 +108,7 @@ class ChatService {
             let data = result.data.toObject ? result.data.toObject() : { ...result.data };
 
 
-            console.log("Result of createOrFindChat ", data.participants);
+            //console.log("Result of createOrFindChat ", data.participants);
             let othersProfile;
             data.otherUserProfile = undefined;
 
@@ -120,17 +120,17 @@ class ChatService {
                     if (!othersProfile.success) return othersProfile;
 
                     else {
-                        console.log(othersProfile.data)
+                        //console.log(othersProfile.data)
                         data.otherUserProfile = Array.isArray(othersProfile.data) ? othersProfile.data[0] : othersProfile.data
-                        console.log("data.otherUserProfile");
-                        console.log(data.otherUserProfile);
+                        //console.log("data.otherUserProfile");
+                        //console.log(data.otherUserProfile);
                     }
                 }
             }
 
 
-            console.log("data being sent");
-            console.log(data);
+            //console.log("data being sent");
+            //console.log(data);
 
             // this will be used to represent the second user at the top
             return {

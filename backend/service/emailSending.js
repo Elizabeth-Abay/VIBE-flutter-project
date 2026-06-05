@@ -8,7 +8,7 @@ class EmailSendingFunctions {
     static async sendingOTPEmail({ email, OTP }) {
         try {
             let templatePath = path.join(__dirname, '../views/otpTemplate.ejs');
-            // console.log("tempalatePath" , tempalatePath);
+            // //console.log("tempalatePath" , tempalatePath);
 
             const html = await renderEjs({ templatePath, placeHolders: { otp: OTP } });
 

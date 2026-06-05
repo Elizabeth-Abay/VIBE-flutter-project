@@ -9,7 +9,7 @@ class InterestModelG {
             defaultAccessMode: session.WRITE
         });
 
-        // console.log(sentInfo);
+        // //console.log(sentInfo);
 
         try {
             // query - interests = [ { name , rated_as }]
@@ -36,7 +36,7 @@ class InterestModelG {
 
             )
 
-            console.log("Result from connecting interest and user ", result.records);
+            //console.log("Result from connecting interest and user ", result.records);
 
 
             return (result.records[0]?.length === 0) ? { success: false } : { success: true }

@@ -11,11 +11,11 @@ class RequestController {
             let { id } = req.decodedAccess;
             let { canceled } = req.body;
 
-            console.log(`cancelRequest ${canceled}`);
+            //console.log(`cancelRequest ${canceled}`);
 
             let result = await requestService.cancelConnectionRequest({ id, canceled });
 
-            console.log(` cancelRequest ${result}`);
+            //console.log(` cancelRequest ${result}`);
 
 
             return (result.success) ? res.status(200).json({ success: true }) : res.status(400).json(result);
@@ -37,8 +37,8 @@ class RequestController {
             let { id } = req.decodedAccess;
             let result = await requestService.getSentRequests(id);
 
-            console.log(`getSentRequests`);
-            console.log(result);
+            //console.log(`getSentRequests`);
+            //console.log(result);
 
             return (result.success) ? res.status(200).json(result) : res.status(400).json(result);
 
@@ -56,12 +56,12 @@ class RequestController {
 
     async getPendingRequests(req, res, next) {
         try {
-            console.log("Requesting for received request")
+            //console.log("Requesting for received request")
             let { id } = req.decodedAccess;
             let result = await requestService.getPendingRequests(id);
 
-            console.log(`getPendingRequest`);
-            console.log(result);
+            //console.log(`getPendingRequest`);
+            //console.log(result);
 
 
             return (result.success) ? res.status(200).json(result) : res.status(400).json(result);

@@ -14,6 +14,8 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     //print("Changing to json");
+    // print("messages ");
+    // print(json);
     final elt = Message(
       msgId: json['msgId'] as String,
       text: json['text'] as String,

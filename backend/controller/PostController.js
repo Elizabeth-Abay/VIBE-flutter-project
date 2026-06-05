@@ -7,10 +7,10 @@ class PostController {
     async getPostsInACategory(req, res, next) {
         try {
             let { categorySelected } = req.category;
-            console.log("categorySelected " , categorySelected.toLowerCase());
+            //console.log("categorySelected " , categorySelected.toLowerCase());
 
             let result = await postService.getPostsInACategory(categorySelected.toLowerCase());
-            console.log(result);
+            //console.log(result);
 
             return (result.success) ?
                 res.status(200).json(result) : res.status(400).json({ message: 'bad request' })
@@ -41,11 +41,11 @@ class PostController {
             } = req.body;
 
 
-            console.log( {
-                categorySelected,
-                postTitle,
-                postContent
-            })
+            // //console.log( {
+            //     categorySelected,
+            //     postTitle,
+            //     postContent
+            // })
 
             let result = await postService.createPost({
                 id,

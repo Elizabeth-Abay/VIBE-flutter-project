@@ -68,7 +68,7 @@ class RefreshToken {
 
             // contents of the refresh token
             let refreshToken = jwt.sign({ exp, randomString }, REFRESH_TOKEN_SECRET)
-            // console.log("refreshToken" , refreshToken);
+            // //console.log("refreshToken" , refreshToken);
 
             // then return this as a data
             return {

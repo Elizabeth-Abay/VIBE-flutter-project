@@ -35,11 +35,11 @@ class AuthService {
 
             // sending email
             let res = await EmailSendingFunctions.sendingOTPEmail({ email, OTP });
-            console.log(`OTP is ${OTP} and the user email sent is ${res}`)
+            //console.log(`OTP is ${OTP} and the user email sent is ${res}`)
 
             // creating the user node and the user in pg
             let userInPg = await authModelPg.createUser({ email, otpHashed });
-            // console.log("userinPg" , userInPg);
+            // //console.log("userinPg" , userInPg);
 
 
             let { id } = userInPg.data;
@@ -71,13 +71,13 @@ class AuthService {
             // get the otp from db
             let result = await authModelPg.getOtp(id);
 
-            console.log("Result from verifyUser is " , result);
+            //console.log("Result from verifyUser is " , result);
 
             if (!result.success) return result;
 
             let { otp_hashed } = result.data;
 
-            console.log("db ", otp_hashed, "hashed ", OtpHashed);
+            //console.log("db ", otp_hashed, "hashed ", OtpHashed);
 
             let otpMatched = doesOtpMatch(otp_hashed, OtpHashed);
 
@@ -112,7 +112,7 @@ class AuthService {
 
             let accessToken = accessService.generateAccess(id);
             let refreshToken = await refreshService.generateRefresh(id);
-            // console.log("ref " , refreshToken);
+            // //console.log("ref " , refreshToken);
 
             if (!accessToken.success || !refreshToken.success) {
                 accessToken.success ? refreshToken : accessToken;
@@ -122,7 +122,7 @@ class AuthService {
             accessToken = accessToken.data;
             refreshToken = refreshToken.dataForUser;
 
-            // console.log("refreshToken from ser" , refreshToken );
+            // //console.log("refreshToken from ser" , refreshToken );
 
 
 
@@ -167,7 +167,7 @@ class AuthService {
             // sending email
             await EmailSendingFunctions.sendingOTPEmail({ email, OTP });
 
-            console.log(`OTP generated is ${OTP}`)
+            //console.log(`OTP generated is ${OTP}`)
 
             return { success: true }
 
@@ -203,7 +203,7 @@ class AuthService {
 
             let accessToken = accessService.generateAccess(id);
             let refreshToken = await refreshService.generateRefresh(id);
-            // console.log("ref " , refreshToken);
+            // //console.log("ref " , refreshToken);
 
             if (!accessToken.success || !refreshToken.success) {
                 accessToken.success ? refreshToken : accessToken;
@@ -213,7 +213,7 @@ class AuthService {
             accessToken = accessToken.data;
             refreshToken = refreshToken.dataForUser;
 
-            // console.log("refreshToken from ser" , refreshToken );
+            // //console.log("refreshToken from ser" , refreshToken );
 
 
 

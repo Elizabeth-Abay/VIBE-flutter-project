@@ -10,14 +10,14 @@ class InterestService {
             // sentInfo = { id , interestedIn : { name : value }}
             // convert that to interests : [ { name : something , value : Number(value)}]
 
-            console.log("interestedIn ", interestedIn);
+            //console.log("interestedIn ", interestedIn);
 
             let interests = [];
 
 
             for (let interest of interestedIn) {
                 // interest is the key;
-                // console.log(interest) -- gives the index in for in
+                // //console.log(interest) -- gives the index in for in
 
                 let key = Object.keys(interest)[0];
                 let val = Object.values(interest);;
@@ -31,11 +31,11 @@ class InterestService {
                 interests.push(Obj)
             }
 
-            console.log("interests reorganized " , interests);
+            //console.log("interests reorganized " , interests);
 
             let result = await interestModelG.linkingUserWithInterests({ id, interests });
 
-            console.log("Result of linking intersts " , result);
+            //console.log("Result of linking intersts " , result);
 
             return (result.success) ? { success: true } : {
                 success: false,
@@ -64,7 +64,7 @@ class InterestService {
 
             for (let interest of interestedIn) {
                 // interest is the key;
-                // console.log(interest) -- gives the index in for in
+                // //console.log(interest) -- gives the index in for in
 
                 let key = Object.keys(interest)[0];
                 let val = Object.values(interest);;
@@ -74,7 +74,7 @@ class InterestService {
                     rated_as: Number(val)
                 }
 
-                // console.log(Obj)
+                // //console.log(Obj)
 
                 interests.push(Obj)
             }
@@ -106,7 +106,7 @@ class InterestService {
             // if successful this retuns 2 arrays
             if (!result.success) return result;
 
-            console.log("Resukt ", result)
+            //console.log("Resukt ", result)
 
             const interestAndVals = result.data[0];
 

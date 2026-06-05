@@ -15,7 +15,7 @@ class ConnectionController {
 
             let { connectToId } = req.body;
 
-            console.log(`requestConnection ${connectToId} `);
+            //console.log(`requestConnection ${connectToId} `);
 
             let result = await connectionService.requestingConnection({ id, connectToId });
 
@@ -37,7 +37,7 @@ class ConnectionController {
             let { id } = req.decodedAccess;
             let { acceptedId } = req.body;
 
-            console.log(`acceptConnection ${acceptedId} `);
+            //console.log(`acceptConnection ${acceptedId} `);
 
 
             let result = await connectionService.acceptingConnection({ acceptorId: id, acceptedId });
@@ -59,7 +59,7 @@ class ConnectionController {
             let { id } = req.decodedAccess;
             let { rejectedId } = req.body;
 
-            console.log(`rejectConnection ${rejectedId} `);
+            //console.log(`rejectConnection ${rejectedId} `);
 
 
             let result = await connectionService.rejectingConnection({ id, rejectedId });
@@ -81,7 +81,7 @@ class ConnectionController {
             let { disconnectedId } = req.body;
             let result = await connectionService.disConnection({ id, disconnectedId });
 
-            console.log(`disconnectConnection ${disconnectedId} `);
+            //console.log(`disconnectConnection ${disconnectedId} `);
 
 
             return (result.success) ? res.status(200).json({ success: true }) : res.status(400).json(result);
@@ -98,12 +98,12 @@ class ConnectionController {
 
     async getAllConnections(req, res, next) {
         try {
-            console.log(`getAllConnections`);
+            //console.log(`getAllConnections`);
 
             let { id } = req.decodedAccess;
             let result = await connectionService.getAllConnections(id);
 
-            console.log(result);
+            //console.log(result);
 
 
             return (result.success) ? res.status(200).json(result) : res.status(400).json(result);
@@ -121,12 +121,12 @@ class ConnectionController {
 
     async getMatchedConnections(req, res, next) {
         try {
-            // console.log("req.decodedAccess from getMachedCOnn " , req.decodedAccess)
+            // //console.log("req.decodedAccess from getMachedCOnn " , req.decodedAccess)
             let { id } = req.decodedAccess;
             let result = await connectionService.getMatchedConnections(id);
 
-            console.log(`getMatchedConnections `);
-            console.log(result);
+            //console.log(`getMatchedConnections `);
+            //console.log(result);
 
 
 

@@ -6,7 +6,7 @@ class TokenController {
             // call the token generation logic
             let { randomString } = req.decodedRefresh;
 
-            console.log("Random string successfully found", randomString);
+            //console.log("Random string successfully found", randomString);
 
 
             let result = await RefreshTokenService.generateNewTokens(randomString);

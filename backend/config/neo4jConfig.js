@@ -28,7 +28,7 @@ async function isConnected() {
         return await driver.verifyConnectivity();
     } catch (err) {
         // if it is not throw an error
-        console.log("Error while connecting with the graph ", err);
+        //console.log("Error while connecting with the graph ", err);
     }
 
 }

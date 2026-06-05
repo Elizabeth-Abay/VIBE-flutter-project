@@ -8,7 +8,7 @@ class AuthController {
     async createUser(req, res, next) {
         // to be able to call the global error handler in case of error
         try {
-            console.log("Request received");
+            //console.log("Request received");
             // validator already called in the routes
             let { email } = req.body;
 
@@ -37,7 +37,7 @@ class AuthController {
             
             let { id, OTP } = req.body;
 
-            console.log("Verifying otp" , { id, OTP })
+            //console.log("Verifying otp" , { id, OTP })
 
             
 
@@ -87,13 +87,13 @@ class AuthController {
 
     async logIn(req, res, next) {
         try {
-            console.log("Log in called");
+            //console.log("Log in called");
             // email and password
             let { email, password } = req.body;
 
             let result = await authService.logIn({ email, password });
 
-            console.log("result of login " , result);
+            //console.log("result of login " , result);
 
             return result.success ?
                 res.status(200).json(result) :

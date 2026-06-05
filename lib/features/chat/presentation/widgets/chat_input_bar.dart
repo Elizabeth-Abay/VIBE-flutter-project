@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../providers/message_provider.dart'; // ← Import your message provider file
+import '../../data/repositories/message_repository.dart';
+import '../providers/message_provider.dart';
 
 class ChatInputBar extends ConsumerStatefulWidget {
   final String chatId;
@@ -21,22 +22,33 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
     super.dispose();
   }
 
-  void _submitMessage() async {
+  Future<void> _submitMessage() async {
     final text = _textController.text.trim();
     if (text.isEmpty) return;
 
-    _textController.clear(); // Clear instantly for better UX
+    _textController.clear(); // Clear input immediately
 
-    // ✅ Use the correct family provider
-    final success = await ref
-        .read(chatMessagesProvider(widget.chatId).notifier)
-        .sendMessage(text);
+    try {
+      final success = await MessageRepository.instance.sendMessage(
+        chatId: widget.chatId,
+        text: text,
+      );
 
-    if (!success) {
-      // Optional: You can show a snackbar or restore the message
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(content: Text('Failed to send message')),
-      // );
+      if (!success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to send message')),
+          );
+        }
+      }
+      // No need to do anything else — the repository will invalidate the provider
+      // → ScrollableChatMsgContainer will automatically update
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+      }
     }
   }
 
@@ -46,7 +58,6 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24, top: 8),
       child: Row(
         children: [
-          // Plus Media Attachment Button
           Container(
             height: 48,
             width: 48,
@@ -61,7 +72,6 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
           ),
           const SizedBox(width: 12),
 
-          // Text Input Field
           Expanded(
             child: Container(
               height: 48,
@@ -87,7 +97,6 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
           ),
           const SizedBox(width: 12),
 
-          // Send Button
           IconButton(
             icon: const Icon(
               Icons.send_sharp,

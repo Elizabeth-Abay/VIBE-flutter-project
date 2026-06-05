@@ -28,11 +28,11 @@ class ChatController {
             let { id } = req.decodedAccess;
             let { chatWith } = req.params;
 
-            console.log("calling the createOrFindChat ");
+            //console.log("calling the createOrFindChat ");
 
             let result = await chatService.createOrFindChat({ id, chatWith });
 
-            console.log(result);
+            //console.log(result);
 
             return (result.success)
                 ?

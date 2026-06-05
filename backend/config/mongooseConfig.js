@@ -17,7 +17,7 @@ const connectMongoDB = async () => {
         // Connect to the local MongoDB server using the URI from your .env file
         const conn = await mongoose.connect(MONGODB_URI);
 
-        console.log(`MongoDB Connected Locally: ${conn.connection.host}`);
+        //console.log(`MongoDB Connected Locally: ${conn.connection.host}`);
     } catch (error) {
         console.error(`Database Connection Error: ${error.message} `);
         // Exit the process immediately if the database fails to connect on startup

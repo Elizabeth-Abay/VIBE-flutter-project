@@ -6,7 +6,7 @@ function errorHandler(err, req, res, next) {
 
     
     let status = err.status ? err.status : 500;
-    console.log(`Error while ${err.from} , ${err.message}`);
+    //console.log(`Error while ${err.from} , ${err.message}`);
     
     return res.status(status).send({
         success: false,

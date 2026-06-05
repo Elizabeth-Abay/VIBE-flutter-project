@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../providers/message_provider.dart'; // ← Make sure this imports your provider file
+import '../../data/repositories/message_repository.dart';
+import '../providers/message_provider.dart';
 
 class ChatBubble extends ConsumerWidget {
   final String messageId;
   final String text;
   final bool isMine;
-  final String chatId; // ← Important: We need this to target the right chat
+  final String chatId;
 
   const ChatBubble({
     super.key,
@@ -16,8 +17,6 @@ class ChatBubble extends ConsumerWidget {
     required this.isMine,
     required this.chatId,
   });
-
-  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -66,6 +65,7 @@ class ChatBubble extends ConsumerWidget {
   ) async {
     final RenderBox overlay =
         Overlay.of(context).context.findRenderObject() as RenderBox;
+
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromLTWH(tapPosition.dx, tapPosition.dy, 40, 40),
       Offset.zero & overlay.size,
@@ -103,8 +103,54 @@ class ChatBubble extends ConsumerWidget {
     if (selectedAction == 'edit') {
       _promptEditDialog(context, ref);
     } else if (selectedAction == 'delete') {
-      // ✅ Correct way using your family provider
-      ref.read(chatMessagesProvider(chatId).notifier).deleteMessage(messageId);
+      _deleteMessage(context, ref);
+    }
+  }
+
+  Future<void> _deleteMessage(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF151530),
+        title: const Text(
+          'Delete Message',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: const Text(
+          'Are you sure you want to delete this message?',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white54),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final success = await MessageRepository.instance.deleteMessage(
+        msgId: messageId,
+        chatId: chatId, // ← Required for invalidation
+      );
+
+      if (!success && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to delete message')),
+        );
+      }
+      // No need to do anything else — repository invalidates the provider
     }
   }
 
@@ -140,14 +186,24 @@ class ChatBubble extends ConsumerWidget {
             ),
           ),
           TextButton(
-            onPressed: () {
-              if (controller.text.trim().isNotEmpty) {
-                // ✅ Correct way using family provider + notifier
-                ref
-                    .read(chatMessagesProvider(chatId).notifier)
-                    .editMessage(messageId, controller.text.trim());
+            onPressed: () async {
+              final newText = controller.text.trim();
+              if (newText.isNotEmpty && newText != text) {
+                final success = await MessageRepository.instance.updateMessage(
+                  msgId: messageId,
+                  newMessage: newText,
+                  chatId: chatId,
+                );
+
+                if (!success && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to update message')),
+                  );
+                }
               }
-              Navigator.pop(context);
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
             },
             child: const Text(
               'Save',

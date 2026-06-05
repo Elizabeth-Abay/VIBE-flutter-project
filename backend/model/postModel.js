@@ -5,7 +5,7 @@ class PostModel {
     async extractPostInformation(postIdArray) {
         try {
 
-            console.log(postIdArray)
+            //console.log(postIdArray)
             let query = `
                 SELECT 
                     p.id AS post_id,
@@ -26,7 +26,7 @@ class PostModel {
 
             let result = await pool.query(query, values);
 
-            console.log(result.rows)
+            //console.log(result.rows)
 
             return {
                 success: true,

@@ -6,14 +6,22 @@ import '../../data/repositories/message_repository.dart';
 
 /// Repository provider
 final messageRepositoryProvider = Provider<MessageRepository>((ref) {
-  return MessageRepository.instance;
+  final repo = MessageRepository.instance;
+  repo.setRef(ref);
+  return repo;
 });
-
 
 final chatMessagesProvider = AsyncNotifierProvider.autoDispose
     .family<ChatMessagesNotifier, List<Message>, String>(
       ChatMessagesNotifier.new,
     );
+
+// final chatMessagesProvider = FutureProvider.family<List<Message>, String>(
+//   (ref, chatId) async {
+//     final repo = ref.watch(messageRepositoryProvider);
+//     return repo.fetchMessages(chatId);
+//   },
+// );
 
 class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
   /// The chatId coming from the family parameter
@@ -28,11 +36,8 @@ class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
   Future<List<Message>> build() async {
     final messages = await _repository.fetchMessages(currentChatId);
 
-    //print("Having messages returned");
-    //print(messages);
-
-    // Reverse the list so newest message is at index 0
-    // (perfect for ListView.builder with reverse: true)
+    // If your API returns oldest first, reversing it makes index 0 the newest.
+    // This matches your ListView.builder(reverse: true)
     return messages.toList();
   }
 
@@ -101,7 +106,7 @@ class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
     return true;
   }
 
-  Future<bool> deleteMessage(String messageId) async {
+  Future<bool> deleteMessage(String messageId, String chatId) async {
     if (!state.hasValue) return false;
 
     final previousState = state.value!;
@@ -111,7 +116,8 @@ class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
     );
 
     final success = await _repository.deleteMessage(
-      msgId: messageId
+      msgId: messageId,
+      chatId: chatId,
     );
 
     if (!success) {

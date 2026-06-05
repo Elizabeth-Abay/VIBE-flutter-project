@@ -51,7 +51,7 @@ class NotificationModel {
 
             let result = await pool.query(query, values);
 
-            console.log("Result from the notification model ", result);
+            //console.log("Result from the notification model ", result);
 
             return (result.rowCount !== 0) ? { success: true } : { success: false, reason: "Couldnt create a notification instance" }
 

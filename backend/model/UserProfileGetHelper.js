@@ -21,7 +21,7 @@ class UserProfileGetter {
 
             let result = await pool.query(query, values);
 
-            // console.log("result  from gettingProfile" , result);
+            // //console.log("result  from gettingProfile" , result);
 
             return (result.rowCount === 0) ?
                 {

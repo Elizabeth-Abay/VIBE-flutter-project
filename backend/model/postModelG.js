@@ -47,7 +47,7 @@ class PostModelG {
     
         const session = driver.session();
 
-        console.log({ postId, category });
+        //console.log({ postId, category });
 
         const sessionToWrite = driver.session({
             defaultAccessMode: session.WRITE
@@ -66,9 +66,9 @@ class PostModelG {
             `;
 
 
-            console.log('query ', query);
+            //console.log('query ', query);
 
-            console.log({ postId, category });
+            //console.log({ postId, category });
 
             let result = await sessionToWrite.executeWrite(
                 tx => {

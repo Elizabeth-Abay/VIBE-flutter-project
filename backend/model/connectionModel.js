@@ -59,7 +59,7 @@ class ConnectionModel {
         })
         try {
             // sentInfo = { id , rejectedId }
-            console.log(sentInfo);
+            //console.log(sentInfo);
             let query = `
                 MATCH (requestor:Person)  WHERE requestor.id = $rejectedId
                 MATCH (rejector:Person)  WHERE rejector.id = $id
@@ -77,7 +77,7 @@ class ConnectionModel {
             )
 
 
-            console.log("REsutl ", result.records)
+            //console.log("REsutl ", result.records)
 
             return (!result.records[0] || result.records[0].length === 0) ? {
                 success: false,
@@ -127,7 +127,7 @@ class ConnectionModel {
 
 
 
-            console.log("Connecting graph result " , res);
+            //console.log("Connecting graph result " , res);
 
             return (res === 0) ?
                 {
@@ -251,7 +251,7 @@ class ConnectionModel {
         });
 
         try {
-            console.log("id ", id);
+            //console.log("id ", id);
 
             // to match users we need to do a weighted search
             // first get users interest by number
@@ -290,7 +290,7 @@ class ConnectionModel {
                 reason: "Couldnt find the matched users"
             }
 
-            console.log("res.records ", res.records);
+            //console.log("res.records ", res.records);
 
 
             if (res.records.length === 0) return {
