@@ -11,6 +11,7 @@ class UserProfileGetter {
                         name , 
                         user_name , 
                         user_id , 
+                        bio
                         profile_url
                     FROM profile_info
                     WHERE user_id = ANY($1)

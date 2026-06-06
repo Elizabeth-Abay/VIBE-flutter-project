@@ -95,10 +95,16 @@ class InterestModelG {
 
             let deleting = await this.deletingLinks(sentInfo);
 
+            console.log("deleting");
+            console.log(deleting);
+
             if (!deleting.success) return deleting;
 
             let res = await this.linkingUserWithInterests(sentInfo);
 
+
+            console.log("res000")
+            console.log(res);
             return res;
 
         } catch (err) {

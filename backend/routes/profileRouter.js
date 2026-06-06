@@ -31,7 +31,10 @@ profileRouter.post('/set-bio-and-name', validate(ProfileUpdateSchema.updateBioAn
 
 
 // updating their username -- works
-profileRouter.post('/set-user-name', validate(ProfileUpdateSchema.updateUserName) , TokenDecoder.accessDecode, profileController.updateUserName)
+profileRouter.post('/set-user-name', validate(ProfileUpdateSchema.updateUserName), TokenDecoder.accessDecode, profileController.updateUserName);
+
+
+profileRouter.get('/my-profile', TokenDecoder.accessDecode, profileController.getProfileInfo);
 
 
 

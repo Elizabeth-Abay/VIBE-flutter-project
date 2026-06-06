@@ -52,9 +52,9 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
       case 1:
         return const ChatListScreen();
       case 3:
-        return const SavedMessagesScreen(embedded: true);
+        return const SelfChat();
       case 4:
-        return const ProfileViewScreen(embedded: true);
+        return const ProfileViewPage();
       default:
         return const HomePage();
     }

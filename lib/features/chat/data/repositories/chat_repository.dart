@@ -84,7 +84,7 @@ class ChatRepository {
     }
   }
 
-  Future<String> getASelfChat() async {
+  Future<Map<String, String>> getASelfChat() async {
     // final isStale = await _db.isCacheStale(_conversationsKey);
     // if (!isStale) {
     //   final cached = await _getCachedConversations();
@@ -92,6 +92,7 @@ class ChatRepository {
     // }
 
     try {
+      print("Getting self chat 123445w46");
       final response = await _api.get('/chat/self-chat');
       final raw = response['data'];
       final chatId = raw['_id'];
@@ -101,11 +102,11 @@ class ChatRepository {
       print(chatId);
 
       // it returns the chatId
-      return chatId;
+      return {'chatId': chatId};
     } catch (err) {
-      //print("Error ");
-      //print(err);
-      return '';
+      print("Error ");
+      print(err);
+      return {};
     }
   }
 

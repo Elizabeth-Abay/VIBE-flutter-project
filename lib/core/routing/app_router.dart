@@ -104,12 +104,12 @@ class AppRouter {
           routes: [
             GoRoute(
               path: 'edit',
-              builder: (_, __) => const EditProfileScreen(),
+              builder: (_, __) => const EditProfilePage(),
             ),
-            GoRoute(
-              path: 'delete',
-              builder: (_, __) => const DeleteAccountScreen(),
-            ),
+            // GoRoute(
+            //   path: 'delete',
+            //   // builder: (_, __) => const DeleteAccountScreen(),
+            // ),
           ],
         ),
 
@@ -147,10 +147,10 @@ class AppRouter {
         GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
 
         // ── Blocked users ─────────────────────────────────────────────────
-        GoRoute(
-          path: '/blocked',
-          builder: (_, __) => const BlockedUsersScreen(),
-        ),
+        // GoRoute(
+        //   path: '/blocked',
+        //   builder: (_, __) => const BlockedUsersScreen(),
+        // ),
       ],
     );
   }

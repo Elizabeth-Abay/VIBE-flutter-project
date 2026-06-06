@@ -6,8 +6,9 @@ import '../providers/message_provider.dart';
 
 class ChatInputBar extends ConsumerStatefulWidget {
   final String chatId;
+  final String type;
 
-  const ChatInputBar({super.key, required this.chatId});
+  const ChatInputBar({super.key, required this.chatId , required this.type});
 
   @override
   ConsumerState<ChatInputBar> createState() => _ChatInputBarState();
@@ -32,6 +33,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
       final success = await MessageRepository.instance.sendMessage(
         chatId: widget.chatId,
         text: text,
+        type: widget.type
       );
 
       if (!success) {

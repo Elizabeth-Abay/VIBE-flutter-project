@@ -113,6 +113,28 @@ class ProfileController {
         }
     }
 
+
+    async getProfileInfo(req, res) {
+        try {
+            let { id } = req.decodedAccess;
+
+            let result = await profileService.getProfileInfo(id);
+
+            console.log("Controller result getProfileInfo");
+
+            console.log(result)
+
+            return (result.success) ? res.status(200).json(result) : res.status(400).json(result);
+
+
+        } catch (err) {
+            if (typeof err === 'object' && !err.from) {
+                err.from = 'ProfileController.getProfileInfo';
+            }
+            next(err);
+        }
+    }
+
 }
 
 

@@ -1,163 +1,69 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/model/profile_model.dart';
 import '../../data/repository/profile_repository.dart';
-import '../../domain/entities/profile_entity.dart';
-import '../../../auth/presentation/providers/auth_notifier.dart';
-import '../../../interests/data/repository/interest_repo.dart'; // 🎯 Clean Architecture cross-feature import
 
-// ─── Profile state ────────────────────────────────────────────────────────────
+/// Repository provider
+final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
+  return ProfileRepository.instance;
+});
 
-sealed class ProfileState {
-  const ProfileState();
-}
-
-class ProfileInitial extends ProfileState {
-  const ProfileInitial();
-}
-
-class ProfileLoading extends ProfileState {
-  const ProfileLoading();
-}
-
-class ProfileLoaded extends ProfileState {
-  final ProfileEntity profile;
-  const ProfileLoaded(this.profile);
-}
-
-class ProfileUpdated extends ProfileState {
-  final ProfileEntity profile;
-  const ProfileUpdated(this.profile);
-}
-
-class ProfileError extends ProfileState {
-  final String message;
-  const ProfileError(this.message);
-}
-
-class ProfileDeleted extends ProfileState {
-  const ProfileDeleted();
-}
-
-// ─── Provider ─────────────────────────────────────────────────────────────────
-
-final profileNotifierProvider = NotifierProvider<ProfileNotifier, ProfileState>(
+/// Global provider for the UI to consume using AsyncNotifier
+final profileProvider = AsyncNotifierProvider<ProfileNotifier, ProfileModel?>(
   ProfileNotifier.new,
 );
 
-// ─── Notifier ─────────────────────────────────────────────────────────────────
+class ProfileNotifier extends AsyncNotifier<ProfileModel?> {
+  // Access the repository using the modern ref.read pattern
+  ProfileRepository get _repository => ref.read(profileRepositoryProvider);
 
-class ProfileNotifier extends Notifier<ProfileState> {
-  final _profileRepo = ProfileRepository.instance;
-  final _interestsRepo =
-      InterestsRepository.instance; // 🎯 Standalone Data Access Layer
-
+  /// The build method replaces your initial fetch logic.
+  /// Riverpod calls this automatically when the provider is first read/watched.
   @override
-  ProfileState build() {
-    loadProfile();
-    return const ProfileLoading();
+  Future<ProfileModel?> build() async {
+    print("Running initial profile fetch...");
+    return _repository.getProfile();
   }
 
-  // ── Load ────────────────────────────────────────────────────────────────
-
-  Future<void> loadProfile() async {
-    state = const ProfileLoading();
-    try {
-      final profile = await _profileRepo.getProfile();
-      if (profile != null) {
-        state = ProfileLoaded(profile);
-      } else {
-        state = const ProfileError('Could not load profile.');
-      }
-    } catch (e) {
-      state = ProfileError(e.toString());
-    }
+  /// Manual refresh logic using AsyncValue.guard
+  Future<void> refreshProfile() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => _repository.getProfile());
   }
 
-  // ── Update ───────────────────────────────────────────────────────────────
-
+  /// Updates profile information and updates the local state
   Future<void> updateProfile({
-    required String username,
-    required String bio,
-    String? avatarUrl,
-    Map<String, String>? vibes,
+    required String name,
+    required String bio
   }) async {
-    state = const ProfileLoading();
-    try {
-      final updated = await _profileRepo.updateProfile(
-        username: username,
-        bio: bio,
-        avatarUrl: avatarUrl,
-        vibes: vibes,
+    // Optional: Capture previous state if you want fallback capabilities
+    final previousData = state.value;
+
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      return await _repository.updateNameAndBio(
+        name: name,
+        bio: bio // Pass current vibes along safely
       );
-      state = ProfileUpdated(updated);
-    } catch (e) {
-      state = ProfileError(e.toString());
-    }
+    });
   }
 
-  // ─── Save / Update Interests ─────────────────────────────────────────────
+  /// Updates vibes/interests and applies changes instantly to local state
+  Future<void> updateInterests(List<Map<String, String>> vibesList) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      // 1. Run the remote API call via repository
+      await _repository.updateInterests(vibesList);
 
-  Future<void> updateInterests(Map<String, String> vibes) async {
-    // 1. Map labels to backend numeric strings (matching your schema layout)
-    final Map<String, int> scoreMapping = {
-      'Love': 10,
-      'Like': 8,
-      'Neutral': 5,
-      'Bothered': 1,
-      'Hate': 0,
-    };
+      // 2. Reconstruct map locally to sync UI without another network fetch
+      final Map<String, String> reconstructedMap = {
+        for (var item in vibesList) item['interest']!: item['score']!,
+      };
 
-    // Format into what your backend expects: [{"interest": "Music", "score": "10"}, ...]
-    final List<Map<String, int>> formattedList = vibes.entries.map((entry) {
-      return {entry.key: scoreMapping[entry.value] ?? 0};
-    }).toList();
-
-    try {
-      // 3. Fire payload out to your standalone network API client layer
-      await _interestsRepo.updateInterests(formattedList);
-
-      // 5. Instantly alert state stream listeners for zero-latency screen UI re-renders
-      final current = state;
-      if (current is ProfileLoaded) {
-        state = ProfileLoaded(current.profile.copyWith(vibes: vibes));
-      } else if (current is ProfileUpdated) {
-        state = ProfileUpdated(current.profile.copyWith(vibes: vibes));
+      // 3. Update local state using copyWith if previous data exists
+      if (state.value != null) {
+        return state.value!.copyWith(vibes: reconstructedMap);
       }
-    } catch (e) {
-      // ⚠️ DO NOT set the state to ProfileError here!
-      // If you do, the entire selection screen UI will crash and disappear.
-      // Instead, we rethrow the network exception up to InterestsSavingNotifier so the snackbar catches it.
-      rethrow;
-    }
-  }
-
-  // ── Delete account ───────────────────────────────────────────────────────
-
-  Future<void> deleteAccount() async {
-    state = const ProfileLoading();
-    try {
-      await _profileRepo.deleteAccount();
-      // Sign the user out in the auth notifier too
-      await ref.read(authNotifierProvider.notifier).signOut();
-      state = const ProfileDeleted();
-    } catch (e) {
-      state = ProfileError(e.toString());
-    }
-  }
-
-  // ── Helpers ──────────────────────────────────────────────────────────────
-
-  ProfileEntity? get currentProfile {
-    final s = state;
-    if (s is ProfileLoaded) return s.profile;
-    if (s is ProfileUpdated) return s.profile;
-    return null;
+      return null;
+    });
   }
 }
-
-// ─── Blocked users ────────────────────────────────────────────────────────────
-
-final blockedUsersProvider = FutureProvider<List<Map<String, String>>>((
-  ref,
-) async {
-  return ProfileRepository.instance.fetchBlockedUsers();
-});

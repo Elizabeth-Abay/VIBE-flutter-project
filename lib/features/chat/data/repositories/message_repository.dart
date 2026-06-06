@@ -88,6 +88,7 @@ class MessageRepository {
   Future<bool> sendMessage({
     required String chatId,
     required String text,
+    required String type
   }) async {
     try {
       print("sending message");
@@ -95,7 +96,7 @@ class MessageRepository {
       print(text);
       final response = await _api.post(
         '/message/send-message',
-        body: {'chatId': chatId, 'message': text, 'type': 'chat'},
+        body: {'chatId': chatId, 'message': text, 'type': type},
       );
 
       // print("response");

@@ -7,6 +7,8 @@ const interestService = new InterestService();
 class InterestLinkerController {
     async firstTimeLinking(req, res) {
         try {
+            console.log("first time links called");
+
             let { id } = req.decodedAccess;
             let { interestedIn } = req.body;
             // { name : value } pairs from frontend bc formdata will be sent
@@ -37,8 +39,13 @@ class InterestLinkerController {
 
     async updatingLinks(req, res) {
         try {
+            console.log("Updating links called");
+
+
             let { id } = req.decodedAccess;
             let { interestedIn } = req.body;
+            console.log(interestedIn);
+
 
             let result = await interestService.updatingLinksOfInterests({ id, interestedIn });
 

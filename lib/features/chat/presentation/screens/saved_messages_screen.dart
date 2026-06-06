@@ -7,13 +7,15 @@ import '../widgets/scrollable_chat_msg_container.dart';
 import '../providers/chat_notifier.dart';
 
 class SelfChat extends ConsumerWidget {
-
   const SelfChat({super.key});
+
+  // the flow is the moment this opens it will do a get request
+  // to receive the chat id
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch the single chat family provider
-    final asyncChatState = ref.watch(singleChatProvider());
+    final asyncChatState = ref.watch(selfChatNotifierProvider);
     //print("asyncChatState");
     //print(asyncChatState);
 
@@ -37,55 +39,27 @@ class SelfChat extends ConsumerWidget {
           data: (chatData) {
             // Extract data from the provider
             final String chatId = chatData['chatId'] as String;
-            final otherUserProfileRaw = chatData['otherUserProfile'];
 
-            // Extract user profile safely
-            final ChatUserInfo otherUserProfile = _getOtherUserInfo(
-              otherUserProfileRaw,
-            );
-            final String otherUserName = otherUserProfile.name;
+            // then have the messages be fetched
 
             return Column(
               children: [
                 // ─── Header ─────────────────────────────────────────────────
                 const Divider(color: Colors.white10, thickness: 1),
 
-                // ─── User Info Holder ───────────────────────────────────────
-                SizedBox(
-                  height: 80,
-                  child: UserInfoHolder(userInfo: otherUserProfile),
-                ),
-
                 // ─── Messages Area ──────────────────────────────────────────
                 Expanded(
                   child: ScrollableChatMsgContainer(chatId: chatId),
                   flex: 1, // explicit
                 ),
+
                 // ─── Input Bar ──────────────────────────────────────────────
-                SizedBox(height: 120, child: ChatInputBar(chatId: chatId)),
+                SizedBox(height: 120, child: ChatInputBar(chatId: chatId , type: 'self',)),
               ],
             );
           },
         ),
       ),
     );
-  }
-
-  // Helper to safely extract user profile
-  ChatUserInfo _getOtherUserInfo(dynamic userInfo) {
-    if (userInfo is ChatUserInfo) {
-      return userInfo;
-    }
-    if (userInfo is Iterable && userInfo.isNotEmpty) {
-      final first = userInfo.first;
-      if (first is ChatUserInfo) return first;
-      if (first is Map) {
-        return ChatUserInfo.fromJson(Map<String, dynamic>.from(first));
-      }
-    }
-    if (userInfo is Map) {
-      return ChatUserInfo.fromJson(Map<String, dynamic>.from(userInfo));
-    }
-    return const ChatUserInfo(name: '', userName: '', profileUrl: '');
   }
 }

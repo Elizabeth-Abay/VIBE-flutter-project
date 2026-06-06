@@ -24,19 +24,18 @@ class InterestsRepository {
     //print("Foramated interests $formattedVibesList");
 
     final response = await _api.post(
-      '/interest/put-in-interests',
+      '/interest/update-interests',
       body: {'interestedIn': formattedVibesList},
     );
 
     return response['success'];
   }
 
-  Future<bool> getInterests() async {
-
-    final response = await _api.get(
-      '/interest/get-interests'
-    );
-
-    return response['success'];
+  Future<List<Map<String, dynamic>>> fetchAvailableInterests() async {
+    final response = await ApiClient.instance.get('/interest/get-interests');
+    if (response['success'] == true && response['data'] != null) {
+      return List<Map<String, dynamic>>.from(response['data']);
+    }
+    return [];
   }
 }

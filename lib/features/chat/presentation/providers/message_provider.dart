@@ -45,7 +45,7 @@ class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
   //                    MUTATIONS
   // ─────────────────────────────────────────────────────────────
 
-  Future<bool> sendMessage(String textContent) async {
+  Future<bool> sendMessage(String textContent , String type) async {
     if (textContent.trim().isEmpty) return false;
 
     final previousState = state.value ?? [];
@@ -63,6 +63,7 @@ class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
     final success = await _repository.sendMessage(
       chatId: currentChatId,
       text: textContent.trim(),
+      type: type
     );
 
     if (success) {

@@ -64,7 +64,7 @@ class ChatDetailScreen extends ConsumerWidget {
                   flex: 1, // explicit
                 ),
                 // ─── Input Bar ──────────────────────────────────────────────
-                SizedBox(height: 120, child: ChatInputBar(chatId: chatId)),
+                SizedBox(height: 120, child: ChatInputBar(chatId: chatId , type : 'chat')),
               ],
             );
           },

@@ -17,6 +17,12 @@ final allChatsProvider =
       AllChatsNotifier.new,
     );
 
+final selfChatNotifierProvider = AsyncNotifierProvider<SelfChatNotifier, Map<String , String>>(
+      SelfChatNotifier.new,
+    );
+
+
+
 class AllChatsNotifier extends AsyncNotifier<List<ChatUser>> {
   ChatRepository get _repository => ref.read(chatRepositoryProvider);
 
@@ -71,11 +77,11 @@ class SingleChatNotifier extends AsyncNotifier<Map<String, dynamic>> {
   }
 }
 
-class SelfChatNotifier extends AsyncNotifier<Map<String, dynamic>> {
+class SelfChatNotifier extends AsyncNotifier<Map<String, String>> {
   ChatRepository get _repository => ref.read(chatRepositoryProvider);
 
   @override
-  Future<String> build() async {
+  Future<Map<String, String>> build() async {
     print("running get all");
     return _repository.getASelfChat();
   }

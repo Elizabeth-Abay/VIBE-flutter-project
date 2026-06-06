@@ -70,14 +70,17 @@ class InterestService {
                 let val = Object.values(interest);;
 
                 let Obj = {
-                    name: key,
+                    name: key.toLowerCase(),
                     rated_as: Number(val)
                 }
 
-                // //console.log(Obj)
+                // console.log(Obj)
 
                 interests.push(Obj)
             }
+
+
+            console.log(interests);
 
             let result = await interestModelG.updatingLinksOfInterests({ id, interests });
 

@@ -62,6 +62,9 @@ class ChatController {
 
             let result = await chatService.getOrCreateMyChat(id);
 
+            console.log("Result of get Or create chat");
+
+            console.log(result);
             return (result.success)
                 ?
                 res.status(200).json(result)
@@ -72,7 +75,9 @@ class ChatController {
             if (typeof err === 'object' && !err.from) {
                 // this is so that if lower layer's message won't be masked
                 err.from = 'ChatController.getMyChat';
+
             }
+            console.log("Errror while self chat")
             next(err);
         }
     }
