@@ -79,9 +79,16 @@ class ProfileController {
         try {
             let { name = '', bio = '' } = req.body;
 
+            console.log("update being called on name and bio");
+
+            console.log(name , bio);
+
             let { id } = req.decodedAccess;
 
             let result = await profileService.updateNameAndBio({ id, name, bio });
+
+            console.log("result final");
+            console.log(result);
 
             return (result.success) ? res.status(201).json({ success: true }) : res.status(400).json(result);
 

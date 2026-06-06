@@ -28,7 +28,6 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
       final profile = ref.read(profileProvider).value;
       if (profile != null) {
         _nameController.text = profile.name ?? '';
-        _bioController.text = profile.bio ?? '';
       }
     });
   }
@@ -37,12 +36,10 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
 
     _debounceTimer = Timer(const Duration(seconds: 5), () {
-      ref
+      final res = ref
           .read(profileProvider.notifier)
-          .updateProfile(
-            name: _nameController.text.trim(),
-            bio: _bioController.text.trim(),
-          );
+          .updateProfile(name: _nameController.text.trim());
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Profile details auto-saved!'),
@@ -56,7 +53,6 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
   void dispose() {
     _debounceTimer?.cancel();
     _nameController.dispose();
-    _bioController.dispose();
     super.dispose();
   }
 
@@ -94,8 +90,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                     radius: 60,
                     backgroundImage: profile?.profileUrl != null
                         ? NetworkImage(profile!.profileUrl!)
-                        : const AssetImage('assets/placeholder.png')
-                              as ImageProvider,
+                        : null,
                   ),
                   Positioned(
                     bottom: 0,
@@ -152,29 +147,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
 
             const SizedBox(height: 20),
 
-            // Bio Field
-            const Text(
-              'Bio',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
             const SizedBox(height: 8),
-            TextField(
-              controller: _bioController,
-              maxLines: 4,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: const Color(0xFF22283A),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              onChanged: (_) => _onFieldsChanged(),
-            ),
 
             const SizedBox(height: 25),
 
@@ -184,7 +157,6 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
             const SizedBox(height: 40),
 
             // Done Editing Button
-          
             const SizedBox(height: 40),
           ],
         ),

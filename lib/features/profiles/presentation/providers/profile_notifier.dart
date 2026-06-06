@@ -31,20 +31,23 @@ class ProfileNotifier extends AsyncNotifier<ProfileModel?> {
   }
 
   /// Updates profile information and updates the local state
-  Future<void> updateProfile({
-    required String name,
-    required String bio
+  Future<bool> updateProfile({
+    required String name
   }) async {
-    // Optional: Capture previous state if you want fallback capabilities
-    final previousData = state.value;
+    try {
+      // Optional: Capture previous state if you want fallback capabilities
+      final previousData = state.value;
 
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      return await _repository.updateNameAndBio(
-        name: name,
-        bio: bio // Pass current vibes along safely
+      state = const AsyncLoading();
+      final response = await _repository.updateNameAndBio(
+        name: name, // Pass current vibes along safely
       );
-    });
+      return response;
+    } catch (err) {
+      print("error while callling update");
+      print(err);
+      return false;
+    }
   }
 
   /// Updates vibes/interests and applies changes instantly to local state

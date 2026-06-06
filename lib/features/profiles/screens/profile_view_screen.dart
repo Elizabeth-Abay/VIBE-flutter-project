@@ -83,35 +83,7 @@ class ProfileViewPage extends ConsumerWidget {
                 const SizedBox(height: 30),
 
                 // Bio Section
-                const Text(
-                  'Bio',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF22283A),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.purple.withOpacity(0.4)),
-                  ),
-                  child: Text(
-                    profile.bio?.isNotEmpty == true
-                        ? profile.bio!
-                        : 'No bio set',
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 15,
-                      height: 1.4,
-                    ),
-                  ),
-                ),
-
+              
                 const SizedBox(height: 25),
 
                 // Interests Section
@@ -125,27 +97,27 @@ class ProfileViewPage extends ConsumerWidget {
                 // ),
                 // const SizedBox(height: 12),
 
-                if (profile.vibes.isNotEmpty)
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: profile.vibes.keys.map((interest) {
-                      final score = profile.vibes[interest];
-                      return Chip(
-                        backgroundColor: const Color(0xFF2E3446),
-                        label: Text(
-                          interest,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        side: const BorderSide(color: Colors.purpleAccent),
-                      );
-                    }).toList(),
-                  )
-                else
-                  const Text(
-                    'No interests added yet',
-                    style: TextStyle(color: Colors.white54),
-                  ),
+                // if (profile.vibes.isNotEmpty)
+                //   Wrap(
+                //     spacing: 10,
+                //     runSpacing: 10,
+                //     children: profile.vibes.keys.map((interest) {
+                //       final score = profile.vibes[interest];
+                //       return Chip(
+                //         backgroundColor: const Color(0xFF2E3446),
+                //         label: Text(
+                //           interest,
+                //           style: const TextStyle(color: Colors.white),
+                //         ),
+                //         side: const BorderSide(color: Colors.purpleAccent),
+                //       );
+                //     }).toList(),
+                //   )
+                // else
+                //   const Text(
+                //     'No interests added yet',
+                //     style: TextStyle(color: Colors.white54),
+                //   ),
 
                 const SizedBox(height: 40),
 

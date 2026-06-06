@@ -84,21 +84,21 @@ class ProfileRepository {
 
   // ─── Update Name & Bio (Lightweight) ─────────────────────────────────────
 
-  Future<ProfileModel?> updateNameAndBio({
-    required String name,
-    required String bio,
+  Future<bool> updateNameAndBio({
+    required String name
   }) async {
     try {
-      final response = await _api.put(
+      print("calling update naem");
+      final response = await _api.post(
         '/profile/set-bio-and-name',
-        body: {'name': name, 'bio': bio},
+        body: {'name': name},
       );
 
       if (response['success'] == true) {
         final updatedProfile = await getProfile(); // Refresh from cache/API
-        return updatedProfile;
+        return true;
       }
-      return null;
+      return false;
     } catch (e) {
       print("Error updating name and bio: $e");
       rethrow; // Let the caller (Notifier) handle the error
