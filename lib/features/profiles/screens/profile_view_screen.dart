@@ -19,12 +19,6 @@ class ProfileViewPage extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.code, color: Colors.blueAccent),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: profileAsync.when(
         loading: () => const Center(
@@ -82,42 +76,8 @@ class ProfileViewPage extends ConsumerWidget {
 
                 const SizedBox(height: 30),
 
-                // Bio Section
-              
+                // Bio Section Placeholders
                 const SizedBox(height: 25),
-
-                // Interests Section
-                // const Text(
-                //   'Interests',
-                //   style: TextStyle(
-                //     fontSize: 22,
-                //     fontWeight: FontWeight.bold,
-                //     color: Colors.white,
-                //   ),
-                // ),
-                // const SizedBox(height: 12),
-
-                // if (profile.vibes.isNotEmpty)
-                //   Wrap(
-                //     spacing: 10,
-                //     runSpacing: 10,
-                //     children: profile.vibes.keys.map((interest) {
-                //       final score = profile.vibes[interest];
-                //       return Chip(
-                //         backgroundColor: const Color(0xFF2E3446),
-                //         label: Text(
-                //           interest,
-                //           style: const TextStyle(color: Colors.white),
-                //         ),
-                //         side: const BorderSide(color: Colors.purpleAccent),
-                //       );
-                //     }).toList(),
-                //   )
-                // else
-                //   const Text(
-                //     'No interests added yet',
-                //     style: TextStyle(color: Colors.white54),
-                //   ),
 
                 const SizedBox(height: 40),
 
@@ -127,7 +87,9 @@ class ProfileViewPage extends ConsumerWidget {
                   height: 50,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
+                      backgroundColor: const Color(
+                        0xFF22283A,
+                      ), // Made visible from transparent
                       shadowColor: Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
