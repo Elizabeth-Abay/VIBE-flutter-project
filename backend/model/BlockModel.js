@@ -15,7 +15,7 @@ class BlockModel {
             // Call the method to check if message can be sent by u
             const canMessage = recipient.canReceiveMessageFrom(senderId);
 
-            // console.log(canMessage); // Returns true or false
+            // //console.log(canMessage); // Returns true or false
             return canMessage;
 
         } catch (err) {
@@ -85,8 +85,8 @@ class BlockModel {
 
     async unblockUser({ id, unblockedUser }) {
         try {
-            console.log("{id, unblockedUser } respectively");
-            console.log({ id, unblockedUser })
+            //console.log("{id, unblockedUser } respectively");
+            //console.log({ id, unblockedUser })
             let result = await UserModel.findOneAndUpdate(
                 { id: id },
                 {

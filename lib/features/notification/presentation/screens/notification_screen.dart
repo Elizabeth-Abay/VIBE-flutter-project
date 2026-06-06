@@ -101,13 +101,18 @@ class NotificationScreen extends ConsumerWidget {
                       label: 'Updates',
                       count: unreadCount,
                       isActive: activeTab == 'updates',
-                      onTap: () => context.go('/notifications'),
+                      onTap: () => {
+                        context.go('/notifications'),
+                      }
                     ),
                     _TabButton(
                       label: 'Requests',
                       count: pendingCount,
                       isActive: activeTab == 'requests',
-                      onTap: () => context.go('/notifications/requests'),
+                      onTap: () => {
+                        context.go('/notifications/requests'),
+                        ref.read(incomingRequestsProvider.notifier).fetch()
+                      }
                     ),
                   ],
                 ),

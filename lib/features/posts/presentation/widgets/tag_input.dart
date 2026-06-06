@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/create_post_notifier.dart';
 
-/// Tag input chip row — uses Riverpod 3 Notifier methods (no .state =).
+// ─── Modernized Tags Collection State Notifier ───────────────────────────────
+final createPostTagsProvider =
+    NotifierProvider<CreatePostTagsNotifier, List<String>>(
+      CreatePostTagsNotifier.new,
+    );
+
+class CreatePostTagsNotifier extends Notifier<List<String>> {
+  @override
+  List<String> build() => const []; // Start with an empty list of strings
+
+  void add(String rawTag) {
+    final clean = rawTag.trim().toLowerCase();
+    if (state.contains(clean) || state.length >= 8) return;
+    state = [...state, clean];
+  }
+
+  void remove(String targetTag) {
+    state = state.where((tag) => tag != targetTag).toList();
+  }
+}
+
+// ─── Tag Input Widget ────────────────────────────────────────────────────────
+/// Tag input chip row — uses Riverpod Notifier methods (no legacy .state =).
 class TagInputField extends ConsumerStatefulWidget {
   const TagInputField({super.key});
 
@@ -22,6 +43,11 @@ class _TagInputFieldState extends ConsumerState<TagInputField> {
   void _addTag() {
     final raw = _controller.text.trim().replaceAll('#', '');
     if (raw.isEmpty) return;
+
+    // 🎯 Read current length to firmly enforce your layout max limit
+    final currentTags = ref.read(createPostTagsProvider);
+    if (currentTags.length >= 8) return;
+
     ref.read(createPostTagsProvider.notifier).add(raw);
     _controller.clear();
   }
@@ -116,7 +142,9 @@ class _TagInputFieldState extends ConsumerState<TagInputField> {
               ),
               const SizedBox(width: 8),
               GestureDetector(
-                onTap: _addTag,
+                onTap: tags.length >= 8
+                    ? null
+                    : _addTag, // Disables click handler gracefully when full
                 child: Container(
                   width: 40,
                   height: 40,

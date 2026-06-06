@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/connection_notifier.dart';
 
-/// Heart button — now wired to ConnectedNotifier so toggling
-/// updates the shared Riverpod state instead of local StatefulWidget state.
-class HeartButton extends ConsumerWidget {
+/// Simple interactive Heart Button that updates its visual color immediately when tapped.
+class HeartButton extends StatefulWidget {
   final String userId;
   final bool initialIsLiked;
 
@@ -15,24 +12,35 @@ class HeartButton extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Read current like status from provider state (keeps it in sync).
-    final state = ref.watch(connectedNotifierProvider);
-    bool isLiked = initialIsLiked;
+  State<HeartButton> createState() => _HeartButtonState();
+}
 
-    if (state is ConnectedLoaded) {
-      final match = state.users.where((u) => u.userId == userId);
-      if (match.isNotEmpty) isLiked = match.first.isLiked;
-    }
+class _HeartButtonState extends State<HeartButton> {
+  late bool _isLiked;
 
+  @override
+  void initState() {
+    super.initState();
+    // Initialize our local state with the value passed from the parent widget
+    _isLiked = widget.initialIsLiked;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(
-        isLiked ? Icons.favorite : Icons.favorite_border,
-        color: isLiked ? Colors.blue : Colors.white,
-        size: 32,
+        _isLiked ? Icons.favorite : Icons.favorite_border,
+        color: _isLiked
+            ? const Color(0xFFE186FF)
+            : Colors.white, // Custom accent pop color
+        size: 28,
       ),
-      onPressed: () =>
-          ref.read(connectedNotifierProvider.notifier).toggleLike(userId),
+      onPressed: () {
+        setState(() {
+          // Instantly toggle the local state variable on tap
+          _isLiked = !_isLiked;
+        });
+      },
     );
   }
 }

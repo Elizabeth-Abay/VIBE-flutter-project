@@ -11,7 +11,7 @@ dotenv.config({
 })
 
 let { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
-// console.log("ACCESS_TOKEN_SECRET" , ACCESS_TOKEN_SECRET );
+// //console.log("ACCESS_TOKEN_SECRET" , ACCESS_TOKEN_SECRET );
 
 
 class TokenDecoder {
@@ -21,11 +21,11 @@ class TokenDecoder {
             // access token - header
             // signedInfo = { id , exp} 
             let token = req.headers['authorization'];
-            // console.log("token " , token);
+            // //console.log("token " , token);
 
 
             let access = token?.split(' ')[1];
-            // console.log("access " , access);
+            // //console.log("access " , access);
 
             const jwtPattern = /^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/;
 
@@ -34,7 +34,7 @@ class TokenDecoder {
             
             req.decodedAccess = jwt.verify(access, ACCESS_TOKEN_SECRET);
 
-            // console.log("decoded access" ,req.decodedAccess)
+            // //console.log("decoded access" ,req.decodedAccess)
 
             return next();
 

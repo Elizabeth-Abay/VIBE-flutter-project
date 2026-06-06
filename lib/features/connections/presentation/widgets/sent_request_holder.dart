@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../domain/entity/sent_request_user.dart';
+import '../../domain/entity/requests_sent_to_user.dart';
 import 'cancel_request_btn.dart';
 
 /// A single sent-request row — avatar, name, timestamp, cancel button.
 class SentRequestHolderCell extends StatelessWidget {
-  final SentRequestUser request;
+  final RequestsSentToUser request;
 
   const SentRequestHolderCell({super.key, required this.request});
 
@@ -28,12 +28,12 @@ class SentRequestHolderCell extends StatelessWidget {
               CircleAvatar(
                 radius: 26,
                 backgroundColor: Colors.white12,
-                backgroundImage: request.profileImage.isNotEmpty
-                    ? NetworkImage(request.profileImage)
+                backgroundImage: request.profileImg != null
+                    ? NetworkImage(request.profileImg!)
                     : null,
-                child: request.profileImage.isEmpty
+                child: request.profileImg != ''
                     ? Text(
-                        request.name.isNotEmpty
+                        request.name != ''
                             ? request.name[0].toUpperCase()
                             : '?',
                         style: const TextStyle(color: Colors.white),
@@ -51,18 +51,11 @@ class SentRequestHolderCell extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                request.timestamp,
-                style: const TextStyle(color: Colors.grey, fontSize: 14),
-              ),
             ],
           ),
           const SizedBox(height: 15),
           // Cancel button now talks to SentRequestNotifier
-          CancelRequestButton(
-            userId: request.userId,
-            initialStatus: request.isCancelled,
-          ),
+          CancelRequestButton(userId: request.userId),
         ],
       ),
     );

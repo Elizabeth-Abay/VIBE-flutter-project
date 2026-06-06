@@ -18,8 +18,7 @@ class AuthStateLoading extends AuthState {
 
 /// User is fully logged in.
 class AuthStateAuthenticated extends AuthState {
-  final UserEntity user;
-  const AuthStateAuthenticated(this.user);
+  const AuthStateAuthenticated();
 }
 
 /// No token found, or user explicitly signed out.

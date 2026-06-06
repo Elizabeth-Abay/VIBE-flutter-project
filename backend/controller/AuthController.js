@@ -8,6 +8,7 @@ class AuthController {
     async createUser(req, res, next) {
         // to be able to call the global error handler in case of error
         try {
+            //console.log("Request received");
             // validator already called in the routes
             let { email } = req.body;
 
@@ -16,9 +17,8 @@ class AuthController {
             return result.success ?
                 res.status(201).json({ id: result.data })
                 :
-                res.status(400).json({ success: false })
+                res.status(400).json(result)
 
-            return res.status(201).json({ id: data });
 
         } catch (err) {
             // the lower layers will throw error and the upper layer will be the one to catch that
@@ -34,7 +34,12 @@ class AuthController {
 
     async verifyUserOtp(req, res, next) {
         try {
+            
             let { id, OTP } = req.body;
+
+            //console.log("Verifying otp" , { id, OTP })
+
+            
 
             let result = await authService.verifyUser({ id, OTP })
 
@@ -82,13 +87,16 @@ class AuthController {
 
     async logIn(req, res, next) {
         try {
+            //console.log("Log in called");
             // email and password
             let { email, password } = req.body;
 
             let result = await authService.logIn({ email, password });
 
+            //console.log("result of login " , result);
+
             return result.success ?
-                res.status(200).json(result.data) :
+                res.status(200).json(result) :
                 res.status(400).json(result);
 
 
@@ -111,7 +119,7 @@ class AuthController {
 
             return result.success
                 ?
-                res.status(200).json(result) 
+                res.status(200).json(result)
                 :
                 res.status(400).json(result);
 

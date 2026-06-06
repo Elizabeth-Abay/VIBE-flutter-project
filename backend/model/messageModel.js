@@ -85,11 +85,16 @@ class MessageModel {
     async createMessage({ id, message, chatId }) {
         try {
             // 2. Action: Create and save the new message
-            const newMessage = await Message.create({
+            console.log("Creating message");
+
+            const newMessageDoc = await Message.create({
                 chat_id: chatId,
                 sender_id: id,
                 text: message
             });
+
+            const newMessage = newMessageDoc.toObject();
+            console.log(newMessage);
 
             return (!newMessage)
                 ?
@@ -104,6 +109,8 @@ class MessageModel {
                 };
 
         } catch (err) {
+            console.log("Error happened ");
+            console.log(err.message);
             err.from = 'MessageModel.createMessage';
             throw err;
         }

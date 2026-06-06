@@ -1,45 +1,45 @@
 /// Domain + data model for a chat conversation list item.
 class ChatUser {
-  final String id;
+  final String chatId;
+  final String chatWith;
   final String name;
-  final String avatar;
-  final String lastMessage;
+  final String? profileUrl;
+  final String userName;
 
   const ChatUser({
-    required this.id,
+    required this.chatId,
+    required this.chatWith,
     required this.name,
-    required this.avatar,
-    required this.lastMessage,
+    required this.userName,
+    this.profileUrl,
   });
 
   factory ChatUser.fromJson(Map<String, dynamic> json) {
     return ChatUser(
-      id: json['id'] as String,
-      name: json['participant_name'] as String? ??
-          json['name'] as String? ??
-          'Unknown',
-      avatar: json['participant_avatar'] as String? ??
-          json['avatar_url'] as String? ??
-          '',
-      lastMessage: json['last_message'] as String? ?? '',
+      chatId: json['chat_id'] as String,
+      chatWith: json['participant_id'],
+      name: json['name'] as String,
+      userName: json['user_name'],
+      profileUrl: json['profile_url'] as String?,
     );
   }
 
   factory ChatUser.fromDb(Map<String, dynamic> row) {
     return ChatUser(
-      id: row['id'] as String,
-      name: row['participant_name'] as String,
-      avatar: row['participant_avatar'] as String? ?? '',
-      lastMessage: row['last_message'] as String? ?? '',
+      chatId: row['chat_id'] as String,
+      chatWith: row['participant_id'] as String,
+      name: row['name'] as String,
+      userName: row['user_name'],
+      profileUrl: row['profile_url'] as String?,
     );
   }
 
   Map<String, dynamic> toDb() => {
-    'id': id,
-    'participant_id': id,
-    'participant_name': name,
-    'participant_avatar': avatar,
-    'last_message': lastMessage,
+    'chat_id': chatId,
+    'participant_id': chatWith,
+    'name': name,
+    'user_name': userName,
+    'profile_url': profileUrl,
     'updated_at': DateTime.now().toIso8601String(),
     'cached_at': DateTime.now().toIso8601String(),
   };

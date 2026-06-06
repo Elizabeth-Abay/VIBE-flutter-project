@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/notification_repository.dart';
 import '../../domain/entity/notification_entity.dart';
+import '../../../connections/presentation/providers/connection_notifier.dart';
 
 // ─── Notifications state (Updates tab) ───────────────────────────────────────
 
@@ -131,6 +132,8 @@ class IncomingRequestsNotifier extends Notifier<RequestsState> {
     state = const RequestsLoading();
     try {
       final requests = await _repo.fetchIncomingRequests();
+      //print("requests being printed");
+      //print(requests);
       state = RequestsLoaded(requests);
     } catch (e) {
       state = RequestsError(e.toString());
@@ -141,7 +144,10 @@ class IncomingRequestsNotifier extends Notifier<RequestsState> {
 
   Future<bool> acceptRequest(String requesterId) async {
     final ok = await _repo.acceptRequest(requesterId);
-    if (ok) _removeFromList(requesterId);
+    if (ok) {
+      _removeFromList(requesterId);
+      ref.invalidate(connectionsFeedProvider);
+    }
     return ok;
   }
 

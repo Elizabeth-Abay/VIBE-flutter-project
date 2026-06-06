@@ -1,5 +1,7 @@
-const AuthModelPg  = require('../model/AuthModel');
+const AuthModelPg = require('../model/AuthModel');
 const ProfileModel = require('../model/profileModel');
+const UserProfileGetter = require('../model/UserProfileGetHelper');
+const { getProfileInfo } = require('../model/UserProfileGetHelper');
 const BcryptRelated = require('../utils/bcryptRelated');
 
 
@@ -103,6 +105,27 @@ class ProfileService {
             throw err;
         }
 
+    }
+
+
+    async getProfileInfo(id) {
+        try {
+            let result = await UserProfileGetter.getProfileInfo([id]);
+
+            console.log("Result of getProfileInfo");
+            console.log(result);
+
+            if (!result.success) return result;
+
+            return result;
+
+        } catch (err) {
+            // the lower layers will throw error and the upper layer will be the one to catch that
+            if (typeof err === 'object' && !err.from) {
+                err.from = 'ProfileService.getProfileInfo';
+            }
+            throw err;
+        }
     }
 
 }

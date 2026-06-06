@@ -78,7 +78,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       if (next is VerificationSuccess) {
         ref.read(registrationSessionProvider.notifier).markOtpVerified();
         unfocusAndNavigate(context, (router) {
-          router.go('/signup?email=${Uri.encodeComponent(widget.email)}');
+          router.go('/enter-user-info-first?email=${Uri.encodeComponent(widget.email)}');
         });
       } else if (next is VerificationResent) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -118,7 +118,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
             if (ApiConfig.useMockBackend) ...[
               const SizedBox(height: 8),
               Text(
-                'Dev mode: enter ${ApiConfig.mockOtpCode}',
+                '',
                 style: TextStyle(color: Colors.purple.shade200, fontSize: 12),
               ),
             ],
@@ -138,9 +138,8 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                       controller: _controllers[index],
                       focusNode: _focusNodes[index],
                       textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       maxLength: 1,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onChanged: (v) => _onDigitChanged(v, index),
                       decoration: InputDecoration(
                         counterText: '',

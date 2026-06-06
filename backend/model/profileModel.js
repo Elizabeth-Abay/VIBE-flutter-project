@@ -25,7 +25,7 @@ class ProfileFristTimeModel {
     async settingProfileFirstTime({ id, name, userName }) {
         try {
             // inserting for the first time
-            console.log("{ id, name, userName } when setting profiles " , { id, name, userName });
+            //console.log("{ id, name, userName } when setting profiles " , { id, name, userName });
             let query = `
                 INSERT INTO profile_info(name , user_name , user_id )
                 VALUES($1,$2 , $3)

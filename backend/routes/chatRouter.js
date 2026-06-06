@@ -9,7 +9,7 @@ const chatController = new ChatController();
 
 
 chatRouter.get('/get-all', TokenDecoder.accessDecode, chatController.getAllChats); // -- worked
-chatRouter.post('/get-single-chat', TokenDecoder.accessDecode, chatController.createOrFindChat); // -- worked
+chatRouter.get('/get-single-chat/:chatWith', TokenDecoder.accessDecode, chatController.createOrFindChat); // -- worked
 
 chatRouter.get('/self-chat', TokenDecoder.accessDecode, chatController.getOrCreateMyChat);
 

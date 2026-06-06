@@ -53,7 +53,7 @@ class RequestHandler {
             defaultAccessMode: session.READ
         })
 
-        console.log("id is " , id);
+        //console.log("id is " , id);
         try {
             // requests sent to the user
 

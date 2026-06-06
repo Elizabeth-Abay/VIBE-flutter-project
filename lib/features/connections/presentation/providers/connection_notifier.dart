@@ -1,169 +1,142 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/connection_model.dart';
+import '../../data/repository/connection_repository.dart';
 import '../../domain/entity/connected_user.dart';
-import '../../domain/entity/sent_request_user.dart';
-import '../../../../features/home/domain/entity/connection_request_sending_result.dart';
+import '../../domain/entity/matched_user.dart';
 
-// ─── Connected users state & provider ────────────────────────────────────────
+final _connectionRepo = ConnectionRepository.instance;
 
-sealed class ConnectedState {
-  const ConnectedState();
-}
+// ─── 1. Fetch Existing Connections Stream ────────────────────────────────────
+/// Automatically pulls and caches your list of active friends/connections.
+/// Invalidate this provider to pull a fresh list instantly after mutating states.
+final connectionsFeedProvider = FutureProvider<List<ConnectedUser>>((
+  ref,
+) async {
+  return await _connectionRepo.getAllConnections();
+});
 
-class ConnectedLoading extends ConnectedState {
-  const ConnectedLoading();
-}
+final connectionRepositoryProvider = Provider<ConnectionRepository>((ref) {
+  // Return your instance here
+  return ConnectionRepository.instance;
+});
 
-class ConnectedLoaded extends ConnectedState {
-  final List<ConnectedUser> users;
-  const ConnectedLoaded(this.users);
-}
+final peopleNotifierProvider = FutureProvider<List<MatchedUser>>((ref) async {
+  final repository = ref.read(connectionRepositoryProvider);
+  return await repository.getMatchedUsers();
+});
 
-class ConnectedError extends ConnectedState {
-  final String message;
-  const ConnectedError(this.message);
-}
-
-final connectedNotifierProvider =
-    NotifierProvider<ConnectedNotifier, ConnectedState>(ConnectedNotifier.new);
-
-class ConnectedNotifier extends Notifier<ConnectedState> {
-  final _repo = ConnectionRepository.instance;
-
-  @override
-  ConnectedState build() {
-    fetchConnected();
-    return const ConnectedLoading();
-  }
-
-  Future<void> fetchConnected() async {
-    state = const ConnectedLoading();
-    try {
-      final users = await _repo.fetchConnectedUsers();
-      state = ConnectedLoaded(users);
-    } catch (e) {
-      state = ConnectedError(e.toString());
-    }
-  }
-
-  /// Accepts an incoming connection request.
-  Future<void> acceptRequest(String requesterId) async {
-    await _repo.acceptRequest(requesterId);
-    // Refresh the connected list to include the newly accepted user.
-    await fetchConnected();
-  }
-
-  /// Toggles the heart/like on a connected user (local only).
-  void toggleLike(String userId) {
-    final current = state;
-    if (current is ConnectedLoaded) {
-      final updated = current.users.map((u) {
-        if (u.userId == userId) {
-          return ConnectedUser(
-            userId: u.userId,
-            name: u.name,
-            username: u.username,
-            profileImage: u.profileImage,
-            isLiked: !u.isLiked,
-          );
-        }
-        return u;
-      }).toList();
-      state = ConnectedLoaded(updated);
-    }
-  }
-}
-
-// ─── Sent requests state & provider ──────────────────────────────────────────
-
-sealed class SentRequestState {
-  const SentRequestState();
-}
-
-class SentRequestLoading extends SentRequestState {
-  const SentRequestLoading();
-}
-
-class SentRequestLoaded extends SentRequestState {
-  final List<SentRequestUser> requests;
-  const SentRequestLoaded(this.requests);
-}
-
-class SentRequestError extends SentRequestState {
-  final String message;
-  const SentRequestError(this.message);
-}
-
-final sentRequestNotifierProvider =
-    NotifierProvider<SentRequestNotifier, SentRequestState>(
-      SentRequestNotifier.new,
+// ─── 2. Global Action State Notifier ─────────────────────────────────────────
+/// Manages async network transitions (idle, loading, success, error) when
+/// executing actions like sending, accepting, or rejecting requests.
+final connectionActionProvider =
+    NotifierProvider<ConnectionActionNotifier, AsyncValue<void>>(
+      ConnectionActionNotifier.new,
     );
 
-class SentRequestNotifier extends Notifier<SentRequestState> {
-  final _repo = ConnectionRepository.instance;
-
+class ConnectionActionNotifier extends Notifier<AsyncValue<void>> {
   @override
-  SentRequestState build() {
-    fetchSent();
-    return const SentRequestLoading();
+  AsyncValue<void> build() {
+    return const AsyncData(null); // Initial idle state
   }
 
-  Future<void> fetchSent() async {
-    state = const SentRequestLoading();
+  // ─── Send Connection Request ───────────────────────────────────────────────
+  Future<bool> sendRequest(String connectToId) async {
+    state = const AsyncLoading();
+
     try {
-      final requests = await _repo.fetchSentRequests();
-      state = SentRequestLoaded(requests);
-    } catch (e) {
-      state = SentRequestError(e.toString());
-    }
-  }
-
-  /// Cancels a request and removes it from state immediately (optimistic UI).
-  Future<void> cancelRequest(String targetId) async {
-    final current = state;
-    if (current is SentRequestLoaded) {
-      // Optimistic removal
-      state = SentRequestLoaded(
-        current.requests
-            .map(
-              (r) => r.userId == targetId
-                  ? SentRequestUser(
-                      userId: r.userId,
-                      name: r.name,
-                      profileImage: r.profileImage,
-                      timestamp: r.timestamp,
-                      isCancelled: true,
-                    )
-                  : r,
-            )
-            .toList(),
+      final success = await _connectionRepo.requestConnection(connectToId);
+      if (success) {
+        state = const AsyncData(null);
+        return true;
+      }
+      state = AsyncValue.error(
+        'Failed to send connection request.',
+        StackTrace.current,
       );
-      await _repo.cancelRequest(targetId);
+      return false;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      return false;
     }
   }
-}
 
-// ─── Send connection (used from home recommended list) ────────────────────────
+  // ─── Accept Incoming Connection ────────────────────────────────────────────
+  Future<bool> acceptRequest(String senderId) async {
+    state = const AsyncLoading();
 
-final sendConnectionProvider =
-    NotifierProvider<SendConnectionNotifier, AsyncValue<ConnectResult?>>(
-      SendConnectionNotifier.new,
-    );
+    try {
+      final success = await _connectionRepo.acceptConnection(senderId);
+      if (success) {
+        state = const AsyncData(null);
+        // Refresh your active connection feed instantly so the new friend pops up
+        ref.invalidate(connectionsFeedProvider);
+        return true;
+      }
+      state = AsyncValue.error(
+        'Could not accept connection.',
+        StackTrace.current,
+      );
+      return false;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      return false;
+    }
+  }
 
-class SendConnectionNotifier extends Notifier<AsyncValue<ConnectResult?>> {
-  final _repo = ConnectionRepository.instance;
+  // ─── Reject Incoming Connection ────────────────────────────────────────────
+  Future<bool> rejectRequest(String senderId) async {
+    state = const AsyncLoading();
 
-  @override
-  AsyncValue<ConnectResult?> build() => const AsyncValue.data(null);
+    try {
+      final success = await _connectionRepo.rejectConnection(senderId);
+      if (success) {
+        state = const AsyncData(null);
+        return true;
+      }
+      state = AsyncValue.error('Could not reject request.', StackTrace.current);
+      return false;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      return false;
+    }
+  }
 
-  Future<ConnectResult> sendRequest(String targetId) async {
-    state = const AsyncValue.loading();
-    final success = await _repo.sendRequest(targetId);
-    final result = ConnectResult(
-      statusCode: success ? 200 : 500,
-      message: success ? 'Request Sent' : 'Failed to send request',
-    );
-    state = AsyncValue.data(result);
-    return result;
+  // ─── Disconnect / Unfriend User ────────────────────────────────────────────
+  Future<bool> removeConnection(String targetUserId) async {
+    state = const AsyncLoading();
+
+    try {
+      final success = await _connectionRepo.disconnectUser(targetUserId);
+      if (success) {
+        state = const AsyncData(null);
+        // Drop the unbefriended user out of the cache list instantly
+        ref.invalidate(connectionsFeedProvider);
+        return true;
+      }
+      state = AsyncValue.error(
+        'Failed to remove connection.',
+        StackTrace.current,
+      );
+      return false;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      return false;
+    }
+  }
+
+  Future<List<ConnectedUser>> getAllConnections() async {
+    state = const AsyncLoading();
+
+    try {
+      //print('Getting All connections');
+      final connections = await _connectionRepo.getAllConnections();
+
+      //print("result is $connections");
+      state = const AsyncData(null); // Clear loading state back to idle
+      return connections;
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+      // Return an empty list or rethrow depending on how your UI handles errors
+      return [];
+    }
   }
 }

@@ -57,7 +57,7 @@ class AppRouter {
   static GoRouter createRouter(WidgetRef ref) {
     return GoRouter(
       navigatorKey: _rootNavKey,
-      initialLocation: '/splash',
+      initialLocation: '/start-screen',
       debugLogDiagnostics: false,
 
       // Re-runs redirect() whenever auth state changes.
@@ -65,18 +65,6 @@ class AppRouter {
       redirect: (_, state) => authRedirect(ref, state.matchedLocation),
 
       routes: [
-        // ── Splash ────────────────────────────────────────────────────────
-        GoRoute(
-          path: '/splash',
-          builder: (_, __) => const SplashScreen(),
-          redirect: (_, __) {
-            final ready = ref.read(authReadyProvider);
-            if (!ready) return null; // Stay on splash while checking token
-            final auth = ref.read(authNotifierProvider);
-            return auth is AuthStateAuthenticated ? '/home' : '/start-screen';
-          },
-        ),
-
         // ── Onboarding ────────────────────────────────────────────────────
         GoRoute(path: '/start-screen', builder: (_, __) => const StartScreen()),
         GoRoute(path: '/welcome1', builder: (_, __) => const Welcome1Screen()),
@@ -85,18 +73,11 @@ class AppRouter {
         GoRoute(path: '/welcome4', builder: (_, __) => const Welcome4Screen()),
 
         // ── Auth ──────────────────────────────────────────────────────────
-        GoRoute(path: '/signin', builder: (_, __) => const SignInScreen()),
-        GoRoute(
-          path: '/login-email',
-          builder: (_, __) => const EmailEntryScreen(),
-        ),
-        GoRoute(
-          path: '/verify',
-          builder: (_, state) => VerificationScreen(
-            email: state.uri.queryParameters['email'] ?? '',
-          ),
-        ),
-        GoRoute(path: '/signup', builder: (_, __) => const SignUpScreen()),
+        GoRoute(path: '/sign-in', builder: (_, __) => const SignInScreen()),
+        GoRoute(path: '/sign-up-email-enter', builder: (_, __) => const EmailEntryScreen()),
+        GoRoute(path: '/verify',builder: (_, state) => VerificationScreen(  email: state.uri.queryParameters['email'] ?? '',),),
+        // where username , password ... gets put
+        GoRoute(path: '/enter-user-info-first', builder: (_, __) => const SignUpScreen()),
 
         // ── Post-signup interest selection ─────────────────────────────────
         GoRoute(
@@ -123,12 +104,12 @@ class AppRouter {
           routes: [
             GoRoute(
               path: 'edit',
-              builder: (_, __) => const EditProfileScreen(),
+              builder: (_, __) => const EditProfilePage(),
             ),
-            GoRoute(
-              path: 'delete',
-              builder: (_, __) => const DeleteAccountScreen(),
-            ),
+            // GoRoute(
+            //   path: 'delete',
+            //   // builder: (_, __) => const DeleteAccountScreen(),
+            // ),
           ],
         ),
 
@@ -136,7 +117,7 @@ class AppRouter {
         GoRoute(
           path: '/chat-detail/:id',
           builder: (_, state) => ChatDetailScreen(
-            conversationId: state.pathParameters['id'] ?? '',
+            chatWith: state.pathParameters['id'] ?? '',
           ),
         ),
 
@@ -163,16 +144,13 @@ class AppRouter {
         GoRoute(path: '/post', builder: (_, __) => const CreatePostPage()),
 
         // ── Settings ──────────────────────────────────────────────────────
-        GoRoute(
-          path: '/settings',
-          builder: (_, __) => const SettingsScreen(),
-        ),
+        GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
 
         // ── Blocked users ─────────────────────────────────────────────────
-        GoRoute(
-          path: '/blocked',
-          builder: (_, __) => const BlockedUsersScreen(),
-        ),
+        // GoRoute(
+        //   path: '/blocked',
+        //   builder: (_, __) => const BlockedUsersScreen(),
+        // ),
       ],
     );
   }

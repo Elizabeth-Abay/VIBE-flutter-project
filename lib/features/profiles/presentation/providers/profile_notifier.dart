@@ -1,138 +1,72 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/model/profile_model.dart';
 import '../../data/repository/profile_repository.dart';
-import '../../domain/entities/profile_entity.dart';
-import '../../../auth/presentation/providers/auth_notifier.dart';
 
-// ─── Profile state ────────────────────────────────────────────────────────────
+/// Repository provider
+final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
+  return ProfileRepository.instance;
+});
 
-sealed class ProfileState {
-  const ProfileState();
-}
-
-class ProfileInitial extends ProfileState {
-  const ProfileInitial();
-}
-
-class ProfileLoading extends ProfileState {
-  const ProfileLoading();
-}
-
-class ProfileLoaded extends ProfileState {
-  final ProfileEntity profile;
-  const ProfileLoaded(this.profile);
-}
-
-class ProfileUpdated extends ProfileState {
-  final ProfileEntity profile;
-  const ProfileUpdated(this.profile);
-}
-
-class ProfileError extends ProfileState {
-  final String message;
-  const ProfileError(this.message);
-}
-
-class ProfileDeleted extends ProfileState {
-  const ProfileDeleted();
-}
-
-// ─── Provider ─────────────────────────────────────────────────────────────────
-
-final profileNotifierProvider = NotifierProvider<ProfileNotifier, ProfileState>(
+/// Global provider for the UI to consume using AsyncNotifier
+final profileProvider = AsyncNotifierProvider<ProfileNotifier, ProfileModel?>(
   ProfileNotifier.new,
 );
 
-// ─── Notifier ─────────────────────────────────────────────────────────────────
+class ProfileNotifier extends AsyncNotifier<ProfileModel?> {
+  // Access the repository using the modern ref.read pattern
+  ProfileRepository get _repository => ref.read(profileRepositoryProvider);
 
-class ProfileNotifier extends Notifier<ProfileState> {
-  final _repo = ProfileRepository.instance;
-
+  /// The build method replaces your initial fetch logic.
+  /// Riverpod calls this automatically when the provider is first read/watched.
   @override
-  ProfileState build() {
-    loadProfile();
-    return const ProfileLoading();
+  Future<ProfileModel?> build() async {
+    print("Running initial profile fetch...");
+    return _repository.getProfile();
   }
 
-  // ── Load ────────────────────────────────────────────────────────────────
-
-  Future<void> loadProfile() async {
-    state = const ProfileLoading();
-    try {
-      final profile = await _repo.getProfile();
-      if (profile != null) {
-        state = ProfileLoaded(profile);
-      } else {
-        state = const ProfileError('Could not load profile.');
-      }
-    } catch (e) {
-      state = ProfileError(e.toString());
-    }
+  /// Manual refresh logic using AsyncValue.guard
+  Future<void> refreshProfile() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => _repository.getProfile());
   }
 
-  // ── Update ───────────────────────────────────────────────────────────────
-
-  Future<void> updateProfile({
-    required String username,
-    required String bio,
-    String? avatarUrl,
-    Map<String, String>? vibes,
+  /// Updates profile information and updates the local state
+  Future<bool> updateProfile({
+    required String name
   }) async {
-    state = const ProfileLoading();
     try {
-      final updated = await _repo.updateProfile(
-        username: username,
-        bio: bio,
-        avatarUrl: avatarUrl,
-        vibes: vibes,
+      // Optional: Capture previous state if you want fallback capabilities
+      final previousData = state.value;
+
+      state = const AsyncLoading();
+      final response = await _repository.updateNameAndBio(
+        name: name, // Pass current vibes along safely
       );
-      state = ProfileUpdated(updated);
-    } catch (e) {
-      state = ProfileError(e.toString());
+      return response;
+    } catch (err) {
+      print("error while callling update");
+      print(err);
+      return false;
     }
   }
 
-  // ── Save interests ───────────────────────────────────────────────────────
+  /// Updates vibes/interests and applies changes instantly to local state
+  Future<void> updateInterests(List<Map<String, String>> vibesList) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      // 1. Run the remote API call via repository
+      await _repository.updateInterests(vibesList);
 
-  Future<void> saveInterests(Map<String, String> vibes) async {
-    try {
-      await _repo.saveInterests(vibes);
-      final current = state;
-      if (current is ProfileLoaded) {
-        state = ProfileLoaded(current.profile.copyWith(vibes: vibes));
+      // 2. Reconstruct map locally to sync UI without another network fetch
+      final Map<String, String> reconstructedMap = {
+        for (var item in vibesList) item['interest']!: item['score']!,
+      };
+
+      // 3. Update local state using copyWith if previous data exists
+      if (state.value != null) {
+        return state.value!.copyWith(vibes: reconstructedMap);
       }
-    } catch (e) {
-      state = ProfileError(e.toString());
-    }
-  }
-
-  // ── Delete account ───────────────────────────────────────────────────────
-
-  Future<void> deleteAccount() async {
-    state = const ProfileLoading();
-    try {
-      await _repo.deleteAccount();
-      // Sign the user out in the auth notifier too
-      await ref.read(authNotifierProvider.notifier).signOut();
-      state = const ProfileDeleted();
-    } catch (e) {
-      state = ProfileError(e.toString());
-    }
-  }
-
-  // ── Helpers ──────────────────────────────────────────────────────────────
-
-  ProfileEntity? get currentProfile {
-    final s = state;
-    if (s is ProfileLoaded) return s.profile;
-    if (s is ProfileUpdated) return s.profile;
-    return null;
+      return null;
+    });
   }
 }
-
-// ─── Blocked users ────────────────────────────────────────────────────────────
-
-final blockedUsersProvider = FutureProvider<List<Map<String, String>>>((
-  ref,
-) async {
-  return ProfileRepository.instance.fetchBlockedUsers();
-});

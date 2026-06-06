@@ -1,50 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/connection_notifier.dart';
+import '../providers/request_provider.dart';
 
-/// Cancel / Request-Again button — wired to SentRequestNotifier.
-/// Uses optimistic UI: state updates immediately, network call follows.
+/// Cancel Button widget handling outgoing request mutations dynamically.
 class CancelRequestButton extends ConsumerWidget {
+  /// The unique database target user ID field (`user_id`).
   final String userId;
-  final bool initialStatus; // true = already cancelled
 
-  const CancelRequestButton({
-    super.key,
-    required this.userId,
-    required this.initialStatus,
-  });
+  const CancelRequestButton({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Derive current cancelled status from live provider state.
-    final state = ref.watch(sentRequestNotifierProvider);
-    bool isCancelled = initialStatus;
-
-    if (state is SentRequestLoaded) {
-      final match = state.requests.where((r) => r.userId == userId);
-      if (match.isNotEmpty) isCancelled = match.first.isCancelled;
-    }
+    // 🎯 Watches action loading state to throttle multi-taps cleanly
+    final actionState = ref.watch(requestActionNotifierProvider);
+    final isLoading = actionState.isLoading;
 
     return GestureDetector(
-      onTap: () =>
-          ref.read(sentRequestNotifierProvider.notifier).cancelRequest(userId),
-      child: Container(
-        width: 140,
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-          gradient: const LinearGradient(
-            colors: [Color(0xFFE186FF), Color(0xFF6E85E3)],
-          ),
-        ),
-        child: Center(
-          child: Text(
-            isCancelled ? 'Request-Again' : 'Cancel',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
+      onTap: isLoading
+          ? null // Freeze button interactions while network requests are flying
+          : () async {
+              final success = await ref
+                  .read(requestActionNotifierProvider.notifier)
+                  .cancelExistingRequest(userId);
+
+              if (success && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Connection request withdrawn successfully.'),
+                    backgroundColor: Color(0xFF6E85E3),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+      child: Opacity(
+        opacity: isLoading ? 0.6 : 1.0,
+        child: Container(
+          width: 140,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFE186FF), Color(0xFF6E85E3)],
             ),
+          ),
+          child: Center(
+            child: isLoading
+                ? const SizedBox(
+                    height: 18,
+                    width: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                  ),
           ),
         ),
       ),

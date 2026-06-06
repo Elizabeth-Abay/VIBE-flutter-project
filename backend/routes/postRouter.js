@@ -14,7 +14,7 @@ const postController = new PostController();
 postRouter.get('/get-post-given-category/:categorySelected', TokenDecoder.accessDecode, validateCategory(PostSchemas.getPostCategory), postController.getPostsInACategory);
 
 // -- works
-postRouter.post('/make-post', TokenDecoder.accessDecode, uploads.single('postPic') ,validate(PostSchemas.makePost) , postController.makeAPost);
+postRouter.post('/make-post', TokenDecoder.accessDecode, uploads.single('postPic') , postController.makeAPost);
 
 
 module.exports = postRouter;

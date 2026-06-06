@@ -4,6 +4,8 @@ const pool = require('../config/pgConfig');
 class PostModel {
     async extractPostInformation(postIdArray) {
         try {
+
+            //console.log(postIdArray)
             let query = `
                 SELECT 
                     p.id AS post_id,
@@ -23,6 +25,8 @@ class PostModel {
             let values = [postIdArray];
 
             let result = await pool.query(query, values);
+
+            //console.log(result.rows)
 
             return {
                 success: true,

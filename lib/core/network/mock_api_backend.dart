@@ -199,7 +199,7 @@ class MockApiBackend {
     }
     _otpByEmail[email] = ApiConfig.mockOtpCode;
     return {
-      'message': 'OTP sent (dev mode: use ${ApiConfig.mockOtpCode})',
+      'message': 'OTP sent',
     };
   }
 
@@ -223,7 +223,7 @@ class MockApiBackend {
       throw const ApiException(
         statusCode: 401,
         message:
-            'Invalid password. Dev mode: use "${ApiConfig.mockPassword}" or ReqRes demo user.',
+            'Invalid password.',
       );
     }
     final token = 'mock_token_${email.hashCode}';

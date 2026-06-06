@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/network/api_client.dart';
+import '../../../../core/storage/registration_storage.dart';
 
 // ── State ─────────────────────────────────────────────────────────────────────
 
@@ -31,6 +32,10 @@ class VerificationError extends VerificationState {
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 
+final registrationStorageProvider = Provider<RegistrationStorage>((ref) {
+  return RegistrationStorage.instance;
+});
+
 final verificationProvider =
     NotifierProvider<VerificationNotifier, VerificationState>(
       VerificationNotifier.new,
@@ -52,19 +57,46 @@ class VerificationNotifier extends Notifier<VerificationState> {
     state = const VerificationLoading();
 
     try {
-      await ApiClient.instance.post(
-        '/auth/verify-otp',
-        body: {'email': email, 'otp': otp},
+      final String? userId = await ref
+          .read(registrationStorageProvider)
+          .getVerificationSessionId();
+
+      // 🛑 3. Safety Check: If for some reason storage cleared out, handle it gracefully
+      if (userId == null) {
+        state = const VerificationError(
+          'Session expired. Please re-enter your email.',
+        );
+        return;
+      }
+      final response = await ApiClient.instance.post(
+        '/auth/verify-user-otp',
+        body: {'id': userId, 'OTP': otp},
         auth: false,
       );
+
+      final accessToken = response['accessToken'];
+      final refreshToken = response['refreshToken'];
+
+      //print("Access Token $accessToken" );
+      //print("refresh Token $refreshToken");
+      
+      await ref
+          .read(registrationStorageProvider)
+          .saveAuthTokens(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          );
+
       state = const VerificationSuccess();
     } on ApiException catch (e) {
       if (e.statusCode == 400) {
+        //print(e);
         state = const VerificationError('Invalid or expired code. Try again.');
       } else {
         state = VerificationError(e.message);
       }
-    } catch (_) {
+    } catch (err) {
+      //print(err);
       state = const VerificationError('Network error. Please try again.');
     }
   }

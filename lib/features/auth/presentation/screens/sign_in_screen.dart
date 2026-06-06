@@ -27,6 +27,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   Future<void> _onSignIn() async {
+    // this thing fires when the log in button is clicked
     setState(() => _errorMessage = null);
 
     final email = _emailController.text.trim();
@@ -105,7 +106,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 : ActionButton(text: "Sign in", onPressed: _onSignIn),
 
             TextButton(
-              onPressed: () => context.push('/login-email'),
+              onPressed: () => context.push('/sign-up-email-enter'),
               child: const Text(
                 "Don't have account? Create Account",
                 style: TextStyle(color: Colors.white54, fontSize: 12),

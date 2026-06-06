@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const authRouter = require('./routes/authRouter');
 const blockRouter = require('./routes/blockRouter');
@@ -28,6 +29,8 @@ connectMongoDB();
 
 const server = express();
 
+
+server.use(cors())
 server.use(express.json());
 
 server.use('/uploads', express.static('uploads'));

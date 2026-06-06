@@ -43,7 +43,11 @@ class PostModelG {
 
 
     async linkPostWithCategory({ postId, category }) {
+        category = category.toLowerCase()
+    
         const session = driver.session();
+
+        //console.log({ postId, category });
 
         const sessionToWrite = driver.session({
             defaultAccessMode: session.WRITE
@@ -56,16 +60,15 @@ class PostModelG {
             // meaning the post will have a single category
             const query = `
                 MERGE (p:Post { id: $postId })
-                WITH p
                 MATCH (i:Interest {slug: $category })
                 MERGE (p)-[:BELONGS_TO]->(i)
                 RETURN p, i
             `;
 
 
-            console.log('query ', query);
+            //console.log('query ', query);
 
-            console.log({ postId, category });
+            //console.log({ postId, category });
 
             let result = await sessionToWrite.executeWrite(
                 tx => {

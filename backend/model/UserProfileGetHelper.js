@@ -11,6 +11,7 @@ class UserProfileGetter {
                         name , 
                         user_name , 
                         user_id , 
+                        bio
                         profile_url
                     FROM profile_info
                     WHERE user_id = ANY($1)
@@ -21,7 +22,7 @@ class UserProfileGetter {
 
             let result = await pool.query(query, values);
 
-            // console.log("result  from gettingProfile" , result);
+            // //console.log("result  from gettingProfile" , result);
 
             return (result.rowCount === 0) ?
                 {

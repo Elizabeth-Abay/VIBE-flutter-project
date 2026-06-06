@@ -28,7 +28,7 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       final user = await _repo.getCurrentUser();
       if (user != null) {
-        state = AuthStateAuthenticated(user);
+        state = AuthStateAuthenticated();
       } else {
         state = const AuthStateUnauthenticated();
       }
@@ -42,9 +42,15 @@ class AuthNotifier extends Notifier<AuthState> {
   Future<void> signIn({required String email, required String password}) async {
     state = const AuthStateLoading();
     try {
-      final user = await _repo.signIn(email: email, password: password);
-      state = AuthStateAuthenticated(user);
-    } on Exception catch (e) {
+      final success = await _repo.signIn(email: email, password: password);
+
+      if (!success) {
+        state = const AuthStateError('Invalid email or password.');
+        return;
+      }
+
+      state = const AuthStateAuthenticated();
+    } catch (e) {
       state = AuthStateError(e.toString().replaceAll('Exception: ', ''));
     }
   }
@@ -53,18 +59,24 @@ class AuthNotifier extends Notifier<AuthState> {
 
   Future<void> signUp({
     required String username,
-    required String email,
     required String password,
+    required String name,
   }) async {
     state = const AuthStateLoading();
     try {
-      final user = await _repo.signUp(
+      final success = await _repo.signUp(
         username: username,
-        email: email,
         password: password,
+        name: name,
       );
-      state = AuthStateAuthenticated(user);
-    } on Exception catch (e) {
+
+      if (!success) {
+        state = const AuthStateError('Registration failed. Please try again.');
+        return;
+      }
+
+      state = const AuthStateAuthenticated();
+    } catch (e) {
       state = AuthStateError(e.toString().replaceAll('Exception: ', ''));
     }
   }
@@ -76,12 +88,10 @@ class AuthNotifier extends Notifier<AuthState> {
     state = const AuthStateUnauthenticated();
   }
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────
-
-  UserEntity? get currentUser {
-    final s = state;
-    return s is AuthStateAuthenticated ? s.user : null;
-  }
+  // UserEntity? get currentUser {
+  //   final s = state;
+  //   return s is AuthStateAuthenticated ? s.user : null;
+  // }
 
   bool get isAuthenticated => state is AuthStateAuthenticated;
 }

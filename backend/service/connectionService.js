@@ -38,7 +38,7 @@ class ConnectionService {
 
             let notifying = await notificationModel.createNotifications({ notifierId: acceptorId, notifyToId: acceptedId, type: 'Connection Request Accepted' });
 
-            console.log("Going into the notifications , " , notifying);
+            //console.log("Going into the notifications , " , notifying);
 
             return notifying;
 
@@ -96,7 +96,7 @@ class ConnectionService {
         try {
 
             let res = await connectionModel.matchedUsers(id);
-            // console.log("result from connectionModel.matchedUsers ", res)
+            // //console.log("result from connectionModel.matchedUsers ", res)
 
 
             if (!res.success || (res.data.length === 0)) return res;

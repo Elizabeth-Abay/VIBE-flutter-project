@@ -51,7 +51,8 @@ class MessageService {
                         mine: true,
                         msgId: msg._id,
                         text: msg.text,
-                        createdAt: msg.created_at
+                        createdAt: msg.created_at,
+                        chatId: chatId
                         // profileUrl: usersProfileUrl.profile_url,
                         // name: usersProfileUrl.name,
                         // userName: usersProfileUrl.user_name,
@@ -74,6 +75,7 @@ class MessageService {
                         msgId: msg._id,
                         text: msg.text,
                         createdAt: msg.created_at,
+                        chatId: chatId
                         // profileUrl: otherUserProfileUrl.profile_url,
                         // name: otherUserProfileUrl.name,
                         // userName: otherUserProfileUrl.user_name,
@@ -155,11 +157,16 @@ class MessageService {
         try {
             let isUserAuthorized = await chatService.isUserAuthorized({ id, chatId });
 
+            console.log("isUserAuthorized");
+            console.log(isUserAuthorized);
             if (!isUserAuthorized.success) return isUserAuthorized;
+
 
             // before sending messages check if sender is allowed to send
             let participants = await chatService.getParticipantsId(chatId);
 
+            console.log("participants");
+            console.log(participants);
             if (!participants.success) return participants;
 
             // check which is sender and which is recipient
@@ -177,11 +184,21 @@ class MessageService {
             if (!type || type !== 'self') {
                 let isNotBlocked = await blockService.checkUserNotBlocked({ recipientId, senderId });
 
+                console.log("Is user blocked");
+                console.log(isNotBlocked);
                 if (!isNotBlocked.success) return isNotBlocked;
 
             }
 
             let result = await messageModel.createMessage({ id, message, chatId });
+
+            result.data.mine = true;
+            result.data.chatId = result.data.chat_id;
+            result.data.msgId = result.data._id;
+            
+            // console.log("result of message creation");
+
+            // console.log(result);
 
             return result;
 

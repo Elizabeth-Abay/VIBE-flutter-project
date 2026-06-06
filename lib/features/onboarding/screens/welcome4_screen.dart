@@ -50,7 +50,7 @@ class Welcome4Screen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  context.go('/login-email');
+                  context.go('/sign-up-email-enter');
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 15),

@@ -1,89 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/message.dart';
+import '../../data/models/chat_users_info.dart';
+import '../widgets/user_info_holder.dart';
+import '../widgets/chat_input_bar.dart';
+import '../widgets/scrollable_chat_msg_container.dart';
 import '../providers/chat_notifier.dart';
 
-class SavedMessagesScreen extends ConsumerWidget {
-  final bool embedded;
+class SelfChat extends ConsumerWidget {
+  const SelfChat({super.key});
 
-  const SavedMessagesScreen({super.key, this.embedded = false});
+  // the flow is the moment this opens it will do a get request
+  // to receive the chat id
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(savedMessagesNotifierProvider);
+    // Watch the single chat family provider
+    final asyncChatState = ref.watch(selfChatNotifierProvider);
+    //print("asyncChatState");
+    //print(asyncChatState);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          child: Text(
-            'Saved Messages',
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+    return Scaffold(
+      backgroundColor: const Color(0xFF050517),
+      body: SafeArea(
+        child: asyncChatState.when(
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: Color(0xFFBB86FC)),
           ),
-        ),
-        const Divider(color: Colors.white24, height: 1),
-        Expanded(child: _buildBody(state)),
-      ],
-    );
-  }
-
-  Widget _buildBody(SavedMessagesState state) {
-    return switch (state) {
-      SavedMessagesLoading() => const Center(
-          child: CircularProgressIndicator(color: Colors.white),
-        ),
-      SavedMessagesError(:final message) => Center(
-          child: Text(message, style: const TextStyle(color: Colors.white70)),
-        ),
-      SavedMessagesLoaded(:final messages) => messages.isEmpty
-          ? const Center(
+          error: (error, stackTrace) => Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Text(
-                'No saved messages',
-                style: TextStyle(color: Colors.white54),
+                'Error loading chat: $error',
+                style: const TextStyle(color: Colors.white54),
+                textAlign: TextAlign.center,
               ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: messages.length,
-              itemBuilder: (_, i) => _bubble(messages[i]),
             ),
-      _ => const SizedBox.shrink(),
-    };
-  }
+          ),
+          data: (chatData) {
+            // Extract data from the provider
+            final String chatId = chatData['chatId'] as String;
 
-  Widget _bubble(Message message) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 280),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFFAC5AF7), Color(0xFF3B82F6)],
-            ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                message.text,
-                style: const TextStyle(color: Colors.white),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                message.displayTime,
-                style: const TextStyle(color: Colors.white70, fontSize: 10),
-              ),
-            ],
-          ),
+            // then have the messages be fetched
+
+            return Column(
+              children: [
+                // ─── Header ─────────────────────────────────────────────────
+                const Divider(color: Colors.white10, thickness: 1),
+
+                // ─── Messages Area ──────────────────────────────────────────
+                Expanded(
+                  child: ScrollableChatMsgContainer(chatId: chatId),
+                  flex: 1, // explicit
+                ),
+
+                // ─── Input Bar ──────────────────────────────────────────────
+                SizedBox(height: 120, child: ChatInputBar(chatId: chatId , type: 'self',)),
+              ],
+            );
+          },
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../domain/entity/connected_user.dart';
 import 'heart_widget.dart';
+import 'message_button.dart';
 
 /// A single connected user row — profile image, name, username, heart.
 class ConnectionHolderCell extends StatelessWidget {
@@ -18,10 +19,10 @@ class ConnectionHolderCell extends StatelessWidget {
           CircleAvatar(
             radius: 24,
             backgroundColor: Colors.white12,
-            backgroundImage: user.profileImage.isNotEmpty
-                ? NetworkImage(user.profileImage)
+            backgroundImage: user.profileImage != null
+                ? NetworkImage(user.profileImage!)
                 : null,
-            child: user.profileImage.isEmpty
+            child: user.profileImage == ''
                 ? Text(
                     user.name.isNotEmpty ? user.name[0].toUpperCase() : '?',
                     style: const TextStyle(color: Colors.white),
@@ -54,7 +55,8 @@ class ConnectionHolderCell extends StatelessWidget {
           ),
 
           // Heart — now driven by Riverpod state
-          HeartButton(userId: user.userId, initialIsLiked: user.isLiked),
+          HeartButton(userId: user.userId, initialIsLiked: false),
+          MessageButton(userId: user.userId),
         ],
       ),
     );

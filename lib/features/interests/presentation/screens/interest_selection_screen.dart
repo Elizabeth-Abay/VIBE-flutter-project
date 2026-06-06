@@ -7,12 +7,27 @@ class InterestSelectionScreen extends ConsumerWidget {
   const InterestSelectionScreen({super.key});
 
   static const _interests = [
-    {'icon': Icons.music_note, 'title': 'Music'},
-    {'icon': Icons.sports_soccer, 'title': 'Football'},
-    {'icon': Icons.airplanemode_active, 'title': 'Travel'},
-    {'icon': Icons.extension, 'title': 'Chess'},
-    {'icon': Icons.emoji_events, 'title': 'Hackathons'},
-    {'icon': Icons.restaurant, 'title': 'Food-contents'},
+    {'icon': Icons.music_note_rounded, 'title': 'Music'},
+    {'icon': Icons.sports_soccer_rounded, 'title': 'Football'},
+    {'icon': Icons.sports_basketball_rounded, 'title': 'Basketball'},
+    {
+      'icon': Icons.flight_takeoff_rounded,
+      'title': 'Travel',
+    }, // Better visual angle than airplanemode
+    {
+      'icon': Icons.restaurant_rounded,
+      'title': 'Food',
+    }, // food_bank looks like a building/charity shelter
+    {
+      'icon': Icons.casino_rounded,
+      'title': 'Chess',
+    }, // Material lacks a chess icon; a die represents board games well
+    {
+      'icon': Icons.sports_esports_rounded,
+      'title': 'Gaming',
+    }, // Proper gaming controller instead of a puzzle piece
+    {'icon': Icons.emoji_events_rounded, 'title': 'Hackathons'},
+    {'icon': Icons.book_outlined, 'title': 'Books'},
   ];
 
   @override

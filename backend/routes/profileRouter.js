@@ -14,7 +14,7 @@ const profileController = new ProfileController();
 
 // check if the username is unique
 // will be called everytime the user stops typing in username -- works
-profileRouter.post('/check-unique-username', validate(UserInfoSchema.userNameTakenChecker), TokenDecoder.accessDecode, profileController.checkUniqueUserName);
+profileRouter.post('/check-unique-username', validate(UserInfoSchema.userNameTakenChecker), profileController.checkUniqueUserName);
 
 
 // enter password , username for a user -- works
@@ -31,7 +31,10 @@ profileRouter.post('/set-bio-and-name', validate(ProfileUpdateSchema.updateBioAn
 
 
 // updating their username -- works
-profileRouter.post('/set-user-name', validate(ProfileUpdateSchema.updateUserName) , TokenDecoder.accessDecode, profileController.updateUserName)
+profileRouter.post('/set-user-name', validate(ProfileUpdateSchema.updateUserName), TokenDecoder.accessDecode, profileController.updateUserName);
+
+
+profileRouter.get('/my-profile', TokenDecoder.accessDecode, profileController.getProfileInfo);
 
 
 

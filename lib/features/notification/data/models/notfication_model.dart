@@ -57,11 +57,13 @@ class ConnectionRequestModel extends ConnectionRequestEntity {
 
   factory ConnectionRequestModel.fromJson(Map<String, dynamic> json) {
     return ConnectionRequestModel(
-      requesterId: json['user_id'] as String,
-      name: json['display_name'] as String,
-      username: json['username'] as String? ?? '',
-      profileImageUrl: json['avatar_url'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
+      requesterId: (json['user_id'] ?? json['requester_id'] ?? '') as String,
+      name: (json['name'] ?? json['display_name'] ?? 'Unknown User') as String,
+      username: (json['user_name'] ?? json['username'] ?? '') as String,
+      profileImageUrl: (json['profile_url'] ?? json['avatar_url'] ?? json['profile_image_url']) as String?,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : DateTime.now(),
     );
   }
 

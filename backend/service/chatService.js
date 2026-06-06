@@ -105,12 +105,12 @@ class ChatService {
 
             if (!result.success) return result;
 
-            // else fetch the profile of the second user and attach and send it
-            let { data } = result;
+            let data = result.data.toObject ? result.data.toObject() : { ...result.data };
 
 
-            console.log("Result of createOrFindChat " , data.participants);
+            //console.log("Result of createOrFindChat ", data.participants);
             let othersProfile;
+            data.otherUserProfile = undefined;
 
             // else fetch the second users profile
             for (let participantId of data.participants) {
@@ -120,10 +120,17 @@ class ChatService {
                     if (!othersProfile.success) return othersProfile;
 
                     else {
-                        data.otherUserProfile = othersProfile.data;
+                        //console.log(othersProfile.data)
+                        data.otherUserProfile = Array.isArray(othersProfile.data) ? othersProfile.data[0] : othersProfile.data
+                        //console.log("data.otherUserProfile");
+                        //console.log(data.otherUserProfile);
                     }
                 }
             }
+
+
+            //console.log("data being sent");
+            //console.log(data);
 
             // this will be used to represent the second user at the top
             return {
