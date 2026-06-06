@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:sqflite/sqflite.dart' show ConflictAlgorithm;
 import '../../../../core/database/database_helper.dart';
 import '../../../../core/network/api_client.dart';
-import '../../domain/entities/profile_entity.dart';
 import '../model/profile_model.dart';
 
 class ProfileRepository {
@@ -84,9 +83,7 @@ class ProfileRepository {
 
   // ─── Update Name & Bio (Lightweight) ─────────────────────────────────────
 
-  Future<bool> updateNameAndBio({
-    required String name
-  }) async {
+  Future<bool> updateNameAndBio({required String name}) async {
     try {
       print("calling update naem");
       final response = await _api.post(

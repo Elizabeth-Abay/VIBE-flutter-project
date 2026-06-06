@@ -105,11 +105,11 @@ class ApiClient {
     final url = Uri.parse('$baseUrl$path');
     final request = http.MultipartRequest(method, url);
 
-    final _token = getToken();
+    final token = getToken();
 
     // Automatically inject your bearer access token if it exists
 
-    request.headers['Authorization'] = 'Bearer $_token';
+    request.headers['Authorization'] = 'Bearer $token';
 
     // Express 'multer' middleware expects standard multipart content type headers
     request.headers['Accept'] = 'application/json';

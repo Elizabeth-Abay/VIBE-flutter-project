@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/message.dart';
@@ -45,7 +44,7 @@ class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
   //                    MUTATIONS
   // ─────────────────────────────────────────────────────────────
 
-  Future<bool> sendMessage(String textContent , String type) async {
+  Future<bool> sendMessage(String textContent, String type) async {
     if (textContent.trim().isEmpty) return false;
 
     final previousState = state.value ?? [];
@@ -63,7 +62,7 @@ class ChatMessagesNotifier extends AsyncNotifier<List<Message>> {
     final success = await _repository.sendMessage(
       chatId: currentChatId,
       text: textContent.trim(),
-      type: type
+      type: type,
     );
 
     if (success) {

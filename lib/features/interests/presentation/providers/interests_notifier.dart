@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repository/interest_repo.dart';
-import '../../../profiles/presentation/providers/profile_notifier.dart';
 
 // ─── 1. Keeps track of what the user is clicking on screen ─────────────────
 final selectedVibesProvider =
@@ -8,15 +7,15 @@ final selectedVibesProvider =
       SelectedVibesNotifier.new,
     );
 
-
 final interestsRepositoryProvider = Provider<InterestsRepository>((ref) {
   return InterestsRepository.instance;
 });
 
-
-final availableInterestsProvider = AsyncNotifierProvider<AvailableInterestsNotifier, List<Map<String, dynamic>>>(
-  AvailableInterestsNotifier.new,
-);
+final availableInterestsProvider =
+    AsyncNotifierProvider<
+      AvailableInterestsNotifier,
+      List<Map<String, dynamic>>
+    >(AvailableInterestsNotifier.new);
 
 class SelectedVibesNotifier extends Notifier<Map<String, String>> {
   @override
@@ -111,8 +110,8 @@ class InterestsSavingNotifier extends Notifier<bool> {
   }
 }
 
-
-class AvailableInterestsNotifier extends AsyncNotifier<List<Map<String, dynamic>>> {
+class AvailableInterestsNotifier
+    extends AsyncNotifier<List<Map<String, dynamic>>> {
   @override
   Future<List<Map<String, dynamic>>> build() async {
     return ref.read(interestsRepositoryProvider).fetchAvailableInterests();

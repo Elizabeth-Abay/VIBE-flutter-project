@@ -49,7 +49,6 @@ class ChatDetailScreen extends ConsumerWidget {
             return Column(
               children: [
                 // ─── Header ─────────────────────────────────────────────────
-  
                 const Divider(color: Colors.white10, thickness: 1),
 
                 // ─── User Info Holder ───────────────────────────────────────
@@ -60,11 +59,14 @@ class ChatDetailScreen extends ConsumerWidget {
 
                 // ─── Messages Area ──────────────────────────────────────────
                 Expanded(
-                  child: ScrollableChatMsgContainer(chatId: chatId),
-                  flex: 1, // explicit
+                  flex: 1,
+                  child: ScrollableChatMsgContainer(chatId: chatId), // explicit
                 ),
                 // ─── Input Bar ──────────────────────────────────────────────
-                SizedBox(height: 120, child: ChatInputBar(chatId: chatId , type : 'chat')),
+                SizedBox(
+                  height: 120,
+                  child: ChatInputBar(chatId: chatId, type: 'chat'),
+                ),
               ],
             );
           },

@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../domain/entities/auth_state.dart';
-import '../../domain/entities/user_entity.dart';
 
 /// The single Riverpod provider the entire app uses for auth.
 /// Screens call: ref.watch(authNotifierProvider) to read state.
@@ -28,7 +27,7 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       final user = await _repo.getCurrentUser();
       if (user != null) {
-        state = AuthStateAuthenticated();
+        state = const AuthStateAuthenticated();
       } else {
         state = const AuthStateUnauthenticated();
       }

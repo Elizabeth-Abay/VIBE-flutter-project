@@ -39,7 +39,7 @@ class ScrollableChatMsgContainer extends ConsumerWidget {
 
       // ── 3. Data Loaded Success State ───────────────────────────────────────
       data: (messages) {
-        if (messages.length == 0) {
+        if (messages.isEmpty) {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(24.0),

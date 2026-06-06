@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/repositories/message_repository.dart';
-import '../providers/message_provider.dart';
 
 class ChatInputBar extends ConsumerStatefulWidget {
   final String chatId;
   final String type;
 
-  const ChatInputBar({super.key, required this.chatId , required this.type});
+  const ChatInputBar({super.key, required this.chatId, required this.type});
 
   @override
   ConsumerState<ChatInputBar> createState() => _ChatInputBarState();
@@ -33,7 +32,7 @@ class _ChatInputBarState extends ConsumerState<ChatInputBar> {
       final success = await MessageRepository.instance.sendMessage(
         chatId: widget.chatId,
         text: text,
-        type: widget.type
+        type: widget.type,
       );
 
       if (!success) {

@@ -201,8 +201,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 child: Builder(
                   builder: (context) {
                     if (usernameState is UsernameChecking) {
-                      return Row(
-                        children: const [
+                      return const Row(
+                        children: [
                           SizedBox(
                             width: 12,
                             height: 12,

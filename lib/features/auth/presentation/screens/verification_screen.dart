@@ -34,8 +34,12 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   @override
   void dispose() {
     FocusManager.instance.primaryFocus?.unfocus();
-    for (final c in _controllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     super.dispose();
   }
 
@@ -78,7 +82,9 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       if (next is VerificationSuccess) {
         ref.read(registrationSessionProvider.notifier).markOtpVerified();
         unfocusAndNavigate(context, (router) {
-          router.go('/enter-user-info-first?email=${Uri.encodeComponent(widget.email)}');
+          router.go(
+            '/enter-user-info-first?email=${Uri.encodeComponent(widget.email)}',
+          );
         });
       } else if (next is VerificationResent) {
         ScaffoldMessenger.of(context).showSnackBar(

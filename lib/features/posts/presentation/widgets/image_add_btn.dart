@@ -3,11 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './image_picker_sheet.dart';
 import '../providers/image_provider.dart';
 
-
 class ImageAddButton extends ConsumerWidget {
   final bool isUploading;
 
-  const ImageAddButton({required this.isUploading});
+  const ImageAddButton({super.key, required this.isUploading});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

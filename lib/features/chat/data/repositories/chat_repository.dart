@@ -1,7 +1,6 @@
 import 'package:sqflite/sqflite.dart' show ConflictAlgorithm;
 import '../../../../core/database/database_helper.dart';
 import '../../../../core/network/api_client.dart';
-import '../../../auth/data/repositories/auth_repository.dart';
 import '../models/chat_users_info.dart';
 import '../models/chat_user.dart';
 import '../models/message.dart';

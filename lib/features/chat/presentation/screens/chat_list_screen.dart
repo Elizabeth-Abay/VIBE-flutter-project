@@ -61,7 +61,7 @@ class ChatListScreen extends ConsumerWidget {
 
         // ── Success State (Data Loaded) ──
         data: (conversations) {
-          if (conversations.length == 0) {
+          if (conversations.isEmpty) {
             return const Center(
               child: Text(
                 'No conversations yet.',

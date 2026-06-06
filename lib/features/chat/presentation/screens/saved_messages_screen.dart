@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/chat_users_info.dart';
-import '../widgets/user_info_holder.dart';
 import '../widgets/chat_input_bar.dart';
 import '../widgets/scrollable_chat_msg_container.dart';
 import '../providers/chat_notifier.dart';
@@ -49,12 +47,15 @@ class SelfChat extends ConsumerWidget {
 
                 // ─── Messages Area ──────────────────────────────────────────
                 Expanded(
-                  child: ScrollableChatMsgContainer(chatId: chatId),
-                  flex: 1, // explicit
+                  flex: 1,
+                  child: ScrollableChatMsgContainer(chatId: chatId), // explicit
                 ),
 
                 // ─── Input Bar ──────────────────────────────────────────────
-                SizedBox(height: 120, child: ChatInputBar(chatId: chatId , type: 'self',)),
+                SizedBox(
+                  height: 120,
+                  child: ChatInputBar(chatId: chatId, type: 'self'),
+                ),
               ],
             );
           },

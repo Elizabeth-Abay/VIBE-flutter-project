@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:sqflite/sqflite.dart' show ConflictAlgorithm;
 import '../../../../core/database/database_helper.dart';
 import '../../../../core/network/api_client.dart';
@@ -31,13 +30,13 @@ class AuthRepository {
     final tokens = response['data'] as Map<String, dynamic>;
     // bc it is { accessToken , refreshToken }
 
-
-
-
     final accessToken = tokens['accessToken'] as String?;
     final refreshToken = tokens['refreshToken'] as String?;
-    await _api.saveToken(accessToken: accessToken!, refreshToken: refreshToken!);
-    
+    await _api.saveToken(
+      accessToken: accessToken!,
+      refreshToken: refreshToken!,
+    );
+
     return true;
   }
 

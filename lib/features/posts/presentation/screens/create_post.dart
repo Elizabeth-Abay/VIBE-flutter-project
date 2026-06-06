@@ -1,10 +1,8 @@
-import 'dart:io'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../providers/post_provider.dart'; 
+import '../providers/post_provider.dart';
 import '../providers/image_provider.dart';
-import '../widgets/image_picker_sheet.dart';
 import '../widgets/image_preview.dart';
 import '../widgets/tag_input.dart';
 import '../widgets/post_btn.dart';
@@ -14,7 +12,6 @@ import '../widgets/post_content.dart';
 import '../widgets/post_title.dart';
 import '../../../../core/constants/post_categories.dart';
 import '../../../../features/auth/presentation/providers/auth_notifier.dart';
-import '../../../../features/auth/domain/entities/auth_state.dart';
 import '../widgets/image_add_btn.dart';
 
 class CreatePostPage extends ConsumerStatefulWidget {

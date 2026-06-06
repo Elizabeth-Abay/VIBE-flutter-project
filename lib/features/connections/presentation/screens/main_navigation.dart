@@ -56,7 +56,7 @@ class _ConnectionsMainLayoutState extends ConsumerState<ConnectionsMainLayout> {
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: _activeTab == 0
-                    ? ConnectionsListContainer()
+                    ? const ConnectionsListContainer()
                     : const SentRequestsListContainer(
                         key: ValueKey('sent_requests'),
                       ),

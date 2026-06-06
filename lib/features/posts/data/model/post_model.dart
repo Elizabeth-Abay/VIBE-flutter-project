@@ -1,4 +1,3 @@
-import 'dart:convert';
 import '../../domain/entity/post_entity.dart';
 
 /// Data-layer model — converts between API JSON, SQLite rows, and PostEntity.
@@ -32,8 +31,6 @@ class PostModel extends PostEntity {
       userProfileImageUrl: json['author_profile_picture'],
     );
   }
-
-
 
   Map<String, dynamic> toDb() => {
     'id': id,

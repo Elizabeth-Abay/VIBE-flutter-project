@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../domain/entity/connected_user.dart';
 import '../widgets/holder_cell.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/connection_notifier.dart';

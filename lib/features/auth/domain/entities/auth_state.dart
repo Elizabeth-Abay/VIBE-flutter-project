@@ -1,5 +1,3 @@
-import '../entities/user_entity.dart';
-
 /// All possible states for authentication.
 /// The UI listens to this and reacts accordingly.
 sealed class AuthState {

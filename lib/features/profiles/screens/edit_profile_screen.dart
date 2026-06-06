@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../presentation/providers/profile_notifier.dart';
 import '../../interests/presentation/widgets/interest_selector.dart';
 import '../../interests/presentation/providers/interests_notifier.dart';
-import './profile_view_screen.dart';
 
 class EditProfilePage extends ConsumerStatefulWidget {
   const EditProfilePage({super.key});
@@ -68,7 +67,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
 
     // Final save if user leaves before debounce fires
     final pendingName = _nameController.text.trim();
-    final currentName = ref.read(profileProvider).value?.name?.trim();
+    final currentName = ref.read(profileProvider).value?.name.trim();
 
     if (pendingName.isNotEmpty && pendingName != currentName) {
       ref.read(profileProvider.notifier).updateProfile(name: pendingName);

@@ -62,9 +62,9 @@ class UsernameInputField extends ConsumerWidget {
   /// Helper builder method to render the UI state based on the backend state
   Widget _buildFeedback(UsernameCheckState state) {
     if (state is UsernameChecking) {
-      return Row(
-        key: const ValueKey('checking'),
-        children: const [
+      return const Row(
+        key: ValueKey('checking'),
+        children: [
           SizedBox(
             width: 12,
             height: 12,

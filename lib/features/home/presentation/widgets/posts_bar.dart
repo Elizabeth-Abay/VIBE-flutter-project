@@ -69,7 +69,7 @@ class HorizontalPostFeed extends ConsumerWidget {
                 title: post.title,
                 imageUrl: post.imageUrl ?? '',
                 description: post.description,
-                tags: [], // Falls back to safe empty array if null
+                tags: const [], // Falls back to safe empty array if null
                 userName: post.userName ?? 'Anonymous',
                 userProfileImageUrl: post.userProfileImageUrl,
               ),

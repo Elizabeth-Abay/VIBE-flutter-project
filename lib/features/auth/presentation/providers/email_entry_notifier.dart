@@ -74,12 +74,12 @@ class EmailEntryNotifier extends Notifier<EmailEntryState> {
       state = EmailEntrySuccess(id: backendId, email: email);
     } on ApiException catch (e) {
       if (e.statusCode == 400) {
-        final backendReason = 'User already exists';
+        const backendReason = 'User already exists';
 
         // means user Already exists
 
         // 3. Emit the error state using the exact message from the backend!
-        state = EmailEntryError(backendReason);
+        state = const EmailEntryError(backendReason);
       } else {
         state = EmailEntryError(e.message);
       }

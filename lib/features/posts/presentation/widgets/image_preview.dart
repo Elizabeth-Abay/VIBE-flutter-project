@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/image_provider.dart'; 
-import '../providers/post_provider.dart'; 
-
+import '../providers/image_provider.dart';
+import '../providers/post_provider.dart';
 
 /// Shows the picked image preview + upload status.
 /// Shows nothing if no image is picked.
@@ -14,7 +13,7 @@ class ImagePreviewWidget extends ConsumerWidget {
     // 🎯 Hooked up securely to your clean architectural state variables
     final pickedFile = ref.watch(pickedImageProvider);
     final isUploading = ref.watch(imageUploadingProvider);
-    
+
     // Monitors post state to know if processing completed successfully
     final postState = ref.watch(createPostNotifierProvider);
     final isPostSuccess = postState.value == true;
@@ -53,7 +52,7 @@ class ImagePreviewWidget extends ConsumerWidget {
                         Color(0xFFE186FF),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     Text(
                       'Uploading image...',
                       style: TextStyle(color: Colors.white, fontSize: 13),
@@ -86,7 +85,7 @@ class ImagePreviewWidget extends ConsumerWidget {
                       color: Colors.white,
                       size: 14,
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4),
                     Text(
                       'Ready',
                       style: TextStyle(color: Colors.white, fontSize: 12),

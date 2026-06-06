@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 // ── Core ─────────────────────────────────────────────────────────────────────
-import '../widgets/splash_screen.dart';
 import 'auth_guard.dart';
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
@@ -43,10 +42,8 @@ import '../../features/posts/presentation/screens/create_post.dart';
 
 // ── Profile ───────────────────────────────────────────────────────────────────
 import '../../features/profiles/screens/edit_profile_screen.dart';
-import '../../features/profiles/screens/delete_account_screen.dart';
 
 // ── Settings ──────────────────────────────────────────────────────────────────
-import '../../features/settings/presentation/screens/blocked_users_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 
 final _rootNavKey = GlobalKey<NavigatorState>();
@@ -74,10 +71,21 @@ class AppRouter {
 
         // ── Auth ──────────────────────────────────────────────────────────
         GoRoute(path: '/sign-in', builder: (_, __) => const SignInScreen()),
-        GoRoute(path: '/sign-up-email-enter', builder: (_, __) => const EmailEntryScreen()),
-        GoRoute(path: '/verify',builder: (_, state) => VerificationScreen(  email: state.uri.queryParameters['email'] ?? '',),),
+        GoRoute(
+          path: '/sign-up-email-enter',
+          builder: (_, __) => const EmailEntryScreen(),
+        ),
+        GoRoute(
+          path: '/verify',
+          builder: (_, state) => VerificationScreen(
+            email: state.uri.queryParameters['email'] ?? '',
+          ),
+        ),
         // where username , password ... gets put
-        GoRoute(path: '/enter-user-info-first', builder: (_, __) => const SignUpScreen()),
+        GoRoute(
+          path: '/enter-user-info-first',
+          builder: (_, __) => const SignUpScreen(),
+        ),
 
         // ── Post-signup interest selection ─────────────────────────────────
         GoRoute(
@@ -102,10 +110,7 @@ class AppRouter {
           path: '/profile',
           builder: (_, __) => const MainNavigation(initialTab: 4),
           routes: [
-            GoRoute(
-              path: 'edit',
-              builder: (_, __) => const EditProfilePage(),
-            ),
+            GoRoute(path: 'edit', builder: (_, __) => const EditProfilePage()),
             // GoRoute(
             //   path: 'delete',
             //   // builder: (_, __) => const DeleteAccountScreen(),
@@ -116,9 +121,8 @@ class AppRouter {
         // ── Chat detail (full screen over shell) ──────────────────────────
         GoRoute(
           path: '/chat-detail/:id',
-          builder: (_, state) => ChatDetailScreen(
-            chatWith: state.pathParameters['id'] ?? '',
-          ),
+          builder: (_, state) =>
+              ChatDetailScreen(chatWith: state.pathParameters['id'] ?? ''),
         ),
 
         // ── Connections ───────────────────────────────────────────────────

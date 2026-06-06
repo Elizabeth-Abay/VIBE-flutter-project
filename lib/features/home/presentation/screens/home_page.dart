@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/constants/post_categories.dart'; // Ensure this points to postAppCategories
+// Ensure this points to postAppCategories
 import '../../../posts/presentation/providers/post_provider.dart'; // Handles your feed updates centrally
 import '../../../connections/presentation/providers/connection_notifier.dart'; // Handles your connection streams
 import '../widgets/posts_bar.dart';
@@ -24,21 +24,21 @@ class HomePage extends ConsumerWidget {
         // Small delays ensure smooth UI scroll return physics
         await Future.delayed(const Duration(milliseconds: 300));
       },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+      child: const SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             CategoryBar(),
 
-            const SizedBox(height: 24),
-            const SizedBox(height: 340, child: HorizontalPostFeed()),
+            SizedBox(height: 24),
+            SizedBox(height: 340, child: HorizontalPostFeed()),
 
-            const SizedBox(height: 24),
-            const SizedBox(height: 300, child: RecommendedConnectionsList()),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
+            SizedBox(height: 300, child: RecommendedConnectionsList()),
+            SizedBox(height: 24),
           ],
         ),
       ),

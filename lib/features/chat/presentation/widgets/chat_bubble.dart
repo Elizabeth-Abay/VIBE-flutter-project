@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/repositories/message_repository.dart';
-import '../providers/message_provider.dart';
 
 class ChatBubble extends ConsumerWidget {
   final String messageId;
@@ -20,8 +19,8 @@ class ChatBubble extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final myBubbleColor = const Color(0xFF6A1B9A);
-    final theirBubbleColor = const Color(0xFF1E1E38);
+    const myBubbleColor = Color(0xFF6A1B9A);
+    const theirBubbleColor = Color(0xFF1E1E38);
 
     return Align(
       alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
