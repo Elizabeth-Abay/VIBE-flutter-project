@@ -23,8 +23,8 @@ void main() {
       addTearDown(c.dispose);
 
       final state = c.read(connectionActionProvider);
-      // AsyncData<void>.value is null for void providers
-      expect(state.valueOrNull, isNull);
+      // AsyncValue<void> can't use .value in expressions — assert the idle state directly
+      expect(state, const AsyncData<void>(null));
     });
 
     // ── isolation ─────────────────────────────────────────────────────────
@@ -66,7 +66,7 @@ void main() {
       // It will be AsyncLoading initially (no real repo in unit tests)
       expect(state, isA<AsyncValue>());
     });
-  });
+  }); 
 
   group('peopleNotifierProvider (Riverpod)', () {
     test('provider exists and is a FutureProvider', () {
