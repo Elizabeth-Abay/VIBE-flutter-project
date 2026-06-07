@@ -6,7 +6,7 @@ import 'package:vibe_app/features/auth/presentation/providers/auth_notifier.dart
 // ── Fake AuthNotifier that does NOT call _repo ─────────────────────────────
 // We subclass AuthNotifier and override [build] to return a known initial
 // state, bypassing any real DB / secure-storage calls. Individual tests then
-// call the public methods directly to drive state transitions.
+ 
 
 class FakeAuthNotifier extends AuthNotifier {
   @override
