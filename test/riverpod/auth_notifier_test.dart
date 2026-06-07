@@ -4,8 +4,7 @@ import 'package:vibe_app/features/auth/domain/entities/auth_state.dart';
 import 'package:vibe_app/features/auth/presentation/providers/auth_notifier.dart';
 
 // ── Fake AuthNotifier that does NOT call _repo ─────────────────────────────
-//  
-// We subclass AuthNotifier and override [build] to return a known initial
+// This allows us to test state transitions in isolation, without needing to
 // state, bypassing any real DB / secure-storage calls. Individual tests then
 // call the public methods directly to drive state transitions.
 
