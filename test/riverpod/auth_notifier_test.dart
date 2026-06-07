@@ -12,6 +12,16 @@ import 'package:vibe_app/features/auth/presentation/providers/auth_notifier.dart
 class FakeAuthNotifier extends AuthNotifier {
   @override
   AuthState build() => const AuthStateUnauthenticated(); // safe default
+
+  @override
+  Future<void> signOut() async {
+    state = const AuthStateUnauthenticated();
+  }
+
+  /// Test helper — drives a real state transition without hitting _repo.
+  void setAuthenticated() {
+    state = const AuthStateAuthenticated();
+  }
 }
 
 /// Override the real provider with our fake
@@ -55,36 +65,27 @@ void main() {
       final c = makeContainer();
       addTearDown(c.dispose);
 
-      // signOut only calls _repo.signOut() then sets state.
-      // Since FakeAuthNotifier inherits the real signOut, calling it
-      // will try to access _repo. We test the STATE the notifier ends up in.
-      // To avoid hitting real storage we call the method and allow any
-      // exception (the state transition still happens first in most paths).
-      try {
-        await c.read(fakeAuthProvider.notifier).signOut();
-      } catch (_) {}
+      c.read(fakeAuthProvider.notifier).setAuthenticated();
+      await c.read(fakeAuthProvider.notifier).signOut();
 
-      // The last assignment in signOut is always:
-      //   state = const AuthStateUnauthenticated();
       expect(c.read(fakeAuthProvider), isA<AuthStateUnauthenticated>());
     });
 
     // ── listener integration ───────────────────────────────────────────────
 
-    test('listener fires when state changes', () async {
+    test('listener fires when state changes', () {
       final c = makeContainer();
       addTearDown(c.dispose);
 
       final states = <AuthState>[];
       c.listen<AuthState>(fakeAuthProvider, (_, next) => states.add(next));
 
-      // Force a state update by calling signOut (which always ends in Unauth)
-      try {
-        await c.read(fakeAuthProvider.notifier).signOut();
-      } catch (_) {}
+      // Riverpod only notifies when state actually changes — not when
+      // re-assigning the same value (Unauthenticated → Unauthenticated).
+      c.read(fakeAuthProvider.notifier).setAuthenticated();
 
-      // At least one notification should have been received
       expect(states, isNotEmpty);
+      expect(states.last, isA<AuthStateAuthenticated>());
     });
 
     // ── error state ────────────────────────────────────────────────────────
